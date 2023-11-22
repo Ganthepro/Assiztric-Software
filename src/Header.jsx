@@ -12,7 +12,7 @@ function Header() {
                 Title
             </div>
             <div className="incard-info">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aut, fugiat soluta. Inventore quis ipsum neque dignissimos quae et provident pariatur. Tenetur libero voluptates.
+                {/* Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aut, fugiat soluta. Inventore quis ipsum neque dignissimos quae et provident pariatur. Tenetur libero voluptates. */}
             </div>
         </div>
    </div>
