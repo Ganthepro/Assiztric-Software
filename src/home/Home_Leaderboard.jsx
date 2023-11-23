@@ -6,9 +6,9 @@ function Home_Leaderboard() {
         <div className="main-homeLeaderboard">
             <h4 style={{marginBottom: "10px"}}>การใช้งาน</h4>
             <div className="homeLeaderboard">
-                <Leaderboard_Data data="100px" />
-                <Leaderboard_Data data="150px" />
-                <Leaderboard_Data data="190px" isLast={true} />
+                <Leaderboard_Data data="100px" isDark={true} />
+                <Leaderboard_Data data="150px" isDark={true} />
+                <Leaderboard_Data data="190px" isLast={true} isDark={true} />
             </div>
         </div>
     )

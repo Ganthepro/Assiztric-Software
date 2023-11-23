@@ -1,20 +1,11 @@
 import "./Home.css";
-import { useRef } from "react";
-import Nav from "../Nav";
+import Nav from "../templent/Nav";
 import Header from "../templent/Header";
 import Home_Dashboard from "./Home_Dashboard";
 import Home_Leaderboard from "./Home_Leaderboard";
-import Blank from "../templent/blank";
+import Blank from "../templent/Blank";
 
-export function Home() {
-  const setRef = useRef(null);
-
-  function Start() {
-    setRef.current.style.backgroundColor = "#be6850";
-  }
-  function End() {
-    setRef.current.style.backgroundColor = "#E9714F";
-  }
+export function Home(props) {
   return (
     <div className="main-home">
       <Header />
@@ -24,9 +15,7 @@ export function Home() {
         <Home_Leaderboard />
       </div>
       <Blank />
-      <Nav />
+      <Nav id={props.id} />
     </div>
   );
 }
-
-// export default Home

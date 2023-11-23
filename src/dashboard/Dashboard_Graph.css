@@ -1,0 +1,15 @@
+.main-dashboardGraph {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 350px;
+}
+
+.dashboardGraph {
+    background-color: #E7D0D0;
+    width: 100%;
+    height: 288px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
