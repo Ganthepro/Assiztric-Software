@@ -1,14 +1,13 @@
 .main-homeLeaderboard {
     width: 100%;
-    height: 452px;
     padding: 10px;
     position: relative;
 }
 
 .homeLeaderboard {
-    border: 2px solid red;
-    width: 100%;
-    left: 0;
-    position: absolute;
-    height: 397px;
+    box-shadow: 0px 2.5px 5px 5px rgba(0,0,0,0.25); 
+    width: calc(100% + 20px);
+    left: -10px;
+    border-radius: 8px;
+    position: relative;
 }

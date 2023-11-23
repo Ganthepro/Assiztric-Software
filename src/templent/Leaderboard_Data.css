@@ -1,4 +1,17 @@
 .main-leaderboardData {
-    border: 2px solid greenyellow;
-    height: 80px;
+    /* border: 2px solid greenyellow; */
+    height: 70px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 5px;
+}
+
+.leaderboardData {
+    width: 75%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
