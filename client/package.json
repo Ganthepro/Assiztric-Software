@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@line/liff": "^2.22.4",
+    "js-cookie": "^3.0.5",
     "preact": "^10.19.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
