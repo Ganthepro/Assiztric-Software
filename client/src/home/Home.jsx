@@ -20,6 +20,7 @@ export function Home(props) {
       } else {
         const accessToken = liff.getAccessToken();
         const profile = await liff.getProfile();
+        console.log(show.current);
         if (show.current) 
           show.current.innerHTML = profile.displayName
         if (accessToken) {
