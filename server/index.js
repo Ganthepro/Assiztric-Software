@@ -8,11 +8,12 @@ app.get("/", (req, res) => {
 
 app.get("/auth", async (req, res) => {
   const code = new URLSearchParams(req.url.split("?")[1]).get("code");
+  const redirect_uri = new URLSearchParams(req.url.split("?")[1]).get("liffRedirectUri");
   // console.log(code);
   const data = {
     grant_type: "authorization_code",
     code: code,
-    redirect_uri: `https://assiztric-software.vercel.app/auth`,
+    redirect_uri: redirect_uri,
     client_id: process.env.LIFF_ID,
     client_secret: process.env.CLIENT_SECRET,
   };
