@@ -11,7 +11,7 @@ app.get("/auth", async (req, res) => {
   const data = new URLSearchParams({
     grant_type: "authorization_code",
     code: code,
-    redirect_uri: `http://localhost:5173/`,
+    redirect_uri: `https://assiztric.vercel.app/`,
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
   });
