@@ -43,10 +43,10 @@ export function Home(props) {
     <div className="main-home">
       {token != null ? (
         <>
-          <Header />
+          <Header profile={profile} />
           <div className="body-home">
             <h1 style={{ marginTop: "15px" }}>
-              {profile}
+             Home
             </h1>
             <Home_Dashboard />
             <Home_Leaderboard />
