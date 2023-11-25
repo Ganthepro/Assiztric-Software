@@ -12,22 +12,22 @@ export function Home(props) {
   const [token, setToken] = useState(null);
   const [profiles, setProfiles] = useState([]);
 
-  async function getProfile() {
-    try {
-      const response = await fetch('https://api.line.me/v2/profile', {
-        headers: {
-          'Authorization': `Bearer ${Cookies.get("token")}`
-        },
-        method: 'GET'
-      });
-      const profile = response.data;
-      const profileId = profile.userId; // Extract the profile ID from the response
-      return console.log(profile);
-    } catch (error) {
-      console.error('Error fetching profile ID:', error);
-      throw new Error('Failed to fetch profile ID');
-    }
-  }
+  // async function getProfile() {
+  //   try {
+  //     const response = await fetch('https://api.line.me/v2/profile', {
+  //       headers: {
+  //         'Authorization': `Bearer ${Cookies.get("token")}`
+  //       },
+  //       method: 'GET'
+  //     });
+  //     const profile = response.data;
+  //     const profileId = profile.userId; // Extract the profile ID from the response
+  //     return console.log(profile);
+  //   } catch (error) {
+  //     console.error('Error fetching profile ID:', error);
+  //     throw new Error('Failed to fetch profile ID');
+  //   }
+  // }
   
   async function login() {
     try {
