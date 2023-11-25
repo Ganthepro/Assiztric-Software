@@ -9,12 +9,13 @@ app.get("/", (req, res) => {
 app.get("/auth", async (req, res) => {
   const code = new URLSearchParams(req.url.split("?")[1]).get("code");
   const redirect_uri = new URLSearchParams(req.url.split("?")[1]).get("liffRedirectUri");
+  const client_id = new URLSearchParams(req.url.split("?")[1]).get("liffClientId");
   // console.log(code);
   const data = {
     grant_type: "authorization_code",
     code: code,
     redirect_uri: redirect_uri,
-    client_id: process.env.LIFF_ID,
+    client_id: client_id,
     client_secret: process.env.CLIENT_SECRET,
   };
   const encodedData = querystring.stringify(data);
