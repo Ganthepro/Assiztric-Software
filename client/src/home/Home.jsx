@@ -6,7 +6,7 @@ import Home_Leaderboard from "./Home_Leaderboard";
 import Blank from "../templent/Blank";
 import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
-import liff from '@line/liff';
+import liff from "@line/liff";
 
 export function Home(props) {
   const [token, setToken] = useState(null);
@@ -26,11 +26,11 @@ export function Home(props) {
           Cookies.set("token", accessToken, { expires: 1 });
           setToken(accessToken);
         } else {
-          console.error('Access token not available');
+          console.error("Access token not available");
         }
       }
     } catch (error) {
-      console.error('LIFF initialization failed', error);
+      console.error("LIFF initialization failed", error);
     }
   }
 
