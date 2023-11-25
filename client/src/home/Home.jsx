@@ -20,7 +20,9 @@ export function Home(props) {
         },
         method: 'GET'
       });
-      return response;
+      const profile = response.data;
+      const profileId = profile.userId; // Extract the profile ID from the response
+      return console.log(profile);
     } catch (error) {
       console.error('Error fetching profile ID:', error);
       throw new Error('Failed to fetch profile ID');
@@ -34,8 +36,8 @@ export function Home(props) {
         liff.login();
       } else {
         const accessToken = liff.getAccessToken();
-        const profile = await getProfile();
-        console.log(profile); 
+        const profile = await liff.getProfile();
+        await getProfile();
         setProfiles([profile.displayName, profile.pictureUrl]);
         if (accessToken) {
           console.log('Access Token:', accessToken);
