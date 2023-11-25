@@ -11,6 +11,21 @@ import liff from "@line/liff";
 export function Home(props) {
   const [token, setToken] = useState(null);
   const [profiles, setProfiles] = useState([]);
+
+  async function getProfile() {
+    try {
+      const response = await fetch('https://api.line.me/v2/profile', {
+        headers: {
+          'Authorization': `Bearer ${Cookies.get("token")}`
+        },
+        method: 'GET'
+      });
+      return response;
+    } catch (error) {
+      console.error('Error fetching profile ID:', error);
+      throw new Error('Failed to fetch profile ID');
+    }
+  }
   
   async function login() {
     try {
@@ -19,7 +34,8 @@ export function Home(props) {
         liff.login();
       } else {
         const accessToken = liff.getAccessToken();
-        const profile = await liff.getProfile();
+        const profile = await getProfile();
+        console.log(profile); 
         setProfiles([profile.displayName, profile.pictureUrl]);
         if (accessToken) {
           console.log('Access Token:', accessToken);
