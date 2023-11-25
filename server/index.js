@@ -8,13 +8,13 @@ app.get("/", (req, res) => {
 app.get("/auth", async (req, res) => {
   const code = new URLSearchParams(req.url.split("?")[1]).get("code");
   // console.log(code);
-  const data = new URLSearchParams({
+  const data = {
     grant_type: "authorization_code",
     code: code,
     redirect_uri: `https://assiztric.vercel.app/`,
     client_id: process.env.LIFF_ID,
     client_secret: process.env.CLIENT_SECRET,
-  });
+  };
   console.log(data);
   const respone = await fetch("https://api.line.me/v2/oauth/accessToken", {
     method: "POST",
