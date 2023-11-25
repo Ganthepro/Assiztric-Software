@@ -14,8 +14,8 @@ export function Home(props) {
   
   async function login() {
     try {
-      await liff.init({ liffId: import.meta.env.VITE_LIFF_ID, withLoginOnExternalBrowser:true }); // Replace with your LIFF ID
       console.log(import.meta.env.VITE_LIFF_ID)
+      await liff.init({ liffId: import.meta.env.VITE_LIFF_ID, withLoginOnExternalBrowser:true }); // Replace with your LIFF ID
       if (!liff.isLoggedIn()) {
         liff.login();
       } else {
