@@ -18,6 +18,7 @@ app.get("/auth", async (req, res) => {
     client_id: client_id,
     client_secret: process.env.CLIENT_SECRET,
   };
+  // เก็บข้อมูลลง mongoDB แล้วใช้ access_token ไปดึงข้อมูลผู้ใช้
   const encodedData = querystring.stringify(data);
   console.log(encodedData);
   const respone = await fetch("https://api.line.me/v2/oauth/accessToken", {
