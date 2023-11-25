@@ -31,3 +31,5 @@ app.get("/auth", async (req, res) => {
 app.listen(5500, () => {
   console.log(`Server is running on port ${5500}.`);
 });
+
+module.exports = app; 
