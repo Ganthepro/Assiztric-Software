@@ -5,13 +5,17 @@ require("dotenv").config();
 
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
 app.get("/auth", async (req, res) => {
   const code = new URLSearchParams(req.url.split("?")[1]).get("code");
   console.log(code);
   const data = new URLSearchParams({
     grant_type: "authorization_code",
     code: code,
-    redirect_uri: `http://${import.meta.env.VITE_HOST}/`,
+    redirect_uri: `http://localhost:5173/`,
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
   });
