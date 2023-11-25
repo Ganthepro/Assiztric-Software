@@ -7,10 +7,10 @@ app.get("/", (req, res) => {
 });
 
 app.get("/auth", async (req, res) => {
-  const code = new URLSearchParams(req.url.split("?")[1]).get("code");
-  const redirect_uri = new URLSearchParams(req.url.split("?")[1]).get("liffRedirectUri");
-  const client_id = new URLSearchParams(req.url.split("?")[1]).get("liffClientId");
-  // console.log(code);
+  const url = new URLSearchParams(req.url.split("?")[1])
+  const code = url.get("code");
+  const redirect_uri = url.get("liffRedirectUri");
+  const client_id = url.get("liffClientId");
   const data = {
     grant_type: "authorization_code",
     code: code,
