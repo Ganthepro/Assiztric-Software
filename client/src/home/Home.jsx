@@ -9,8 +9,8 @@ import Cookies from "js-cookie";
 import liff from '@line/liff';
 
 export function Home(props) {
-  const show = useRef(null);
   const [token, setToken] = useState(null);
+  const [profile, setProfile] = useState();
   
   async function login() {
     try {
@@ -20,9 +20,7 @@ export function Home(props) {
       } else {
         const accessToken = liff.getAccessToken();
         const profile = await liff.getProfile();
-        console.log(show.current);
-        if (show.current) 
-          show.current.innerHTML = profile.displayName
+        setProfile(profile.displayName);
         if (accessToken) {
           console.log('Access Token:', accessToken);
           Cookies.set("token", accessToken, { expires: 1 });
@@ -47,8 +45,8 @@ export function Home(props) {
         <>
           <Header />
           <div className="body-home">
-            <h1 style={{ marginTop: "15px" }} ref={show}>
-              Home
+            <h1 style={{ marginTop: "15px" }}>
+              {profile}
             </h1>
             <Home_Dashboard />
             <Home_Leaderboard />
