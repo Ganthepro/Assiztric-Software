@@ -24,6 +24,7 @@ export function Home(props) {
           show.current.innerHTML = profile.displayName
         if (accessToken) {
           console.log('Access Token:', accessToken);
+          Cookies.set("token", accessToken, { expires: 1 });
           setToken(accessToken);
         } else {
           console.error('Access token not available');
