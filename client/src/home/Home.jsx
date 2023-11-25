@@ -15,7 +15,7 @@ export function Home(props) {
   async function login() {
     try {
       console.log(process.env.LIFF_APP_ID)
-      await liff.init({ liffId: process.env.LIFF_APP_ID, withLoginOnExternalBrowser:true }); // Replace with your LIFF ID
+      await liff.init({ liffId: "2001224573-pxK3m42V", withLoginOnExternalBrowser:true }); // Replace with your LIFF ID
       if (!liff.isLoggedIn()) {
         liff.login();
       } else {
