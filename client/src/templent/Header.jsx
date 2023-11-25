@@ -1,4 +1,5 @@
 import './Header.css'
+import catPic from '../assets/download(1).jpg'
 
 function Header() {
   return (
@@ -8,7 +9,7 @@ function Header() {
         <h4 style={{ color: "#E9714F" }}>ค่าใช้ไฟฟ้า 1,535.65</h4>
       </div>
       <div className="profile">
-        {/* <img src="" alt="profile-pic" /> */}
+        <img src={catPic} alt="profile-pic" style={{height:"100%"}} />
       </div>
     </div>
   )

@@ -1,14 +1,14 @@
 .main-header {
-    display: flex;
-    justify-content: space-between;
-    top: 0;
-    position: relative;
+  display: flex;
+  justify-content: space-between;
+  top: 0;
+  position: relative;
 }
 
-.profile{
-    border-radius: 50%;
-    background-color: rgb(169, 169, 169);
-    margin: 8px;
-    width: 40px;
-    height: 40px;
-  }
+.profile {
+  border-radius: 50%;
+  background-color: rgb(169, 169, 169);
+  margin: 8px;
+  width: 40px;
+  height: 40px;
+}
