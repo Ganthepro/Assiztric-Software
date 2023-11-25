@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const querystring = require('querystring');
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -15,11 +16,12 @@ app.get("/auth", async (req, res) => {
     client_id: process.env.LIFF_ID,
     client_secret: process.env.CLIENT_SECRET,
   };
-  console.log(data);
+  const encodedData = querystring.stringify(data);
+  console.log(encodedData);
   const respone = await fetch("https://api.line.me/v2/oauth/accessToken", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: data,
+    body: encodedData,
   });
   const json = await respone.json();
   console.log(json);
