@@ -12,7 +12,7 @@ app.get("/auth", async (req, res) => {
   const data = {
     grant_type: "authorization_code",
     code: code,
-    redirect_uri: `https://assiztric.vercel.app/`,
+    redirect_uri: `https://assiztric-software.vercel.app/auth`,
     client_id: process.env.LIFF_ID,
     client_secret: process.env.CLIENT_SECRET,
   };
