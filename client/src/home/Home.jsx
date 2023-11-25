@@ -37,7 +37,7 @@ export function Home(props) {
       } else {
         const accessToken = liff.getAccessToken();
         const profile = await liff.getProfile();
-        await getProfile();
+        // await getProfile();
         setProfiles([profile.displayName, profile.pictureUrl]);
         if (accessToken) {
           console.log('Access Token:', accessToken);
