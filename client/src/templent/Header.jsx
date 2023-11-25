@@ -1,5 +1,4 @@
 import './Header.css'
-import catPic from '../assets/download(1).jpg'
 
 function Header(props) {
   return (
