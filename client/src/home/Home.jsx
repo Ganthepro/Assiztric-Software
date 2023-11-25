@@ -18,6 +18,7 @@ export function Home(props) {
       if (!liff.isLoggedIn()) {
         liff.login();
       } else {
+        console.log('test');
         const accessToken = liff.getAccessToken();
         show.current.innerHTML = (await liff.getProfile()).userId;
         if (accessToken) {
