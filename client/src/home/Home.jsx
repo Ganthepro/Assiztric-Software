@@ -20,7 +20,7 @@ export function Home(props) {
       } else {
         console.log('test');
         const accessToken = liff.getAccessToken();
-        show.current.innerHTML = (await liff.getProfile()).userId;
+        // show.current.innerHTML = (await liff.getProfile()).userId;
         if (accessToken) {
           console.log('Access Token:', accessToken);
           window.location.reload();
