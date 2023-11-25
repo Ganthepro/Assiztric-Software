@@ -11,7 +11,7 @@ app.get("/auth", async (req, res) => {
   const data = new URLSearchParams({
     grant_type: "authorization_code",
     code: code,
-    redirect_uri: `https://assiztric.vercel.app/`,
+    redirect_uri: `https://liff.line.me/2001224573-pxK3m42V`,
     client_id: process.env.LIFF_ID,
     client_secret: process.env.CLIENT_SECRET,
   });
