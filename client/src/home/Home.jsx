@@ -19,7 +19,7 @@ export function Home(props) {
         liff.login();
       } else {
         const accessToken = liff.getAccessToken();
-        show.current.innerHTML = (await liff.getProfile()).userId;
+        console.log((await liff.getProfile()).userId);
         if (accessToken) {
           console.log('Access Token:', accessToken);
           setToken(accessToken);
