@@ -5,7 +5,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect("mongodb+srv://ganThedev:ganza112@cluster0.7dyyqzi.mongodb.net/AssiztricData?retryWrites=true&w=majority")
   .then(() => {
     console.log("Connected to MongoDB");
   })
@@ -50,11 +50,12 @@ async function middleware(req, res, next) {
 app.post("/auth", middleware, async (req, res) => {
   try {
     const user = await User.findOne({ userId: req.body.userId });
-
     if (!user) {
-      return res.status(200).send("User not found");
+      console.log("User not found!");
+      const newUser = new User(req.body);
+      await newUser.save();
+      res.status(200).json(newUser);
     }
-
     return res.status(200).json(user); // Send the user data as JSON
   } catch (err) {
     console.error(err);

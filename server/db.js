@@ -1,10 +1,7 @@
 // const mongoose = require("mongoose");
 
 // mongoose
-//   .connect(process.env.MONGO_URI, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   })
+//   .connect("mongodb+srv://ganThedev:ganza112@cluster0.7dyyqzi.mongodb.net/AssiztricData?retryWrites=true&w=majority")
 //   .then(() => {
 //     console.log("Connected to MongoDB");
 //   })
@@ -27,10 +24,11 @@
 //     const newUser = new User(user);
 //     return await newUser.save();
 //   },
-//   findUser: async (userId) => {
+//   findUser: async (userId, getBool) => {
 //     User.findOne({ userId: userId })
 //       .then((user) => {
-//         if (!user) return console.log("User not found");
+//         if (!user) return false;
+//         if (getBool) return true;
 //         return user; // Send the user data as JSON
 //       })
 //       .catch((err) => {
