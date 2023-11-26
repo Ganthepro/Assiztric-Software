@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const querystring = require('querystring');
-const db = require("./db");
+// const db = require("./db");
 
 // app.get("/", (req, res) => {
 //   res.send("Hello World!");
@@ -9,6 +9,7 @@ const db = require("./db");
 
 app.post("/auth", async (req, res) => {
   const token = req.body.access_token;
+  console.log(token);
   const respone = await fetch("https://api.line.me/oauth2/v2.1/verify", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
