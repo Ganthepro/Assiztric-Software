@@ -17,13 +17,13 @@ mongoose
   });
 
 const Schema = mongoose.Schema;
-const User = mongoose.model("User", userSchema, "users");
 
 const userSchema = new Schema({
   userId: String,
   displayName: String,
   pictureUrl: String,
 });
+const User = mongoose.model("User", userSchema, "users");
 
 app.use(express.json());
 app.use(cors());
