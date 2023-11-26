@@ -18,20 +18,25 @@ const userSchema = new Schema({
   userId: String,
   displayName: String,
   pictureUrl: String,
-  accessToken: String,
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema, "users");
 
 const db = {
     addUser: async (user) => {
       const newUser = new User(user);
       return await newUser.save();
     },
-    findUser: async (userId) => {
+    findUser: async (userId, getBool) => {
         User.findOne({ userId: userId }, (err, user) => {
-            if (err) return console.error(err);
+            if (err) {
+              if (getBool) return false;
+              return console.error(err);
+            }
+            if (getBool) return true;
             return user;
         });
     }
 }
+
+module.exports = db;

@@ -48,7 +48,6 @@ export function Home(props) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              accessToken: Cookies.get("token"),
               line_id: profile.userId,
               name: profile.displayName,
               picture: profile.pictureUrl,
@@ -56,10 +55,10 @@ export function Home(props) {
           })
             .then((res) => res.json())
             .then((data) => {
-              // console.log(data);
-              // Cookies.set("id", data.id, { expires: 1 });
-              // Cookies.set("name", data.name, { expires: 1 });
-              // Cookies.set("picture", data.picture, { expires: 1 });
+              console.log(data);
+              Cookies.set("id", data.id, { expires: 1 });
+              Cookies.set("name", data.name, { expires: 1 });
+              Cookies.set("picture", data.picture, { expires: 1 });
           })
         } else {
           console.error("Access token not available");
