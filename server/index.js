@@ -53,10 +53,20 @@ app.post("/auth", middleware, async (req, res) => {
     const user = await User.findOne({ userId: req.body.userId });
     if (!user) {
       console.log("User not found!");
-      const newUser = new User(req.body);
-      await newUser.save();
-      console.log(newUser);
-      return res.status(200).json(newUser);
+      const newUser = new User({
+        userId: data.username,
+        displayName: data.password == null ? "qwertyuiop" : data.password,
+        pictureUrl: data.id,
+      });
+      newUser
+        .save()
+        .then((result) => {
+          console.log("New user saved:", result);
+          return res.status(200).json(result);
+        })
+        .catch((err) => {
+          console.error("Error saving user:", err);
+        });
     }
     return res.status(200).json(user); // Send the user data as JSON
   } catch (err) {
