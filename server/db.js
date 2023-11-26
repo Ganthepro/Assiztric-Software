@@ -22,20 +22,23 @@ const userSchema = new Schema({
 
 const User = mongoose.model("User", userSchema, "users");
 
-async function addUser(user) {
-  const newUser = new User(user);
-  return await newUser.save();
-}
+const db = {
+  addUser: async (user) => {
+    const newUser = new User(user);
+    return await newUser.save();
+  },
+  findUser: async (userId, getBool) => {
+    User.findOne({ userId: userId })
+      .then((user) => {
+        if (!user) return false;
+        if (getBool) return true;
+        return user; // Send the user data as JSON
+      })
+      .catch((err) => {
+        console.error(err);
+        return false;
+      });
+  },
+};
 
-async function findUser(userId) {
-  try {
-    const user = await User.findOne({ userId: userId });
-    if (!user) return console.error("User not found");
-    return user; // Send the user data as JSON
-  } catch (err) {
-    console.error(err);
-    return false;
-  }
-}
-
-module.exports = {addUser, findUser};
+module.exports = db;
