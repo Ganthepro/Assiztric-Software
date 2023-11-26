@@ -30,8 +30,7 @@ const db = {
   findUser: async (userId, getBool) => {
     try {
       const user = await User.findOne({ userId: userId });
-      if (!user) return false;
-      if (getBool) return true;
+      if (!user) return console.log("User not found");
       return user;
     } catch (err) {
       console.error(err);
