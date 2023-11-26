@@ -8,8 +8,8 @@ const querystring = require('querystring');
 // });
 
 app.post("/auth", async (req, res) => {
-  const token = req.body.access_token;
-  console.log(token);
+  const token = req.body.accessToken;
+  console.log(req.body);
   const respone = await fetch("https://api.line.me/oauth2/v2.1/verify", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
