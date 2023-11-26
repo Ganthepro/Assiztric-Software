@@ -7,8 +7,8 @@ const db = require("./db");
 //   res.send("Hello World!");
 // });
 
-app.post("/auth/:token", async (req, res) => {
-  const token = req.params.token;
+app.post("/auth", async (req, res) => {
+  const token = req.body.access_token;
   const respone = await fetch("https://api.line.me/oauth2/v2.1/verify", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
