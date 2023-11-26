@@ -1,7 +1,11 @@
 const express = require("express");
 const app = express();
 const querystring = require('querystring');
+const cors = require("cors");
 // const db = require("./db");
+
+app.use(express.json());
+app.use(cors());
 
 // app.get("/", (req, res) => {
 //   res.send("Hello World!");
