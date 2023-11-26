@@ -54,9 +54,9 @@ app.post("/auth", middleware, async (req, res) => {
     if (!user) {
       console.log("User not found!");
       const newUser = new User({
-        userId: data.username,
-        displayName: data.password == null ? "qwertyuiop" : data.password,
-        pictureUrl: data.id,
+        userId: data.userId,
+        displayName: data.displayName,
+        pictureUrl: data.pictureUrl,
       });
       newUser
         .save()
