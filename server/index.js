@@ -49,7 +49,6 @@ async function middleware(req, res, next) {
 
 app.post("/auth", middleware, async (req, res) => {
   try {
-    console.log(mongoose.connection.readyState)
     const user = await User.findOne({ userId: req.body.userId });
     if (!user) {
       console.log("User not found!");
