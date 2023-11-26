@@ -9,7 +9,7 @@ function Header() {
         <h4 style={{ color: "#E9714F" }}>ค่าใช้ไฟฟ้า 1,535.65</h4>
       </div>
       <div className="profile">
-        <img src={catPic} alt="profile-pic" style={{height:"100%"}} />
+        <img src={catPic} alt="profile-pic" />
       </div>
     </div>
   )
