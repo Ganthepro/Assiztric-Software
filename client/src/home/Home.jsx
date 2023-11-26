@@ -37,12 +37,29 @@ export function Home(props) {
       } else {
         const accessToken = liff.getAccessToken();
         const profile = await liff.getProfile();
-        // await getProfile();
         setProfiles([profile.displayName, profile.pictureUrl]);
         if (accessToken) {
           console.log('Access Token:', accessToken);
           Cookies.set("token", accessToken, { expires: 1 });
           setToken(accessToken);
+          fetch(`https://assiztric-software.vercel.app/auth/${Cookies.get("token")}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              line_id: profile.userId,
+              name: profile.displayName,
+              picture: profile.pictureUrl,
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              console.log(data);
+              Cookies.set("id", data.id, { expires: 1 });
+              Cookies.set("name", data.name, { expires: 1 });
+              Cookies.set("picture", data.picture, { expires: 1 });
+          })
         } else {
           console.error("Access token not available");
         }
