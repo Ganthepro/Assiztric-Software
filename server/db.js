@@ -28,16 +28,15 @@ const db = {
     return await newUser.save();
   },
   findUser: async (userId, getBool) => {
-    User.findOne({ userId: userId })
-      .then((user) => {
-        if (!user) return false;
-        if (getBool) return true;
-        return user; // Send the user data as JSON
-      })
-      .catch((err) => {
-        console.error(err);
-        return false;
-      });
+    try {
+      const user = await User.findOne({ userId: userId });
+      if (!user) return false;
+      if (getBool) return true;
+      return user;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
   },
 };
 
