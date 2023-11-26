@@ -53,6 +53,7 @@ async function findUser(userId) {
 app.post("/auth", middleware, async (req, res) => {
   console.log(req.body);
   console.log(findUser(req.body.userId));
+  return findUser(req.body.userId);
   if (findUser(req.body.userId)) return res.status(200).send("User already exists");
   db.addUser(req.body);
   console.log(findUser(req.body.userId, false));
