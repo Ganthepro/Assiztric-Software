@@ -27,9 +27,9 @@ async function addUser(user) {
   return await newUser.save();
 }
 
-async function findUser(userId) {
+function findUser(userId) {
   try {
-    const user = await User.findOne({ userId: userId });
+    const user = User.findOne({ userId: userId });
     if (!user) return console.error("User not found");
     return user; // Send the user data as JSON
   } catch (err) {
