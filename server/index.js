@@ -8,7 +8,6 @@ app.use(cors());
 
 async function middleware(req, res, next) {
   const token = req.headers["token"];
-  console.log(token);
   if (!token) return res.status(401).send("Access denied, token missing");
   const respone = await fetch(`https://api.line.me/oauth2/v2.1/verify?access_token=${token}`, {
     method: "GET"

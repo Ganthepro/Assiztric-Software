@@ -28,15 +28,16 @@ const db = {
     return await newUser.save();
   },
   findUser: async (userId, getBool) => {
-    console.log(process.env.MONGO_URI);
-    User.findOne({ userId: userId }, (err, user) => {
-      if (err) {
-        if (getBool) return false;
-        return console.error(err);
-      }
-      if (getBool) return true;
-      return user;
-    });
+    User.findOne({ userId: userId })
+      .then((user) => {
+        if (!user) return false;
+        if (getBool) return true;
+        return user; // Send the user data as JSON
+      })
+      .catch((err) => {
+        console.error(err);
+        return false;
+      });
   },
 };
 
