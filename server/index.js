@@ -18,8 +18,8 @@ async function middleware(req, res, next) {
 
 app.post("/auth", middleware, async (req, res) => {
   console.log(req.body);
-  // console.log(db.findUser(req.body.userId, true));
-  if (db.findUser(req.body.userId, true)) return res.status(200).send("User already exists");
+  console.log(db.findUser(req.body.userId));
+  if (db.findUser(req.body.userId)) return res.status(200).send("User already exists");
   db.addUser(req.body);
   console.log(db.findUser(req.body.userId, false));
 });

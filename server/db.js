@@ -27,12 +27,10 @@ async function addUser(user) {
   return await newUser.save();
 }
 
-async function findUser(userId, getBool) {
+async function findUser(userId) {
   try {
     const user = await User.findOne({ userId: userId });
-    console.log(user);
-    if (!user) return false;
-    if (getBool) return true;
+    if (!user) return console.error("User not found");
     return user; // Send the user data as JSON
   } catch (err) {
     console.error(err);
