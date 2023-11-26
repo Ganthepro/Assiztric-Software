@@ -16,12 +16,23 @@ async function middleware(req, res, next) {
   next();
 }
 
+async function findUser(userId) {
+  try {
+    const user = await User.findOne({ userId: userId });
+    if (!user) return console.error("User not found");
+    return user; // Send the user data as JSON
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}
+
 app.post("/auth", middleware, async (req, res) => {
   console.log(req.body);
-  console.log(db.findUser(req.body.userId));
-  if (db.findUser(req.body.userId)) return res.status(200).send("User already exists");
+  console.log(findUser(req.body.userId));
+  if (findUser(req.body.userId)) return res.status(200).send("User already exists");
   db.addUser(req.body);
-  console.log(db.findUser(req.body.userId, false));
+  console.log(findUser(req.body.userId, false));
 });
 
 app.listen(5500, () => {
