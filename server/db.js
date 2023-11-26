@@ -27,11 +27,10 @@ const db = {
     const newUser = new User(user);
     return await newUser.save();
   },
-  findUser: async (userId, getBool) => {
+  findUser: async (userId) => {
     User.findOne({ userId: userId })
       .then((user) => {
-        if (!user) return false;
-        if (getBool) return true;
+        if (!user) return console.log("User not found");
         return user; // Send the user data as JSON
       })
       .catch((err) => {
