@@ -30,6 +30,7 @@ async function addUser(user) {
 async function findUser(userId, getBool) {
   try {
     const user = await User.findOne({ userId: userId });
+    console.log(user);
     if (!user) return false;
     if (getBool) return true;
     return user; // Send the user data as JSON

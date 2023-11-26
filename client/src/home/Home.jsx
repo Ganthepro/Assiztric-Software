@@ -54,12 +54,9 @@ export function Home(props) {
               picture: profile.pictureUrl,
             }),
           })
-            .then((res) => res.json())
+            .then((res) => res.text())
             .then((data) => {
               console.log(data);
-              Cookies.set("id", data.id, { expires: 1 });
-              Cookies.set("name", data.name, { expires: 1 });
-              Cookies.set("picture", data.picture, { expires: 1 });
           })
         } else {
           console.error("Access token not available");
