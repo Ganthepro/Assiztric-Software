@@ -32,31 +32,37 @@ app.use(cors());
 async function middleware(req, res, next) {
   const token = req.headers["token"];
   if (!token) return res.status(401).send("Access denied, token missing");
-  const respone = await fetch(
-    `https://api.line.me/oauth2/v2.1/verify?access_token=${token}`,
-    {
-      method: "GET",
-    }
-  );
-  if (!respone.ok) return res.status(401).send("Invalid token");
-  next();
+
+  try {
+    const response = await fetch(
+      `https://api.line.me/oauth2/v2.1/verify?access_token=${token}`,
+      {
+        method: "GET",
+      }
+    );
+
+    if (!response.ok) return res.status(401).send("Invalid token");
+
+    next(); // Move to the next middleware or route handler
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Error verifying token");
+  }
 }
 
 app.post("/auth", middleware, async (req, res) => {
-  // if (db.findUser(req.body.userId)) return res.status(200).send(db.findUser(req.body.userId, true));
-  // db.addUser(req.body);
-  // console.log(db.findUser(req.body.userId));
+  try {
+    const user = await User.findOne({ userId: req.body.userId });
 
-  User.findOne({ userId: req.body.userId })
-    .then((user) => {
-      if (!user) return res.status(200).send("user not found");
-      // return user; // Send the user data as JSON
-      return res.status(200).send(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      return false;
-    });
+    if (!user) {
+      return res.status(200).send("User not found");
+    }
+
+    return res.status(200).json(user); // Send the user data as JSON
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Error finding user");
+  }
 });
 
 app.listen(5500, () => {
