@@ -54,7 +54,7 @@ export function Home(props) {
               picture: profile.pictureUrl,
             }),
           })
-            .then((res) => res.text())
+            .then((res) => res.json())
             .then((data) => {
               console.log(data);
           })
