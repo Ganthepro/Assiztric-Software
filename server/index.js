@@ -57,6 +57,7 @@ app.post("/auth", middleware, async (req, res) => {
       await newUser.save();
       res.status(200).json(newUser);
     }
+    console.log(user);
     return res.status(200).json(user); // Send the user data as JSON
   } catch (err) {
     console.error(err);
