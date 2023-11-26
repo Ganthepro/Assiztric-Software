@@ -46,7 +46,7 @@ export function Home(props) {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "token": Cookies.get("token"),
+              "token": token,
             },
             body: JSON.stringify({
               line_id: profile.userId,
