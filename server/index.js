@@ -49,15 +49,15 @@ async function middleware(req, res, next) {
 
 app.post("/auth", middleware, async (req, res) => {
   try {
-    console.log(mongoose.connection.readyState)
+    console.log(req.body)
     const user = await User.findOne({ userId: req.body.userId });
     if (!user) {
       console.log("User not found!");
       const newUser = new User(req.body);
       await newUser.save();
-      res.status(200).json(newUser);
+      console.log(newUser);
+      return res.status(200).json(newUser);
     }
-    console.log(user);
     return res.status(200).json(user); // Send the user data as JSON
   } catch (err) {
     console.error(err);
