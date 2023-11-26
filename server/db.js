@@ -23,20 +23,21 @@ const userSchema = new Schema({
 const User = mongoose.model("User", userSchema, "users");
 
 const db = {
-    addUser: async (user) => {
-      const newUser = new User(user);
-      return await newUser.save();
-    },
-    findUser: async (userId, getBool) => {
-        User.findOne({ userId: userId }, (err, user) => {
-            if (err) {
-              if (getBool) return false;
-              return console.error(err);
-            }
-            if (getBool) return true;
-            return user;
-        });
-    }
-}
+  addUser: async (user) => {
+    const newUser = new User(user);
+    return await newUser.save();
+  },
+  findUser: async (userId, getBool) => {
+    console.log(process.env.MONGO_URI);
+    User.findOne({ userId: userId }, (err, user) => {
+      if (err) {
+        if (getBool) return false;
+        return console.error(err);
+      }
+      if (getBool) return true;
+      return user;
+    });
+  },
+};
 
 module.exports = db;
