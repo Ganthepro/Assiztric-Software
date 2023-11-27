@@ -56,7 +56,6 @@ app.post("/auth", middleware, async (req, res) => {
         userId: data.userId,
         displayName: data.displayName,
         pictureUrl: data.pictureUrl,
-        // accessToken: req.headers["token"]
       });
       console.log(newUser);
       await newUser

@@ -37,7 +37,6 @@ export function Home(props) {
       } else {
         const accessToken = liff.getAccessToken();
         const profile = await liff.getProfile();
-        setProfiles([profile.displayName, profile.pictureUrl]);
         if (accessToken) {
           console.log('Access Token:', accessToken);
           Cookies.set("token", accessToken, { expires: 1 });
@@ -57,6 +56,7 @@ export function Home(props) {
             .then((res) => res.json())
             .then((data) => {
               console.log(data);
+              setProfiles([data.displayName, data.pictureUrl]);
           })
         } else {
           console.error("Access token not available");
