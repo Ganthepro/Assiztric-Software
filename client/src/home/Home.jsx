@@ -69,8 +69,7 @@ export function Home(props) {
   }
 
   useEffect(async () => {
-    const tokenCookie = Cookies.get("token");
-    tokenCookie ? setToken(tokenCookie) : login();
+    login();
   }, []);
 
   return (
