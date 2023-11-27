@@ -4,6 +4,7 @@ import Header from "../templent/Header";
 import Home_Dashboard from "./Home_Dashboard";
 import Home_Leaderboard from "./Home_Leaderboard";
 import Blank from "../templent/Blank";
+import Add from "../templent/Add";
 import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import liff from "@line/liff";
@@ -52,6 +53,7 @@ export function Home(props) {
         <Home_Leaderboard />
       </div>
       <Blank />
+      <Add />
       <Nav id={props.id} />
     </div>
   );

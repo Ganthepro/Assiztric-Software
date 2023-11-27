@@ -4,6 +4,7 @@ import Dashboard_Graph from "./Dashboard_Graph";
 import Dashboard_Leaderboard from "./Dashboard_Leaderboard";
 import Blank from "../templent/Blank";
 import Nav from "../templent/Nav";
+import Add from "../templent/Add";
 
 export function Dashboard(props) {
   return (
@@ -15,6 +16,7 @@ export function Dashboard(props) {
         <Dashboard_Leaderboard />
       </div>
       <Blank />
+      <Add />
       <Nav id={props.id} />
     </div>
   );
