@@ -57,7 +57,7 @@ app.post("/auth", middleware, async (req, res) => {
         displayName: data.displayName,
         pictureUrl: data.pictureUrl,
       });
-      console.log(newUser);
+      // console.log(newUser);
       await newUser
         .save()
         .then((result) => {
