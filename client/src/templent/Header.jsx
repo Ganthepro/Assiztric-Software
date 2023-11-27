@@ -32,7 +32,6 @@ function Header() {
           })
             .then((res) => res.json())
             .then((data) => {
-              console.log(data);
               setProfiles([data.displayName, data.pictureUrl]);
           })
         } else {
