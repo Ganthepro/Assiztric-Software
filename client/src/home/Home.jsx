@@ -74,7 +74,7 @@ export function Home(props) {
 
   return (
     <div className="main-home">
-      {token != null ? (
+      {profiles != [] ? (
         <>
           <Header profile={profiles[0]} profilePic={profiles[1]} />
           <div className="body-home">
