@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import liff from "@line/liff";
 
-function Header(props) {
+function Header() {
   const [profiles, setProfiles] = useState(null);
   
   async function login() {
@@ -35,7 +35,6 @@ function Header(props) {
             .then((data) => {
               console.log(data);
               setProfiles([data.displayName, data.pictureUrl]);
-              props.func();
           })
         } else {
           console.error("Access token not available");
@@ -57,7 +56,7 @@ function Header(props) {
         <h4 style={{ color: "#E9714F" }}>ค่าใช้ไฟฟ้า 1,535.65</h4>
       </div>
       <div className="profile">
-        <img src={profiles[1]} alt="profile-pic" />
+        <img src={profiles != null ? profiles[1] : ""} alt="profile-pic" />
       </div>
     </div>
   )
