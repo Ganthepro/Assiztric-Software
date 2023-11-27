@@ -10,7 +10,7 @@ import liff from "@line/liff";
 
 export function Home(props) {
   const [token, setToken] = useState(null);
-  const [profiles, setProfiles] = useState([]);
+  const [profiles, setProfiles] = useState(null);
 
   // async function getProfile() {
   //   try {
@@ -74,7 +74,7 @@ export function Home(props) {
 
   return (
     <div className="main-home">
-      {profiles != [] ? (
+      {profiles != null ? (
         <>
           <Header profile={profiles[0]} profilePic={profiles[1]} />
           <div className="body-home">
