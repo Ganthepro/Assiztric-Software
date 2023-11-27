@@ -18,7 +18,6 @@ function Header() {
           console.log('Access Token:', accessToken);
           Cookies.set("token", accessToken, { expires: 1 });
           Cookies.set("userId", profile.userId, { expires: 1 });
-          setToken(accessToken);
           fetch(`https://assiztric-software.vercel.app/auth`, {
             method: "POST",
             headers: {
