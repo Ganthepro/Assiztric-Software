@@ -40,6 +40,7 @@ export function Home(props) {
         if (accessToken) {
           console.log('Access Token:', accessToken);
           Cookies.set("token", accessToken, { expires: 1 });
+          Cookies.set("userId", profile.userId, { expires: 1 });
           setToken(accessToken);
           fetch(`https://assiztric-software.vercel.app/auth`, {
             method: "POST",
@@ -48,7 +49,7 @@ export function Home(props) {
               "token": accessToken,
             },
             body: JSON.stringify({
-              userId: profile.userId,
+              userId: Cookies.get("userId"),
               displayName: profile.displayName,
               pictureUrl: profile.pictureUrl
             }),
