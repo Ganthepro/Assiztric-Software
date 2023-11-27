@@ -50,7 +50,7 @@ app.post("/auth", middleware, async (req, res) => {
   try {
     const data = req.body;
     let flag = false;
-    const user = await User.findOne({ accessToken: req.headers["token"] });
+    const user = await User.findOne({ userId: req.body.userId });
     if (!user) {
       const newUser = new User({
         userId: data.userId,
