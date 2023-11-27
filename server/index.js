@@ -19,6 +19,7 @@ const userSchema = new Schema({
   userId: String,
   displayName: String,
   pictureUrl: String,
+  accessToken: String,
 });
 
 const User = mongoose.model("User", userSchema, "users");
@@ -37,10 +38,8 @@ async function middleware(req, res, next) {
         method: "GET",
       }
     );
-
     if (!response.ok) return res.status(401).send("Invalid token");
-
-    next(); // Move to the next middleware or route handler
+    next();
   } catch (error) {
     console.error(error);
     return res.status(500).send("Error verifying token");
@@ -50,18 +49,21 @@ async function middleware(req, res, next) {
 app.post("/auth", middleware, async (req, res) => {
   try {
     const data = req.body;
-    const user = await User.findOne({ userId: req.body.userId });
+    let flag = false;
+    const user = await User.findOne({ accessToken: req.headers["token"] });
     if (!user) {
       const newUser = new User({
         userId: data.userId,
         displayName: data.displayName,
         pictureUrl: data.pictureUrl,
+        // accessToken: req.headers["token"]
       });
       console.log(newUser);
       await newUser
         .save()
         .then((result) => {
           console.log("New user saved:", result);
+          flag = true;
           return res.status(200).json(result);
         })
         .catch((err) => {
@@ -69,7 +71,8 @@ app.post("/auth", middleware, async (req, res) => {
           return res.json(err);
         });
     }
-    return res.status(200).json(user); // Send the user data as JSON
+    if (!flag)
+      return res.status(200).json(user); // Send the user data as JSON
   } catch (err) {
     console.error(err);
     return res.status(500).send("Error finding user");

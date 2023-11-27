@@ -49,9 +49,9 @@ export function Home(props) {
               "token": accessToken,
             },
             body: JSON.stringify({
-              line_id: profile.userId,
-              name: profile.displayName,
-              picture: profile.pictureUrl,
+              userId: profile.userId,
+              displayName: profile.displayName,
+              pictureUrl: profile.pictureUrl
             }),
           })
             .then((res) => res.json())
