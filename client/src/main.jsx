@@ -12,7 +12,6 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Home id={0} />,
-    // element: <OverlayAdd />,
   },
   {
     path: "/dashboard",

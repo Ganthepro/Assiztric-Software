@@ -6,7 +6,7 @@
     bottom: 0;
     width: 100%;
     padding: 10px;
-    z-index: 20; /* Adjust z-index as needed */
+    z-index: 20;
 }
 
 .main-overlayAdd h3 {
