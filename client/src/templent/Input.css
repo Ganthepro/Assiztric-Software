@@ -3,6 +3,7 @@
     flex-direction: column;
     height: 55px;
     justify-content: space-between;
+    height: fit-content;
 }
 
 .main-input input {
