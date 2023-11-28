@@ -35,8 +35,8 @@ function OverlayAdd(props) {
       }
 
       const responseData = await response.json();
-      console.log(responseData); // Handle success response data
       // Close the overlay after successful submission
+      alert("เพิ่มเครื่องใช้ไฟฟ้าสำเร็จ");
       props.setShow(false);
     } catch (error) {
       console.error('Error adding appliance:', error.message);
