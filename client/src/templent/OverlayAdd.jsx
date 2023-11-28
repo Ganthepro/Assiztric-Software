@@ -6,7 +6,7 @@ function OverlayAdd(props) {
         <div className='real-main'>
             <div className="main-overlayAdd">
                 <h3>เพิ่มเครื่องใช้ไฟฟ้า</h3>
-                <button onClick={() => props.setShow(false)}>ปิด</button>
+                <button className='close-overlayAdd' onClick={() => props.setShow(false)}>ปิด</button>
                 <div className='inputs-overlayAdd'>
                     <Input title="ประเภทเครื่องใช้ไฟฟ้า" placeholder="กรุณากรอกประเภท" />
                     <Input title="ชื่อรุ่น" placeholder="กรุณากรอกชื่อรุ่น" />
@@ -14,6 +14,7 @@ function OverlayAdd(props) {
                     <Input title="การใช้พลังงานไฟฟ้าโดยเฉลี่ย (วัตต์)" placeholder="กรุณากรอกตัวเลข" />
                     <Input title="ลักษณะการใช้งานโดยสังเขป" placeholder="กรุณากรอกข้อความ" isBig={true} />
                 </div>
+                    <button className='submit-overlayAdd'>เพิ่ม</button>
             </div>
         </div>
     )
