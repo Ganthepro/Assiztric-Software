@@ -1,6 +1,7 @@
 import "./OverlayAdd.css";
 import Input from "./Input";
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import Cookies from "js-cookie";
 
 function OverlayAdd(props) {
   const typeRef = useRef(null);
