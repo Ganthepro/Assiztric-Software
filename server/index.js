@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-// const db = require("./db");
 const mongoose = require("mongoose");
 
 mongoose
@@ -70,7 +69,7 @@ app.post("/auth", middleware, async (req, res) => {
         });
     }
     if (!flag)
-      return res.status(200).json(user); // Send the user data as JSON
+      return res.status(200).json(user);
   } catch (err) {
     console.error(err);
     return res.status(500).send("Error finding user");

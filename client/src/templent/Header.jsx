@@ -9,15 +9,18 @@ function Header() {
   async function login() {
     try {
       await liff.init({ liffId: "2001224573-pxK3m42V", withLoginOnExternalBrowser:true }); // Replace with your LIFF ID
+      Cookies.set("isLogin", false, { expires: 1 })
       if (!liff.isLoggedIn()) {
         liff.login();
       } else {
         const accessToken = liff.getAccessToken();
         const profile = await liff.getProfile();
         if (accessToken) {
-          console.log('Access Token:', accessToken);
           Cookies.set("token", accessToken, { expires: 1 });
           Cookies.set("userId", profile.userId, { expires: 1 });
+          Cookies.set("pictureUrl", profile.pictureUrl, { expires: 1 });
+          Cookies.set("displayName", profile.displayName, { expires: 1 });
+          Cookies.set("isLogin", true, { expires: 1 })
           fetch(`https://assiztric-software.vercel.app/auth`, {
             method: "POST",
             headers: {
@@ -44,7 +47,8 @@ function Header() {
   }
 
   useEffect(async () => {
-    login();
+    if (Cookies.get("userId") == "" || Cookies.get("userId") == undefined || Cookies.get("userId") == null) login();
+    else setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
   }, []);
 
   return (
