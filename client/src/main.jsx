@@ -4,6 +4,9 @@ import ReactDOM from 'react-dom'
 import { Home } from './home/Home.jsx'
 import { Dashboard } from './dashboard/Dashboard.jsx'
 import { Error } from './auth/Error.jsx'
+import { Landing } from './auth/Landing.jsx'
+import OverlayAdd from './templent/OverlayAdd.jsx'
+import './index.css'
 import {createBrowserRouter,RouterProvider} from "react-router-dom";
 
 const router = createBrowserRouter([

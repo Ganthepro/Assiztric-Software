@@ -7,7 +7,7 @@ function Leaderboard_Data(props) {
   return (
     <>
       <div className="main-leaderboardData">
-        <img src={props.isDark ? TV_Logo_Dark : TV_Logo_Light} style={{ width: "40px" }} className="image" />
+        <img src={TV_Logo_Light} style={{ width: "40px" }} className="image" />
         <div className="leaderboardData">
             <div style={{flexDirection:"column",justifyContent: "space-around",display:"flex",alignItems:"unset",height:"100%",width:"100%"}}>
                 <p>โทรทัศน์</p>

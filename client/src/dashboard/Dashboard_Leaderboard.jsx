@@ -10,6 +10,22 @@ function Dashboard_Leaderboard() {
                 <Leaderboard_Data isLast={false} />
                 <Leaderboard_Data isLast={false} />
                 <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
+                <Leaderboard_Data isLast={false} />
                 <Leaderboard_Data isLast={true} />
             </div>
         </div>
