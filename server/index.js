@@ -19,15 +19,23 @@ const userSchema = new Schema({
   displayName: String,
   pictureUrl: String,
 });
+const applianceSchema = new Schema({
+  userId: String,
+  Type: String,
+  Model: String,
+  Brand: String,
+  Usage: Number,
+  UsageBehavior: String,
+});
 
 const User = mongoose.model("User", userSchema, "users");
+const Appliance = mongoose.model("Appliance", applianceSchema, "appliance");
 
 app.use(express.json());
 app.use(cors());
 
 async function middleware(req, res, next) {
   const token = req.headers["token"];
-  console.log(token);
   if (!token) return res.status(401).send("Access denied, token missing");
   try {
     const response = await fetch(
@@ -43,6 +51,28 @@ async function middleware(req, res, next) {
     return res.status(500).send("Error verifying token");
   }
 }
+
+app.post("/addApplianceData", middleware, (req, res) => {
+  const data = req.body;
+  const newAppliance = new Appliance({
+    userId: data.userId,
+    Type: data.Type,
+    Model: data.Model,
+    Brand: data.Brand,
+    Usage: data.Usage,
+    UsageBehavior: data.UsageBehavior,
+  });
+  newAppliance
+    .save()
+    .then((result) => {
+      console.log("New appliance saved:", result);
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.error("Error saving appliance:", err);
+      return res.json(err);
+    });
+});
 
 app.post("/auth", middleware, async (req, res) => {
   try {
