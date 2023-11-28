@@ -3,14 +3,6 @@ import Input from "./Input";
 import { useRef, useState } from "react";
 
 function OverlayAdd(props) {
-  const [formData, setFormData] = useState({
-    type: '',
-    model: '',
-    brand: '',
-    power: '',
-    description: ''
-  });
-
   const typeRef = useRef(null);
   const modelRef = useRef(null);
   const brandRef = useRef(null);
@@ -19,11 +11,12 @@ function OverlayAdd(props) {
 
   const submit = async () => {
     const data = {
-      type: typeRef.current.value,
-      model: modelRef.current.value,
-      brand: brandRef.current.value,
-      power: powerRef.current.value,
-      description: descriptionRef.current.value,
+      userId : Cookies.get("userId"),
+      Type: typeRef.current.value,
+      Model: modelRef.current.value,
+      Brand: brandRef.current.value,
+      Usage: powerRef.current.value,
+      UsageBehavior: descriptionRef.current.value,
     };
 
     try {
@@ -31,7 +24,7 @@ function OverlayAdd(props) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          token: Cookies.get("token"),
+          "token": Cookies.get("token"),
         },
         body: JSON.stringify(data),
       });
@@ -42,16 +35,6 @@ function OverlayAdd(props) {
 
       const responseData = await response.json();
       console.log(responseData); // Handle success response data
-
-      // Optionally reset form fields or handle success scenario
-      setFormData({
-        type: '',
-        model: '',
-        brand: '',
-        power: '',
-        description: ''
-      });
-
       // Close the overlay after successful submission
       props.setShow(false);
     } catch (error) {
