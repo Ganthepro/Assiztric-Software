@@ -1,5 +1,5 @@
 import "./Dashboard_Leaderboard.css"
-import Leaderboard_Data from "../templent/Leaderboard_Data";
+import Leaderboard_Data from "../template/Leaderboard_Data";
 
 function Dashboard_Leaderboard() {
     return (

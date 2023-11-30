@@ -1,10 +1,10 @@
 import "./Home.css";
-import Nav from "../templent/Nav";
-import Header from "../templent/Header";
+import Nav from "../template/Nav";
+import Header from "../template/Header";
 import Home_Dashboard from "./Home_Dashboard";
 import Home_Leaderboard from "./Home_Leaderboard";
-import Blank from "../templent/Blank";
-import Add from "../templent/Add";
+import Blank from "../template/Blank";
+import Add from "../template/Add";
 import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import liff from "@line/liff";
