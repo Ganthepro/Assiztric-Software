@@ -1,17 +1,17 @@
 import "./Dashboard.css";
-import Header from "../templent/Header";
+import Header from "../template/Header";
 import Dashboard_Graph from "./Dashboard_Graph";
 import Dashboard_Leaderboard from "./Dashboard_Leaderboard";
-import Blank from "../templent/Blank";
-import Nav from "../templent/Nav";
-import Add from "../templent/Add";
+import Blank from "../template/Blank";
+import Nav from "../template/Nav";
+import Add from "../template/Add";
 
 export function Dashboard(props) {
   return (
     <div className="main-dashboard">
-      <Header />
+      {/* <Header /> */}
       <div className="body-dashboard">
-        <h1 style={{marginTop: "15px"}}>Dashboard</h1>
+        <h1>Dashboard</h1>
         <Dashboard_Graph />
         <Dashboard_Leaderboard />
       </div>
