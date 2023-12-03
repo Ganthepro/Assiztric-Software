@@ -12,7 +12,10 @@ export function Home(props) {
   const [profiles, setProfiles] = useState(null);
 
   useEffect(async () => {
-    if (Cookies.get("userId") == "" || Cookies.get("userId") == undefined || Cookies.get("userId") == null) props.loginFunc();
+    if (Cookies.get("userId") == "" || Cookies.get("userId") == undefined || Cookies.get("userId") == null) {
+      props.loginFunc()
+      setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")])
+    }
     else setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
   }, []);
 
