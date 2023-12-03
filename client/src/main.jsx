@@ -38,7 +38,7 @@ async function login() {
         })
           .then((res) => res.json())
           .then((data) => {
-            setProfiles([data.displayName, data.pictureUrl]);
+            // setProfiles([data.displayName, data.pictureUrl]);
         })
       } else {
         console.error("Access token not available");
