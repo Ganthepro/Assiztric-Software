@@ -5,9 +5,6 @@ import Home_Dashboard from "./Home_Dashboard";
 import Home_Leaderboard from "./Home_Leaderboard";
 import Blank from "../template/Blank";
 import Add from "../template/Add";
-import { useEffect, useRef, useState } from "react";
-import Cookies from "js-cookie";
-import liff from "@line/liff";
 
 export function Home(props) {
   return (

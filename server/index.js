@@ -2,9 +2,12 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 mongoose
-  .connect("mongodb+srv://ganThedev:ganza112@cluster0.7dyyqzi.mongodb.net/AssiztricData?retryWrites=true&w=majority")
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("Connected to MongoDB");
   })

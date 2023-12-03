@@ -1,5 +1,5 @@
 import "./Dashboard.css";
-import Header from "../template/Header";
+// import Header from "../template/Header";
 import Dashboard_Graph from "./Dashboard_Graph";
 import Dashboard_Leaderboard from "./Dashboard_Leaderboard";
 import Blank from "../template/Blank";

@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import { Home } from './home/Home.jsx'
 import { Dashboard } from './dashboard/Dashboard.jsx'
 import { Error } from './auth/Error.jsx'
+import { Notification } from './notification/notification'
 import {createBrowserRouter,RouterProvider} from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <Dashboard id={1} />,
+  },
+  {
+    path: "/notification",
+    element: <Notification />,
   },
   {
     path: "*",
