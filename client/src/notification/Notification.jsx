@@ -16,7 +16,7 @@ export function Notification(props) {
       Cookies.get("userId") == undefined ||
       Cookies.get("userId") == null
     ) {
-      props.loginFunc();
+      await props.loginFunc();
       setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
     } else setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
   }, []);
