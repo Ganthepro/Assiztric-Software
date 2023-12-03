@@ -15,9 +15,10 @@ export function Notification(props) {
       Cookies.get("userId") == "" ||
       Cookies.get("userId") == undefined ||
       Cookies.get("userId") == null
-    )
+    ) {
       props.loginFunc();
-    else setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
+      setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
+    } else setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
   }, []);
 
   return (
