@@ -23,6 +23,7 @@ export function Home(props) {
       setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
       const token = await props.tokenFunc();
       console.log(token)  
+      console.log("test")
       Cookies.set("token", token, { expires: 1 });
     }
   }, []);
