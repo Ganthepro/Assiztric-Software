@@ -45,13 +45,13 @@ export function Notification(props) {
   );
 
   const groupedNotifications = {};
-  console.log(filteredNotifications);
   filteredNotifications?.forEach((notification) => {
-    console.log(notification.date);
-    if (!groupedNotifications[notification.date]) {
-      groupedNotifications[notification.date] = [notification];
-    } else {
-      groupedNotifications[notification.date].push(notification);
+    if (notification && notification.date) {
+      if (!groupedNotifications[notification.date]) {
+        groupedNotifications[notification.date] = [notification];
+      } else {
+        groupedNotifications[notification.date].push(notification);
+      }
     }
   });
 
