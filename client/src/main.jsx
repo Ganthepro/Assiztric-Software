@@ -10,7 +10,7 @@ import Filter_List from './notification/Filter_List'
 import Cookies from "js-cookie";
 import liff from "@line/liff";
 
-async function getAccessToken() {
+function getAccessToken() {
   if (liff.isLoggedIn()) {
     const accessToken = liff.getAccessToken();
     console.log("test")

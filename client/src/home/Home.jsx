@@ -21,8 +21,9 @@ export function Home(props) {
       setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
     } else {
       setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
-      console.log("test")
-      Cookies.set("token", await props.tokenFunc(), { expires: 1 });
+      const token = await props.tokenFunc();
+      console.log(token)  
+      Cookies.set("token", token, { expires: 1 });
     }
   }, []);
 
