@@ -45,16 +45,16 @@ export function Notification(props) {
   );
 
   const groupedNotifications = {};
-  filteredNotifications?.forEach((notification) => {
-    console.log(notification.date);
-  });
   // filteredNotifications?.forEach((notification) => {
-  //   if (!groupedNotifications[notification.date]) {
-  //     groupedNotifications[notification.date] = [notification];
-  //   } else {
-  //     groupedNotifications[notification.date].push(notification);
-  //   }
+  //   console.log(notification.date);
   // });
+  filteredNotifications?.forEach((notification) => {
+    if (!groupedNotifications[notification.date]) {
+      groupedNotifications[notification.date] = [notification];
+    } else {
+      groupedNotifications[notification.date].push(notification);
+    }
+  });
 
   return (
     <div className="main-notification">
