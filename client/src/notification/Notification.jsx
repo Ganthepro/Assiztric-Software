@@ -15,39 +15,42 @@ export function Notification(props) {
   const [code, setCode] = useState(0);
   const [date, setDate] = useState(null);
 
-  useEffect(async () => {
-    if (
-      Cookies.get("userId") == "" ||
-      Cookies.get("userId") == undefined ||
-      Cookies.get("userId") == null
-    ) {
-      await props.loginFunc();
-      setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
-    } else {
-      setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
-      Cookies.set("token", await props.tokenFunc(), { expires: 1 });
-    }
-    fetch(`https://assiztric-software.vercel.app/getNotification`, {
-      method: "GET",
-      headers: {
-        token: Cookies.get("token"),
-        userId: Cookies.get("userId"),
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setNotifications(data);
+  useEffect(() => {
+    async function fetchData() {
+      if (
+        Cookies.get("userId") == "" ||
+        Cookies.get("userId") == undefined ||
+        Cookies.get("userId") == null
+      ) {
+        await props.loginFunc();
+        setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
+      } else {
+        setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
+        Cookies.set("token", await props.tokenFunc(), { expires: 1 });
+      }
+
+      const response = await fetch(`https://assiztric-software.vercel.app/getNotification`, {
+        method: "GET",
+        headers: {
+          token: Cookies.get("token"),
+          userId: Cookies.get("userId"),
+        },
       });
+
+      const data = await response.json();
+      setNotifications(data);
+    }
+
+    fetchData();
   }, []);
 
+  // Filter notifications based on the selected code
   const filteredNotifications = notifications?.filter(
     (notification) => notification.code === code
   );
 
+  // Group notifications by date
   const groupedNotifications = {};
-  // filteredNotifications?.forEach((notification) => {
-  //   console.log(notification.date);
-  // });
   filteredNotifications?.forEach((notification) => {
     if (!groupedNotifications[notification.date]) {
       groupedNotifications[notification.date] = [notification];
