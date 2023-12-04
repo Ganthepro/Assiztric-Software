@@ -14,7 +14,6 @@ function Filter_List(props) {
             filterRef.current[i].style.backgroundColor = "#E0E0E0";
             filterRef.current[i].style.color = "#818080";
           }
-          console.log(i);
         }
       }
     }, [props.code]);
