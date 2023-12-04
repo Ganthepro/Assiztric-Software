@@ -7,6 +7,7 @@ import Notification_Group from "./Notification_Group";
 import Filter_List from "./Filter_List";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { set } from "../../../server";
 
 export function Notification(props) {
   const [profiles, setProfiles] = useState(null);
@@ -38,20 +39,16 @@ export function Notification(props) {
       .then((data) => {
         setNotifications(data);
       });
+    const filteredNotifications = await notifications?.filter(
+      (notification) => notification.code === code
+    );
+    const groupedNotifications = {};
+    await filteredNotifications?.forEach((notification) => {
+      if (!groupedNotifications[notification.date]) groupedNotifications[notification.date] = [notification];
+      else groupedNotifications[notification.date].push(notification);
+    });
+    setNotifications(groupedNotifications);
   }, []);
-
-  const filteredNotifications = notifications?.filter(
-    (notification) => notification.code === code
-  );
-
-  const groupedNotifications = {};
-  filteredNotifications?.forEach((notification) => {
-    if (!groupedNotifications[notification.date]) {
-      groupedNotifications[notification.date] = [notification];
-    } else {
-      groupedNotifications[notification.date].push(notification);
-    }
-  });
 
   return (
     <div className="main-notification">
@@ -70,11 +67,10 @@ export function Notification(props) {
             <Filter_List setCode={setCode} />
           </div>
         )}
-        {groupedNotifications.length > 0 && (
+        {notifications.length > 0 &&
           Object.entries(groupedNotifications).map(([date, notifications]) => (
             <Notification_Group key={date} notifications={notifications} />
-          ))
-        )}
+          ))}
       </div>
       <Blank />
       <Add />
