@@ -60,10 +60,10 @@ export function Notification(props) {
             <Filter_List setCode={setCode} />
           </div>
         )}
-        {() => {
+        {async () => {
           const dates = {};
-          notifications &&
-            notifications.map((notification) => {
+          (await notifications) &&
+            (await notifications.map((notification) => {
               if (notification.code == code) {
                 let flagFound = false;
                 for (let i = 0; i < Object.keys(dates).length; i++) {
@@ -79,8 +79,8 @@ export function Notification(props) {
               //   console.log(notification.date);
               //   return <Notification_Group notification={notification} />;
               // }
-            });
-            console.log(dates);
+            }));
+          console.log(dates);
         }}
       </div>
       <Blank />
