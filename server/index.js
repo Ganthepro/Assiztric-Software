@@ -67,7 +67,7 @@ app.post("/addNotification", middleware, (req, res) => {
   const newNotification = new Notification({
     userId: data.userId,
     code: data.code,
-    time: data.time,
+    time: data.time,vvvvvvvvvvvvvvvvvvvvvvvv
     detail: data.detail,
   });
   newNotification
