@@ -34,8 +34,8 @@ export function Notification(props) {
       method: "GET",
       headers: {
         token: Cookies.get("token"),
+        userId: Cookies.get("userId"),
       },
-      body: JSON.stringify({ userId: Cookies.get("userId") }),
     })
       .then((res) => res.json())
       .then((data) => {
