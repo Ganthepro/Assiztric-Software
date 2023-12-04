@@ -10,12 +10,13 @@ import Filter_List from './notification/Filter_List'
 import Cookies from "js-cookie";
 import liff from "@line/liff";
 
-function getAccessToken() {
+function getToken() {
   if (liff.isLoggedIn()) {
     const accessToken = liff.getAccessToken();
-    console.log("test")
+    // console.log("test")
     return accessToken;
   }
+  console.log("test")
 }
 
 async function login() {
@@ -61,16 +62,16 @@ async function login() {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home id={0} loginFunc={login} tokenFunc={getAccessToken} />,
+    element: <Home id={0} loginFunc={login} tokenFunc={getToken} />,
     // element: <Filter_List />,
   },
   {
     path: "/dashboard",
-    element: <Dashboard id={1} loginFunc={login} tokenFunc={getAccessToken} />,
+    element: <Dashboard id={1} loginFunc={login} tokenFunc={getToken} />,
   },
   {
     path: "/notification",
-    element: <Notification id={2} loginFunc={login} tokenFunc={getAccessToken} />,
+    element: <Notification id={2} loginFunc={login} tokenFunc={getToken} />,
   },
   {
     path: "*",
