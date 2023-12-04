@@ -36,7 +36,7 @@ export function Notification(props) {
         token: Cookies.get("token"),
       },
     })
-      .then((res) => res.json())
+      .then((res) => res.text())
       .then((data) => {
         console.log(data);
         setNotifications(data);
