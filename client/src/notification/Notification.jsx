@@ -27,9 +27,6 @@ export function Notification(props) {
       setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
       Cookies.set("token", await props.tokenFunc(), { expires: 1 });
     }
-  }, []);
-
-  useEffect(() => {
     fetch(`https://assiztric-software.vercel.app/getNotification`, {
       method: "GET",
       headers: {
@@ -39,9 +36,23 @@ export function Notification(props) {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log("test");
         setNotifications(data);
       });
   }, []);
+
+  const filteredNotifications = notifications?.filter(
+    (notification) => notification.code === code
+  );
+
+  const groupedNotifications = {};
+  filteredNotifications?.forEach((notification) => {
+    if (!groupedNotifications[notification.date]) {
+      groupedNotifications[notification.date] = [notification];
+    } else {
+      groupedNotifications[notification.date].push(notification);
+    }
+  });
 
   return (
     <div className="main-notification">
@@ -60,29 +71,9 @@ export function Notification(props) {
             <Filter_List setCode={setCode} />
           </div>
         )}
-        {async () => {
-          console.log(notifications);
-          const dates = {};
-          (await notifications) &&
-            (await notifications.map((notification) => {
-              if (notification.code == code) {
-                let flagFound = false;
-                for (let i = 0; i < Object.keys(dates).length; i++) {
-                  if (Object.keys(dates)[i] == notification.date) {
-                    flagFound = true;
-                    Object.values(dates)[i].push(notification);
-                    return null;
-                  }
-                }
-                if (!flagFound) dates[notification.date] = [notification];
-              }
-              // if (notification.code == code) {
-              //   console.log(notification.date);
-              //   return <Notification_Group notification={notification} />;
-              // }
-            }));
-          console.log(dates);
-        }}
+        {Object.entries(groupedNotifications).map(([date, notifications]) => (
+          <Notification_Group key={date} notifications={notifications} />
+        ))}
       </div>
       <Blank />
       <Add />
