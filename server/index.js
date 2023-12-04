@@ -35,6 +35,7 @@ const notificationSchema = new Schema({
   code: Number, // 0: Tip, 1: Alert, 2: Ft
   time: String,
   detail: String,
+  date: { type: Date, default: Date.now },
 });
 
 const User = mongoose.model("User", userSchema, "users");

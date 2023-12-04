@@ -1,0 +1,26 @@
+.main-filterList {
+    border-radius: 0px 0px 8px 8px;
+    box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.10); 
+    width: 100vw;
+    height: 106px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: transparent;
+}
+
+.main-filterList > div {
+    width: 358px;
+    margin-top: 10px;
+}
+
+.main-filterList button {
+    height: 30px;
+    width: 90px;
+    border-radius: 20px;
+    border: none;
+    background-color: #E0E0E0;
+    color: #818080;
+    font-weight: bold;
+}
