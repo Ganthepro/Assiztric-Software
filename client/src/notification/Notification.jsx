@@ -49,12 +49,12 @@ export function Notification(props) {
   //   console.log(notification.date);
   // });
   filteredNotifications?.forEach((notification) => {
+    console.log(filteredNotifications);
     if (!groupedNotifications[notification.date]) {
       groupedNotifications[notification.date] = [notification];
     } else {
       groupedNotifications[notification.date].push(notification);
     }
-    console.log(groupedNotifications);
   });
 
   return (
