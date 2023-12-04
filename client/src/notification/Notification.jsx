@@ -45,6 +45,7 @@ export function Notification(props) {
   );
 
   const groupedNotifications = {};
+  console.log(filteredNotifications);
   filteredNotifications?.forEach((notification) => {
     console.log(notification.date);
     if (!groupedNotifications[notification.date]) {
