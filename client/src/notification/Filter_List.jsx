@@ -6,7 +6,7 @@ function Filter_List(props) {
 
     useEffect(() => {
       if (filterRef.current.every(ref => ref !== null)) {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < filterRef.current.length; i++) {
           if (i === props.code) {
             filterRef.current[i].style.backgroundColor = "#E9714F";
             filterRef.current[i].style.color = "white";
