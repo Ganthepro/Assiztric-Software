@@ -12,12 +12,7 @@ import liff from "@line/liff";
 
 async function getToken() {
   await liff.init({ liffId: "2001224573-pxK3m42V", withLoginOnExternalBrowser:true }); // Replace with your LIFF ID
-  if (liff.isLoggedIn()) {
-    const accessToken = liff.getAccessToken();
-    // console.log("test")
-    return accessToken;
-  }
-  console.log("test")
+  if (liff.isLoggedIn()) return await liff.getAccessToken();
 }
 
 async function login() {
