@@ -18,7 +18,10 @@ export function Dashboard(props) {
     ) {
       await props.loginFunc();
       setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
-    } else setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
+    } else {
+      setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
+      Cookies.set("token", await props.tokenFunc(), { expires: 1 });
+    }
   }, []);
 
   return (

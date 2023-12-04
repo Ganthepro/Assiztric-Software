@@ -9,6 +9,10 @@ import {createBrowserRouter,RouterProvider} from "react-router-dom";
 import Cookies from "js-cookie";
 import liff from "@line/liff";
 
+async function getAccessToken() {
+  return await liff.getAccessToken();
+}
+
 async function login() {
   try {
     await liff.init({ liffId: "2001224573-pxK3m42V", withLoginOnExternalBrowser:true }); // Replace with your LIFF ID
@@ -52,16 +56,15 @@ async function login() {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home id={0} loginFunc={login} />,
-    // element: <Notification id={2} loginFunc={login} />,
+    element: <Home id={0} loginFunc={login} tokenFunc={getAccessToken} />,
   },
   {
     path: "/dashboard",
-    element: <Dashboard id={1} loginFunc={login} />,
+    element: <Dashboard id={1} loginFunc={login} tokenFunc={getAccessToken} />,
   },
   {
     path: "/notification",
-    element: <Notification id={2} loginFunc={login} />,
+    element: <Notification id={2} loginFunc={login} tokenFunc={getAccessToken} />,
   },
   {
     path: "*",
