@@ -10,46 +10,54 @@ import Cookies from "js-cookie";
 
 export function Notification(props) {
   const [profiles, setProfiles] = useState(null);
-  const [notifications, setNotifications] = useState({});
+  const [notifications, setNotifications] = useState([]);
   const [showFilterList, setShowFilterList] = useState(false);
   const [code, setCode] = useState(0);
-  const [date, setDate] = useState(null);
 
-  useEffect(async () => {
-    if (
-      Cookies.get("userId") == "" ||
-      Cookies.get("userId") == undefined ||
-      Cookies.get("userId") == null
-    ) {
-      await props.loginFunc();
-      setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
-    } else {
-      setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
-      Cookies.set("token", await props.tokenFunc(), { expires: 1 });
+  useEffect(() => {
+    async function fetchData() {
+      if (
+        Cookies.get("userId") == "" ||
+        Cookies.get("userId") == undefined ||
+        Cookies.get("userId") == null
+      ) {
+        await props.loginFunc();
+        setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
+      } else {
+        setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
+        Cookies.set("token", await props.tokenFunc(), { expires: 1 });
+      }
     }
-    await fetch(`https://assiztric-software.vercel.app/getNotification`, {
-      method: "GET",
-      headers: {
-        token: Cookies.get("token"),
-        userId: Cookies.get("userId"),
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    fetchData();
+  }, [props]);
+
+  useEffect(() => {
+    async function fetchNotification() {
+      try {
+        const response = await fetch(`http://localhost:5500/getNotification/${code}`,
+          {
+            method: "GET",
+            headers: {
+              token: "eyJhbGciOiJIUzI1NiJ9.iCpN0hYuiq2NrlMp1nzEGcBJfqnsUjwRm9F_6J6GHQNghdZr8Cn4st28bgEPNd800Cex8HxNUvIfU-VsLmghJ5rI5poMrVtac4TUt5E3zXhwqkygDsKAuuyoVcWDHAJMJAEPV6c_OoWhDfKfcfKuOl0QNfJ9SupGe21BVZ2_0-Y.z3XrwW9vHh6v-JmY560NpIzSS3vKZFCYws7c8e5eq-Y",
+              userId: Cookies.get("userId"),
+            },
+          }
+        );
+        if (!response.ok) throw new Error("Failed to fetch data");
+        const data = await response.json();
         setNotifications(data);
-      });
-    console.log(notifications);
-    const filteredNotifications = await notifications?.filter(
-      (notification) => notification.code === code
-    );
-    const groupedNotifications = {};
-    await filteredNotifications?.forEach((notification) => {
-      if (!groupedNotifications[notification.date])
-        groupedNotifications[notification.date] = [notification];
-      else groupedNotifications[notification.date].push(notification);
-    });
-    setNotifications(groupedNotifications);
-  }, []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+      setShowFilterList(false);
+    }
+    fetchNotification();
+  }, [code]);
+
+  function SetCode(code) {
+    setCode(code);
+    console.log(code);  
+  }
 
   return (
     <div className="main-notification">
@@ -65,13 +73,16 @@ export function Notification(props) {
         </div>
         {showFilterList && (
           <div style={{ position: "absolute", left: "0" }}>
-            <Filter_List setCode={setCode} />
+            <Filter_List setCode={SetCode} code={code} />
           </div>
         )}
-        {notifications.length > 0 &&
-          Object.entries(notifications).map(([date, notifications]) => (
-            <Notification_Group key={date} notifications={notifications} />
-          ))}
+        {notifications != null &&
+          notifications != [] &&
+          Object.entries(notifications).map(
+            ([date, notifications]) => (
+              <Notification_Group date={date} data={notifications} />
+            )
+          )}
       </div>
       <Blank />
       <Add />

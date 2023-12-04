@@ -33,31 +33,35 @@ const applianceSchema = new Schema({
 const notificationSchema = new Schema({
   userId: String,
   code: Number, // 0: Tip, 1: Alert, 2: Ft
-  time: {type: String, default: getTime},
+  time: { type: String, default: getTime },
   detail: String,
   date: { type: String, default: getDate },
 });
 
 const User = mongoose.model("User", userSchema, "users");
 const Appliance = mongoose.model("Appliance", applianceSchema, "appliance");
-const Notification = mongoose.model("Notification", notificationSchema, "notification");
+const Notification = mongoose.model(
+  "Notification",
+  notificationSchema,
+  "notification"
+);
 
 app.use(express.json());
 app.use(cors());
 
 function getTime() {
   const now = new Date();
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
   return `${hours}:${minutes}:${seconds}`;
 }
 
 function getDate() {
   const now = new Date();
   const year = String(now.getFullYear());
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
   return `${day}/${month}/${year}`;
 }
 
@@ -98,14 +102,43 @@ app.post("/addNotification", middleware, (req, res) => {
     });
 });
 
-app.get("/getNotification", middleware, (req, res) => {
+app.get("/getNotification/:code", middleware, (req, res) => {
   // const userId = req.headers["userid"];
+  const code = req.params.code;
   const userId = "test";
   console.log(userId);
   Notification.find({ userId: userId })
-    .then((result) => {
-      console.log("Notification found:", result);
-      return res.status(200).json(result);
+    .then(async (result) => {
+      // console.log("Notification found:", result);
+      // console.log(typeof result)
+      const filteredNotifications = await result.filter(
+        (notification) => notification.code.toString() === code
+      );
+      const groupedNotifications = {};
+      await filteredNotifications.forEach((notification) => {
+        if (!groupedNotifications[notification.date]) {
+          groupedNotifications[notification.date] = [notification];
+        } else {
+          groupedNotifications[notification.date].push(notification);
+        }
+      });
+      console.log("Grouped notifications:", groupedNotifications);
+      const sortedKeys = Object.keys(groupedNotifications)
+        .map((dateString) => new Date(dateString))
+        .sort((a, b) => a - b)
+        .reverse()
+        .map((dateObj) => {
+          const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+          const day = dateObj.getDate().toString().padStart(2, "0");
+          const year = dateObj.getFullYear().toString();
+          return `${month}/${day}/${year}`;
+        });
+
+      const sortedGroupedNotifications = {};
+      sortedKeys.forEach((key) => {
+        sortedGroupedNotifications[key] = groupedNotifications[key];
+      });
+      return res.status(200).json(sortedGroupedNotifications);
     })
     .catch((err) => {
       console.error("Error finding notification:", err);
@@ -159,8 +192,7 @@ app.post("/auth", middleware, async (req, res) => {
           return res.json(err);
         });
     }
-    if (!flag)
-      return res.status(200).json(user);
+    if (!flag) return res.status(200).json(user);
   } catch (err) {
     console.error(err);
     return res.status(500).send("Error finding user");

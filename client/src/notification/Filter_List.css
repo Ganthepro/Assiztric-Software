@@ -7,7 +7,7 @@
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    background-color: transparent;
+    background-color: white;
 }
 
 .main-filterList > div {
