@@ -13,7 +13,7 @@ import liff from "@line/liff";
 async function getAccessToken() {
   if (liff.isLoggedIn()) {
     const accessToken = liff.getAccessToken();
-    console.log(accessToken)
+    console.log("test")
     return accessToken;
   }
 }
