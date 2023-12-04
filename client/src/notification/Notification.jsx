@@ -36,7 +36,6 @@ export function Notification(props) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("test");
         setNotifications(data);
       });
   }, []);
@@ -47,6 +46,7 @@ export function Notification(props) {
 
   const groupedNotifications = {};
   filteredNotifications?.forEach((notification) => {
+    console.log(notification);
     if (!groupedNotifications[notification.date]) {
       groupedNotifications[notification.date] = [notification];
     } else {
