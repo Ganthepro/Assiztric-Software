@@ -4,7 +4,7 @@ import Notification_Data from './Notification_Data'
 function Notification_Group(props) {
     return (
         <div className="main-notificationGroup">
-            <p>วันนี้</p>
+            <p>{props.notification.date}</p>
             <Notification_Data />
             <Notification_Data />
         </div>

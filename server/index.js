@@ -33,9 +33,9 @@ const applianceSchema = new Schema({
 const notificationSchema = new Schema({
   userId: String,
   code: Number, // 0: Tip, 1: Alert, 2: Ft
-  time: String,
+  time: {type: String, default: getTime},
   detail: String,
-  date: { type: Date, default: Date.now },
+  date: { type: String, default: getDate },
 });
 
 const User = mongoose.model("User", userSchema, "users");
@@ -44,6 +44,22 @@ const Notification = mongoose.model("Notification", notificationSchema, "notific
 
 app.use(express.json());
 app.use(cors());
+
+function getTime() {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  return `${hours}:${minutes}:${seconds}`;
+}
+
+function getDate() {
+  const now = new Date();
+  const year = String(now.getFullYear());
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${day}/${month}/${year}`;
+}
 
 async function middleware(req, res, next) {
   const token = req.headers["token"];
@@ -68,7 +84,6 @@ app.post("/addNotification", middleware, (req, res) => {
   const newNotification = new Notification({
     userId: data.userId,
     code: data.code,
-    time: data.time,
     detail: data.detail,
   });
   newNotification

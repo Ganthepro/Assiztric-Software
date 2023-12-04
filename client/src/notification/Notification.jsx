@@ -11,8 +11,9 @@ import Cookies from "js-cookie";
 export function Notification(props) {
   const [profiles, setProfiles] = useState(null);
   const [notifications, setNotifications] = useState(null);
-  const [filter, setFilter] = useState(null);
   const [showFilterList, setShowFilterList] = useState(false);
+  const [code, setCode] = useState(0);
+  const [date, setDate] = useState(null);
 
   useEffect(async () => {
     if (
@@ -30,16 +31,16 @@ export function Notification(props) {
 
   useEffect(() => {
     fetch(`https://assiztric-software.vercel.app/getNotification`, {
-      method:"GET",
+      method: "GET",
       headers: {
-        "token": Cookies.get("token"),
+        token: Cookies.get("token"),
       },
     })
-    .then((res) => res.json())
-    .then((data) => {
-      // console.log(data)
-      setNotifications(data)
-    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setNotifications(data);
+      });
   }, []);
 
   return (
@@ -48,25 +49,39 @@ export function Notification(props) {
         <h1>Notification</h1>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <h4>รายการแจ้งเตือน</h4>
-          <img src={Filter} alt="filter" onClick={() => setShowFilterList(!showFilterList)} />
+          <img
+            src={Filter}
+            alt="filter"
+            onClick={() => setShowFilterList(!showFilterList)}
+          />
         </div>
         {showFilterList && (
-          <div style={{position:"absolute",left:"0"}}>
-            <Filter_List />
+          <div style={{ position: "absolute", left: "0" }}>
+            <Filter_List setCode={setCode} />
           </div>
         )}
-        {notifications && notifications.map((notification) => {
-          return <Notification_Group notification={notification} />;
-        })}
-        {/* <Notification_Group />
-        <Notification_Group />
-        <Notification_Group />
-        <Notification_Group />
-        <Notification_Group />
-        <Notification_Group />
-        <Notification_Group />
-        <Notification_Group />
-        <Notification_Group /> */}
+        {() => {
+          const dates = {};
+          notifications &&
+            notifications.map((notification) => {
+              if (notification.code == code) {
+                let flagFound = false;
+                for (let i = 0; i < Object.keys(dates).length; i++) {
+                  if (Object.keys(dates)[i] == notification.date) {
+                    flagFound = true;
+                    Object.values(dates)[i].push(notification);
+                    return null;
+                  }
+                }
+                if (!flagFound) dates[notification.date] = [notification];
+              }
+              // if (notification.code == code) {
+              //   console.log(notification.date);
+              //   return <Notification_Group notification={notification} />;
+              // }
+            });
+            console.log(dates);
+        }}
       </div>
       <Blank />
       <Add />
