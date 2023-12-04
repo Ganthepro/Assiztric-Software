@@ -70,10 +70,11 @@ export function Notification(props) {
             <Filter_List setCode={setCode} />
           </div>
         )}
-        {console.log(groupedNotifications)}
-        {Object.entries(groupedNotifications).map(([date, notifications]) => (
-          <Notification_Group key={date} notifications={notifications} />
-        ))}
+        {groupedNotifications.length > 0 && (
+          Object.entries(groupedNotifications).map(([date, notifications]) => (
+            <Notification_Group key={date} notifications={notifications} />
+          ))
+        )}
       </div>
       <Blank />
       <Add />
