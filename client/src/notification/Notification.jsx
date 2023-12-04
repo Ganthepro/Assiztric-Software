@@ -39,7 +39,6 @@ export function Notification(props) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setNotifications(data);
       });
   }, []);
@@ -62,6 +61,7 @@ export function Notification(props) {
           </div>
         )}
         {async () => {
+          console.log(notifications);
           const dates = {};
           (await notifications) &&
             (await notifications.map((notification) => {
