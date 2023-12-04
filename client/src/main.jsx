@@ -11,7 +11,8 @@ import Cookies from "js-cookie";
 import liff from "@line/liff";
 
 async function getAccessToken() {
-  return await liff.getAccessToken();
+  const accessToken = await liff.getAccessToken();
+  return accessToken;
 }
 
 async function login() {
