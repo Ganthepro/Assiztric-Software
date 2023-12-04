@@ -11,7 +11,7 @@ import { set } from "../../../server";
 
 export function Notification(props) {
   const [profiles, setProfiles] = useState(null);
-  const [notifications, setNotifications] = useState(null);
+  const [notifications, setNotifications] = useState({});
   const [showFilterList, setShowFilterList] = useState(false);
   const [code, setCode] = useState(0);
   const [date, setDate] = useState(null);
