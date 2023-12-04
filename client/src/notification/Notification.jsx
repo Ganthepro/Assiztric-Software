@@ -7,7 +7,6 @@ import Notification_Group from "./Notification_Group";
 import Filter_List from "./Filter_List";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { set } from "../../../server";
 
 export function Notification(props) {
   const [profiles, setProfiles] = useState(null);
