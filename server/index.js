@@ -83,7 +83,8 @@ app.post("/addNotification", middleware, (req, res) => {
 });
 
 app.get("/getNotification", middleware, (req, res) => {
-  const userId = req.query.userId;
+  const userId = req.body.userId;
+  console.log(userId);
   Notification.find({ userId: userId })
     .then((result) => {
       console.log("Notification found:", result);
