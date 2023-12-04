@@ -30,9 +30,16 @@ const applianceSchema = new Schema({
   Usage: Number,
   UsageBehavior: String,
 });
+const notificationSchema = new Schema({
+  userId: String,
+  code: Number, // 0: Tip, 1: Alert, 2: Ft
+  time: String,
+  detail: String,
+});
 
 const User = mongoose.model("User", userSchema, "users");
 const Appliance = mongoose.model("Appliance", applianceSchema, "appliance");
+const Notification = mongoose.model("Notification", notificationSchema, "notification");
 
 app.use(express.json());
 app.use(cors());
@@ -54,6 +61,39 @@ async function middleware(req, res, next) {
     return res.status(500).send("Error verifying token");
   }
 }
+// ทำเรื่องส่งข้อมูลแบบเรียลไทม์
+app.post("/addNotification", middleware, (req, res) => {
+  const data = req.body;
+  const newNotification = new Notification({
+    userId: data.userId,
+    code: data.code,
+    time: data.time,
+    detail: data.detail,
+  });
+  newNotification
+    .save()
+    .then((result) => {
+      console.log("New notification saved:", result);
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.error("Error saving notification:", err);
+      return res.json(err);
+    });
+});
+
+app.get("/getNotification", middleware, (req, res) => {
+  const userId = req.query.userId;
+  Notification.find({ userId: userId })
+    .then((result) => {
+      console.log("Notification found:", result);
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.error("Error finding notification:", err);
+      return res.json(err);
+    });
+});
 
 app.post("/addApplianceData", middleware, (req, res) => {
   const data = req.body;

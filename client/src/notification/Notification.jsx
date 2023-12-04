@@ -24,6 +24,19 @@ export function Notification(props) {
     }
   }, []);
 
+  useEffect(() => {
+    fetch(`https://assiztric-software.vercel.app/getNotification`, {
+      method:"GET",
+      headers: {
+        "token": Cookies.get("token"),
+      },
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data)
+    })
+  }, []);
+
   return (
     <div className="main-notification">
       <div className="body-notification">
