@@ -39,12 +39,14 @@ export function Notification(props) {
       .then((data) => {
         setNotifications(data);
       });
+    console.log(notifications);
     const filteredNotifications = await notifications?.filter(
       (notification) => notification.code === code
     );
     const groupedNotifications = {};
     await filteredNotifications?.forEach((notification) => {
-      if (!groupedNotifications[notification.date]) groupedNotifications[notification.date] = [notification];
+      if (!groupedNotifications[notification.date])
+        groupedNotifications[notification.date] = [notification];
       else groupedNotifications[notification.date].push(notification);
     });
     setNotifications(groupedNotifications);
