@@ -28,7 +28,7 @@ export function Notification(props) {
       setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
       Cookies.set("token", await props.tokenFunc(), { expires: 1 });
     }
-    fetch(`https://assiztric-software.vercel.app/getNotification`, {
+    await fetch(`https://assiztric-software.vercel.app/getNotification`, {
       method: "GET",
       headers: {
         token: Cookies.get("token"),
