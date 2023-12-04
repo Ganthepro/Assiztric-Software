@@ -45,7 +45,7 @@ export function Notification(props) {
   );
 
   const groupedNotifications = {};
-  filteredNotifications.map((notification) => {
+  filteredNotifications?.forEach((notification) => {
     console.log(notification.date);
   });
   // filteredNotifications?.forEach((notification) => {
