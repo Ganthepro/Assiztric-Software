@@ -70,7 +70,7 @@ export function Notification(props) {
           </div>
         )}
         {notifications.length > 0 &&
-          Object.entries(groupedNotifications).map(([date, notifications]) => (
+          Object.entries(notifications).map(([date, notifications]) => (
             <Notification_Group key={date} notifications={notifications} />
           ))}
       </div>
