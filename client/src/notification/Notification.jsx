@@ -45,11 +45,7 @@ export function Notification(props) {
   );
 
   const groupedNotifications = {};
-  // filteredNotifications?.forEach((notification) => {
-  //   console.log(notification.date);
-  // });
   filteredNotifications?.forEach((notification) => {
-    console.log(filteredNotifications);
     if (!groupedNotifications[notification.date]) {
       groupedNotifications[notification.date] = [notification];
     } else {
@@ -74,6 +70,7 @@ export function Notification(props) {
             <Filter_List setCode={setCode} />
           </div>
         )}
+        {console.log(groupedNotifications)}
         {Object.entries(groupedNotifications).map(([date, notifications]) => (
           <Notification_Group key={date} notifications={notifications} />
         ))}
