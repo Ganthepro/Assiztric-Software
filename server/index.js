@@ -3,8 +3,11 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const csv = require("csv-parser");
+const fs = require("fs");
 
 dotenv.config();
+const dataFilePath = "./AirPurifier.csv";
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -37,6 +40,17 @@ const notificationSchema = new Schema({
   detail: String,
   date: { type: String, default: getDate },
 });
+const applianceDataHistorySchema = new Schema({
+  userId: String,
+  active: [Number],
+  activeStack: [[Number]],
+  powerDistribution: {},
+  powerDistributionStack: {},
+  firstTime: { type: String, default: getTime },
+});
+
+const results = [];
+let x = 0;
 
 const User = mongoose.model("User", userSchema, "users");
 const Appliance = mongoose.model("Appliance", applianceSchema, "appliance");
@@ -44,6 +58,11 @@ const Notification = mongoose.model(
   "Notification",
   notificationSchema,
   "notification"
+);
+const ApplianceDataHistory = mongoose.model(
+  "ApplianceDataHistory",
+  applianceDataHistorySchema,
+  "applianceDataHistory"
 );
 
 app.use(express.json());
@@ -64,6 +83,68 @@ function getDate() {
   const day = String(now.getDate()).padStart(2, "0");
   return `${day}/${month}/${year}`;
 }
+
+function getUsage() {
+  fs.createReadStream(dataFilePath)
+    .pipe(csv())
+    .on("data", (data) => {
+      const { W_R, Var_R } = data;
+      const extractedData = {
+        W_R,
+        Var_R,
+      };
+      results.push(extractedData);
+    })
+    .on("error", (err) => {
+      console.error(err);
+    });
+}
+
+async function predictUsage() {
+  const W_R = [];
+  const Var_R = [];
+  const appliance = [1, 1, 1, 1, 1]
+  for (let i = x; i < x + 180; i++) {
+    W_R.push(parseFloat(results[i].W_R));
+    Var_R.push(parseFloat(results[i].Var_R));
+  }
+  await fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/prediction", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user_appliance: appliance,
+      pred_threshold: 0.5,
+      W_R,
+      Var_R,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data.active);
+      ApplianceDataHistory.findOneAndUpdate(
+        { userId: "test" },
+        {
+          $push: {
+            activeStack: data.active,
+            powerDistributionStack: data.power_distribution,
+          },
+          active: data.active,
+          powerDistribution: data.power_distribution,
+        },
+        { new: true, upsert: true }
+      ).then((result) => {
+        console.log("Appliance data history updated:", result);
+      });
+    });
+  x += 180;
+}
+
+getUsage();
+const interval = setInterval(() => {
+  if (x >= results.length) clearInterval(interval);
+  predictUsage();
+  console.log(x);
+}, 60000);
 
 async function middleware(req, res, next) {
   const token = req.headers["token"];
@@ -103,14 +184,13 @@ app.post("/addNotification", middleware, (req, res) => {
 });
 
 app.get("/getNotification/:code", middleware, (req, res) => {
-  // const userId = req.headers["userid"];
+  const userId = req.headers["userid"];
   const code = req.params.code;
-  const userId = "test";
+  // const userId = "test";
   console.log(userId);
   Notification.find({ userId: userId })
     .then(async (result) => {
-      // console.log("Notification found:", result);
-      // console.log(typeof result)
+      console.log("Notification found:", result);
       const filteredNotifications = await result.filter(
         (notification) => notification.code.toString() === code
       );
