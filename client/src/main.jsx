@@ -6,6 +6,7 @@ import { Dashboard } from './dashboard/Dashboard.jsx'
 import { Error } from './auth/Error.jsx'
 import { Notification } from './notification/notification'
 import {createBrowserRouter,RouterProvider} from "react-router-dom";
+import Chart from './dashboard/Chart'
 import Filter_List from './notification/Filter_List'
 import Cookies from "js-cookie";
 import liff from "@line/liff";
@@ -59,7 +60,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Home id={0} loginFunc={login} tokenFunc={getToken} />,
-    // element: <Filter_List />,
+    // element: <Chart />,
   },
   {
     path: "/dashboard",

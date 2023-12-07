@@ -46,7 +46,7 @@ const applianceDataHistorySchema = new Schema({
   activeStack: [[Number]],
   powerDistribution: {},
   powerDistributionStack: {},
-  firstTime: { type: String, default: getTime },
+  times: [String],
 });
 
 const results = [];
@@ -127,6 +127,7 @@ async function predictUsage() {
           $push: {
             activeStack: data.active,
             powerDistributionStack: data.power_distribution,
+            times: getTime(),
           },
           active: data.active,
           powerDistribution: data.power_distribution,
@@ -139,31 +140,48 @@ async function predictUsage() {
   x += 180;
 }
 
+async function sendNotification() {}
+
 getUsage();
-const interval = setInterval(() => {
-  if (x >= results.length) clearInterval(interval);
-  predictUsage();
-  console.log(x);
-}, 60000);
+// const interval = setInterval(() => {
+//   if (x >= results.length) clearInterval(interval);
+//   predictUsage();
+//   console.log(x);
+// }, 60000);
 
 async function middleware(req, res, next) {
-  const token = req.headers["token"];
-  if (!token) return res.status(401).send("Access denied, token missing");
-  try {
-    const response = await fetch(
-      `https://api.line.me/oauth2/v2.1/verify?access_token=${token}`,
-      {
-        method: "GET",
-      }
-    );
-    if (!response.ok) return res.status(401).send("Invalid token");
+  // const token = req.headers["token"];
+  // if (!token) return res.status(401).send("Access denied, token missing");
+  // try {
+  //   const response = await fetch(
+  //     `https://api.line.me/oauth2/v2.1/verify?access_token=${token}`,
+  //     {
+  //       method: "GET",
+  //     }
+  //   );
+  //   if (!response.ok) return res.status(401).send("Invalid token");
     next();
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send("Error verifying token");
-  }
+  // } catch (error) {
+  //   console.error(error);
+  //   return res.status(500).send("Error verifying token");
+  // }
 }
-// ทำเรื่องส่งข้อมูลแบบเรียลไทม์
+
+app.get("/getPredictData/:userId", middleware, async (req, res) => {
+  const userId = req.params.userId;
+  const data = await ApplianceDataHistory.findOne({ userId: "test" });
+  const active = data.active;
+  const powerDistribution = data.powerDistribution;
+  const activeStack = data.activeStack;
+  const powerDistributionStack = data.powerDistributionStack;
+  res.status(200).json({
+    active,
+    powerDistribution,
+    activeStack,
+    powerDistributionStack,
+  });
+});
+
 app.post("/addNotification", middleware, (req, res) => {
   const data = req.body;
   const newNotification = new Notification({

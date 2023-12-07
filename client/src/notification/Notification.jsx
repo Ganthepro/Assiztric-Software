@@ -56,7 +56,6 @@ export function Notification(props) {
 
   function SetCode(code) {
     setCode(code);
-    console.log(code);  
   }
 
   return (
