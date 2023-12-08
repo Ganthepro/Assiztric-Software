@@ -1,7 +1,6 @@
 import "./Dashboard_Graph.css";
 import { useEffect, useRef, useState } from "react";
 import Chart from "./Chart";
-import Cookies from "js-cookie";
 
 function Dashboard_Graph() {
   const option = [useRef(null), useRef(null)];

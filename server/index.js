@@ -42,11 +42,13 @@ const notificationSchema = new Schema({
 });
 const applianceDataHistorySchema = new Schema({
   userId: String,
+  Types: [String],
   active: [Number],
   activeStack: [[Number]],
   powerDistribution: {},
   powerDistributionStack: {},
   times: [String],
+  timeOfUsege: [Number],
 });
 
 const results = [];
@@ -103,7 +105,7 @@ function getUsage() {
 async function predictUsage() {
   const W_R = [];
   const Var_R = [];
-  const appliance = [1, 1, 1, 1, 1]
+  const appliance = [1, 1, 1, 1, 1];
   for (let i = x; i < x + 180; i++) {
     W_R.push(parseFloat(results[i].W_R));
     Var_R.push(parseFloat(results[i].Var_R));
@@ -120,21 +122,32 @@ async function predictUsage() {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data.active);
-      ApplianceDataHistory.findOneAndUpdate(
-        { userId: "test" },
-        {
-          $push: {
-            activeStack: data.active,
-            powerDistributionStack: data.power_distribution,
-            times: getTime(),
+      function sumArrays(...arrays) {
+        const maxLength = Math.max(...arrays.map((arr) => arr.length)); // Find the length of the longest array
+        const result = new Array(maxLength).fill(0); // Initialize an array to store the sum
+        arrays.forEach((arr) => {
+          for (let i = 0; i < maxLength; i++) result[i] += arr[i] || 0;
+        });
+        return result;
+      }
+      ApplianceDataHistory.findOne({ userId: "test" }).then((result) => {
+        ApplianceDataHistory.findOneAndUpdate(
+          { userId: "test" },
+          {
+            $push: {
+              activeStack: data.active,
+              powerDistributionStack: data.power_distribution,
+              times: getTime(),
+            },
+            Types: ["Air Purifier", "Refrigerator", "Fan", "TV", "Iron"],
+            timeOfUsege: sumArrays(result.timeOfUsege, data.active),
+            active: data.active,
+            powerDistribution: data.power_distribution, 
           },
-          active: data.active,
-          powerDistribution: data.power_distribution,
-        },
-        { new: true, upsert: true }
-      ).then((result) => {
-        console.log("Appliance data history updated:", result);
+          { new: true, upsert: true, returnOriginal: true }
+        ).then((result) => {
+          console.log("Appliance data history updated:", result);
+        });
       });
     });
   x += 180;
@@ -146,7 +159,6 @@ getUsage();
 const interval = setInterval(() => {
   if (x >= results.length) clearInterval(interval);
   predictUsage();
-  console.log(x);
 }, 60000);
 
 async function middleware(req, res, next) {
@@ -160,24 +172,43 @@ async function middleware(req, res, next) {
   //     }
   //   );
   //   if (!response.ok) return res.status(401).send("Invalid token");
-    next();
+  next();
   // } catch (error) {
   //   console.error(error);
   //   return res.status(500).send("Error verifying token");
   // }
 }
 
-app.get("/getPredictDataDay:userId", (req, res) => {
+app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
-  ApplianceDataHistory.findOne({ userId: "test" })
-    .then((result) => {
-      console.log("Appliance data history found:", result);
-      return res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.error("Error finding appliance data history:", err);
-      return res.json(err);
-    });
+  const data = await ApplianceDataHistory.findOne({ userId: "test" });
+  let timeOfUsege = data.timeOfUsege;
+  let Types = data.Types;
+  const usagePercent = () => {
+    const sum = data.timeOfUsege.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    return timeOfUsege.map((usage) => (usage / sum) * 100);
+  };
+  for (let i = 0; i < usagePercent.length; i++) {
+    for (let j = i + 1; j < usagePercent.length; j++) {
+      if (usagePercent[i] < usagePercent[j]) {
+        let temp = usagePercent[i];
+        usagePercent[i] = usagePercent[j];
+        usagePercent[j] = temp;
+        temp = Types[i];
+        Types[i] = Types[j];
+        Types[j] = temp;
+        temp = timeOfUsege[i];
+        timeOfUsege[i] = timeOfUsege[j];
+        timeOfUsege[j] = temp;
+      }
+    }
+  }
+  console.log(usagePercent());
+  res.status(200).json({
+    usagePercent: usagePercent(),
+    Types,
+    timeOfUsege,
+  });
 });
 
 app.get("/getPredictData/:userId", middleware, async (req, res) => {
@@ -187,8 +218,14 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     const active = data.active;
     const powerDistribution = data.powerDistribution;
     const activeStack = data.activeStack;
-    const powerDistributionStackDay = data.powerDistributionStack.length > 1440 ? data.powerDistributionStack.slice(-1440) : data.powerDistributionStack;
-    const powerDistributionStackWeek = data.powerDistributionStack.length > 10080 ? data.powerDistributionStack.slice(-10080) : data.powerDistributionStack;
+    const powerDistributionStackDay =
+      data.powerDistributionStack.length > 1440
+        ? data.powerDistributionStack.slice(-1440)
+        : data.powerDistributionStack;
+    const powerDistributionStackWeek =
+      data.powerDistributionStack.length > 10080
+        ? data.powerDistributionStack.slice(-10080)
+        : data.powerDistributionStack;
     res.status(200).json({
       active,
       powerDistribution,
@@ -198,7 +235,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
       times: data.times,
     });
   } catch (err) {
-    res.status(500).send("Error getting predict data");   
+    res.status(500).send("Error getting predict data");
   }
 });
 
