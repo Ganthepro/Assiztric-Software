@@ -54,9 +54,7 @@ function Dashboard_Graph() {
         >
           อัปเตดวันนี้ {time}
         </p>
-        {/* แผนภูมิ */}
-        {/* <Bar data={data} /> */}
-        <Chart updateTimeFunc={updateTime} />
+        <Chart updateTimeFunc={updateTime} mode={slideBarMove} />
       </div>
     </div>
   );

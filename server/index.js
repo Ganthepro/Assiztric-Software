@@ -167,6 +167,19 @@ async function middleware(req, res, next) {
   // }
 }
 
+app.get("/getPredictDataDay:userId", (req, res) => {
+  const userId = req.params.userId;
+  ApplianceDataHistory.findOne({ userId: "test" })
+    .then((result) => {
+      console.log("Appliance data history found:", result);
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.error("Error finding appliance data history:", err);
+      return res.json(err);
+    });
+});
+
 app.get("/getPredictData/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
   const data = await ApplianceDataHistory.findOne({ userId: "test" });
@@ -174,12 +187,14 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     const active = data.active;
     const powerDistribution = data.powerDistribution;
     const activeStack = data.activeStack;
-    const powerDistributionStack = data.powerDistributionStack;
+    const powerDistributionStackDay = data.powerDistributionStack.length > 1440 ? data.powerDistributionStack.slice(-1440) : data.powerDistributionStack;
+    const powerDistributionStackWeek = data.powerDistributionStack.length > 10080 ? data.powerDistributionStack.slice(-10080) : data.powerDistributionStack;
     res.status(200).json({
       active,
       powerDistribution,
       activeStack,
-      powerDistributionStack,
+      powerDistributionStackDay,
+      powerDistributionStackWeek,
       times: data.times,
     });
   } catch (err) {

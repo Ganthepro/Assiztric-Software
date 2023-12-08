@@ -99,8 +99,8 @@ function Chart(props) {
   ]);
 
   function getData() {
+    // ทำเวลาแต่ละเครื่อง
     // const userId = Cookies.get("userId");
-    // ใส่สัปดาห์และวัน
     const userId = "test";
     fetch(`http://localhost:5500/getPredictData/${userId}`, {
       method: "GET",
@@ -109,11 +109,12 @@ function Chart(props) {
       .then((data) => {
         let datasets = [];
         const powerDistributionStack = [];
-        for (let j = 0; j < data.powerDistributionStack[0].length; j++) {
+        const powerData = props.mode === 0 ? data.powerDistributionStackDay : data.powerDistributionStackWeek;
+        for (let j = 0; j < powerData[0].length; j++) {
           let powerDistributionStackConcat = [];
-          for (let i = 0; i < data.powerDistributionStack.length; i++)
+          for (let i = 0; i < powerData.length; i++)
             powerDistributionStackConcat = powerDistributionStackConcat.concat(
-              data.powerDistributionStack[i][j]
+              powerData[i][j]
             );
           powerDistributionStack.push(powerDistributionStackConcat);
         }
@@ -137,13 +138,21 @@ function Chart(props) {
   }
 
   useEffect(() => {
-    const interval = setInterval(getData, 3000);
+    const interval = setInterval(getData, 60000);
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    async function fetchData() {
+      await setData(null);
+      getData();
+    }
+    fetchData();
+  }, [props.mode]);
+
   return (
-    <div>
-      {chartData != null ? <Line data={chartData} /> : <p>Loading..</p>}
+    <div style={{width:"90%",display:"flex",justifyContent:"center"}} >
+      {chartData != null ? <Line data={chartData} style={{width:"100%"}} /> : <p>Loading..</p>}
     </div>
   );
 }
