@@ -6,8 +6,13 @@ import Cookies from "js-cookie";
 function Dashboard_Graph() {
   const option = [useRef(null), useRef(null)];
   const slideBar = useRef(null);
+  const [time, setTime] = useState(null);
   const [slideBarMove, setSlideBarMove] = useState(0);
   
+  function updateTime(time) {
+    setTime(time)
+  }
+
   useEffect(() => {
     if (slideBar) {
       if (slideBarMove === 0) {
@@ -47,11 +52,11 @@ function Dashboard_Graph() {
             color: "#E9714F",
           }}
         >
-          อัปเตดวันนี้ 10.43 PM
+          อัปเตดวันนี้ {time}
         </p>
         {/* แผนภูมิ */}
         {/* <Bar data={data} /> */}
-        <Chart />
+        <Chart updateTimeFunc={updateTime} />
       </div>
     </div>
   );

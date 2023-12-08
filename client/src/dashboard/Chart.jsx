@@ -23,12 +23,84 @@ ChartJS.register(
   BarElement
 );
 
-function Chart() {
+function Chart(props) {
   const [chartData, setData] = useState(null);
-  const [chartColors, setChartColors] = useState(["red", "blue", "yellow", "green", "purple", "orange", "black", "pink", "gray", "brown", "cyan", "magenta", "lime", "teal", "lavender", "maroon", "navy", "olive", "silver", "skyblue", "tan", "violet", "wheat", "salmon", "plum", "orchid", "khaki", "indigo", "gold", "fuchsia", "crimson", "coral", "chocolate", "chartreuse", "cadetblue", "burlywood", "aquamarine", "aliceblue", "aqua", "azure", "beige", "bisque", "blanchedalmond", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate", "coral", "cornflowerblue", "cornsilk", "crimson", "cyan", "darkblue", "darkcyan", "darkgoldenrod", "darkgray", "darkgreen", "darkgrey", "darkkhaki", "darkmagenta", "darkolivegreen", "darkorange", "darkorchid", "darkred", "darksalmon", "darkseagreen", "darkslateblue", "darkslategray"]);
+  const [chartColors, setChartColors] = useState([
+    "red",
+    "blue",
+    "yellow",
+    "green",
+    "purple",
+    "orange",
+    "black",
+    "pink",
+    "gray",
+    "brown",
+    "cyan",
+    "magenta",
+    "lime",
+    "teal",
+    "lavender",
+    "maroon",
+    "navy",
+    "olive",
+    "silver",
+    "skyblue",
+    "tan",
+    "violet",
+    "wheat",
+    "salmon",
+    "plum",
+    "orchid",
+    "khaki",
+    "indigo",
+    "gold",
+    "fuchsia",
+    "crimson",
+    "coral",
+    "chocolate",
+    "chartreuse",
+    "cadetblue",
+    "burlywood",
+    "aquamarine",
+    "aliceblue",
+    "aqua",
+    "azure",
+    "beige",
+    "bisque",
+    "blanchedalmond",
+    "blueviolet",
+    "brown",
+    "burlywood",
+    "cadetblue",
+    "chartreuse",
+    "chocolate",
+    "coral",
+    "cornflowerblue",
+    "cornsilk",
+    "crimson",
+    "cyan",
+    "darkblue",
+    "darkcyan",
+    "darkgoldenrod",
+    "darkgray",
+    "darkgreen",
+    "darkgrey",
+    "darkkhaki",
+    "darkmagenta",
+    "darkolivegreen",
+    "darkorange",
+    "darkorchid",
+    "darkred",
+    "darksalmon",
+    "darkseagreen",
+    "darkslateblue",
+    "darkslategray",
+  ]);
 
   function getData() {
     // const userId = Cookies.get("userId");
+    // ใส่สัปดาห์และวัน
     const userId = "test";
     fetch(`http://localhost:5500/getPredictData/${userId}`, {
       method: "GET",
@@ -39,22 +111,27 @@ function Chart() {
         const powerDistributionStack = [];
         for (let j = 0; j < data.powerDistributionStack[0].length; j++) {
           let powerDistributionStackConcat = [];
-          for (let i = 0; i < data.powerDistributionStack.length; i++) powerDistributionStackConcat = powerDistributionStackConcat.concat(data.powerDistributionStack[i][j]);
+          for (let i = 0; i < data.powerDistributionStack.length; i++)
+            powerDistributionStackConcat = powerDistributionStackConcat.concat(
+              data.powerDistributionStack[i][j]
+            );
           powerDistributionStack.push(powerDistributionStackConcat);
         }
+        if (props.updateTimeFunc != null)
+          props.updateTimeFunc(data.times[data.times.length - 1]);
         powerDistributionStack.forEach((element, index) => {
-            datasets.push({
-                label: index,
-                data: element,
-                fill: false,
-                borderColor: chartColors[index], // Color for the first dataset
-                borderWidth: 2,
-                lineTension: 0.1,
-            });
+          datasets.push({
+            label: index,
+            data: element,
+            fill: false,
+            borderColor: chartColors[index],
+            borderWidth: 2,
+            lineTension: 0.1,
+          });
         });
         setData({
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange", "Black"], // Replace static labels with Time Series data
-            datasets: datasets,
+          labels: data.times,
+          datasets: datasets,
         });
       });
   }
@@ -66,9 +143,7 @@ function Chart() {
 
   return (
     <div>
-        {
-            chartData != null && <Line data={chartData} />
-        }
+      {chartData != null ? <Line data={chartData} /> : <p>Loading..</p>}
     </div>
   );
 }

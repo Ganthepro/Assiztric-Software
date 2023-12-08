@@ -1,5 +1,6 @@
 import "./Home_Dashboard.css";
 import { useEffect, useState } from "react";
+import Chart from "../dashboard/Chart";
 
 function Home_Dashboard() {
   const currentDate = new Date();
@@ -23,7 +24,7 @@ function Home_Dashboard() {
         <p style={{ color: "#e9714f" }}>{`วันนี้, ${thdate}`}</p>
       </div>
       <h4 className="detail">รวมการใช้พลังงาน 63.53 หน่วย</h4>
-      <div className="homeDashboard">แผนภูมิ</div>
+      <div className="homeDashboard"><Chart /></div>
     </div>
   );
 }

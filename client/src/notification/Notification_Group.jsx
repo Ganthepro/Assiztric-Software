@@ -24,8 +24,6 @@ function Notification_Group(props) {
                     return <Notification_Data key={index} data={data} />
                 })
             }
-            {/* <Notification_Data />
-            <Notification_Data /> */}
         </div>
     )
 }

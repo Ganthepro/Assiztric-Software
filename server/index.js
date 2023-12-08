@@ -143,11 +143,11 @@ async function predictUsage() {
 async function sendNotification() {}
 
 getUsage();
-// const interval = setInterval(() => {
-//   if (x >= results.length) clearInterval(interval);
-//   predictUsage();
-//   console.log(x);
-// }, 60000);
+const interval = setInterval(() => {
+  if (x >= results.length) clearInterval(interval);
+  predictUsage();
+  console.log(x);
+}, 60000);
 
 async function middleware(req, res, next) {
   // const token = req.headers["token"];
@@ -170,16 +170,21 @@ async function middleware(req, res, next) {
 app.get("/getPredictData/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
   const data = await ApplianceDataHistory.findOne({ userId: "test" });
-  const active = data.active;
-  const powerDistribution = data.powerDistribution;
-  const activeStack = data.activeStack;
-  const powerDistributionStack = data.powerDistributionStack;
-  res.status(200).json({
-    active,
-    powerDistribution,
-    activeStack,
-    powerDistributionStack,
-  });
+  try {
+    const active = data.active;
+    const powerDistribution = data.powerDistribution;
+    const activeStack = data.activeStack;
+    const powerDistributionStack = data.powerDistributionStack;
+    res.status(200).json({
+      active,
+      powerDistribution,
+      activeStack,
+      powerDistributionStack,
+      times: data.times,
+    });
+  } catch (err) {
+    res.status(500).send("Error getting predict data");   
+  }
 });
 
 app.post("/addNotification", middleware, (req, res) => {
@@ -202,9 +207,9 @@ app.post("/addNotification", middleware, (req, res) => {
 });
 
 app.get("/getNotification/:code", middleware, (req, res) => {
-  const userId = req.headers["userid"];
+  // const userId = req.headers["userid"];
   const code = req.params.code;
-  // const userId = "test";
+  const userId = "test";
   console.log(userId);
   Notification.find({ userId: userId })
     .then(async (result) => {
@@ -220,7 +225,6 @@ app.get("/getNotification/:code", middleware, (req, res) => {
           groupedNotifications[notification.date].push(notification);
         }
       });
-      console.log("Grouped notifications:", groupedNotifications);
       const sortedKeys = Object.keys(groupedNotifications)
         .map((dateString) => new Date(dateString))
         .sort((a, b) => a - b)
@@ -231,7 +235,6 @@ app.get("/getNotification/:code", middleware, (req, res) => {
           const year = dateObj.getFullYear().toString();
           return `${month}/${day}/${year}`;
         });
-
       const sortedGroupedNotifications = {};
       sortedKeys.forEach((key) => {
         sortedGroupedNotifications[key] = groupedNotifications[key];
