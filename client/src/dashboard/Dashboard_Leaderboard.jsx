@@ -20,8 +20,7 @@ function Dashboard_Leaderboard() {
     }
 
     useEffect(() => {
-        const interval = setInterval(getLeaderboard, 10000);
-        return () => clearInterval(interval);
+        getLeaderboard();
     }, []);
 
     return (

@@ -1,10 +1,7 @@
 import './Notification_Group.css'
 import Notification_Data from './Notification_Data'
-import { useEffect, useState } from 'react'
 
 function Notification_Group(props) {
-    const [date, setDate] = useState(null)
-
     function getDate() {
         const now = new Date();
         const year = String(now.getFullYear());
@@ -12,9 +9,6 @@ function Notification_Group(props) {
         const day = String(now.getDate()).padStart(2, '0');
         return `${day}/${month}/${year}`;
       }
-    useEffect(() => {
-        console.log(props.date)
-    }, [props.date])
 
     return (
         <div className="main-notificationGroup">

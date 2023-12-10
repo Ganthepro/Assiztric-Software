@@ -7,7 +7,7 @@ const csv = require("csv-parser");
 const fs = require("fs");
 
 dotenv.config();
-const dataFilePath = "./AirPurifier.csv";
+const dataFilePath = "./Refrigirator.csv";
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -27,11 +27,13 @@ const userSchema = new Schema({
 });
 const applianceSchema = new Schema({
   userId: String,
-  Type: String,
-  Model: String,
-  Brand: String,
-  Usage: Number,
-  UsageBehavior: String,
+  applianceData: [{
+    Type: String,
+    Model: String,
+    Brand: String,
+    Usage: Number,
+    UsageBehavior: String,
+  }],
 });
 const notificationSchema = new Schema({
   userId: String,
@@ -47,12 +49,15 @@ const applianceDataHistorySchema = new Schema({
   activeStack: [[Number]],
   powerDistribution: {},
   powerDistributionStack: {},
+  meanPowerStack: {},
   times: [String],
   timeOfUsege: [Number],
 });
 
 const results = [];
 let x = 0;
+// let appliance = [0, 0, 0, 0, 0];
+let appliance = [1, 1, 1, 1, 1];
 
 const User = mongoose.model("User", userSchema, "users");
 const Appliance = mongoose.model("Appliance", applianceSchema, "appliance");
@@ -105,7 +110,6 @@ function getUsage() {
 async function predictUsage() {
   const W_R = [];
   const Var_R = [];
-  const appliance = [1, 1, 1, 1, 1];
   for (let i = x; i < x + 180; i++) {
     W_R.push(parseFloat(results[i].W_R));
     Var_R.push(parseFloat(results[i].Var_R));
@@ -122,6 +126,14 @@ async function predictUsage() {
   })
     .then((response) => response.json())
     .then((data) => {
+      function getMean(power_distribution) {
+        let mean = [];
+        power_distribution.forEach((power, index) => {
+          mean.push(power.reduce((acc, val) => acc + val, 0) / power.length);
+        });
+        return {mean};
+      }
+      console.log(getMean(data.power_distribution)); 
       function sumArrays(...arrays) {
         const maxLength = Math.max(...arrays.map((arr) => arr.length)); // Find the length of the longest array
         const result = new Array(maxLength).fill(0); // Initialize an array to store the sum
@@ -131,6 +143,12 @@ async function predictUsage() {
         return result;
       }
       ApplianceDataHistory.findOne({ userId: "test" }).then((result) => {
+        if (result == null) {
+          ApplianceDataHistory.create({ userId: "test", timeOfUsege: [] }).then((result) => {
+            // console.log("Appliance data history created:", result);
+          });
+          return;
+        }
         ApplianceDataHistory.findOneAndUpdate(
           { userId: "test" },
           {
@@ -138,6 +156,7 @@ async function predictUsage() {
               activeStack: data.active,
               powerDistributionStack: data.power_distribution,
               times: getTime(),
+              meanPowerStack: getMean(data.power_distribution).mean,
             },
             Types: ["Air Purifier", "Refrigerator", "Fan", "TV", "Iron"],
             timeOfUsege: sumArrays(result.timeOfUsege, data.active),
@@ -182,33 +201,41 @@ async function middleware(req, res, next) {
 app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
   const data = await ApplianceDataHistory.findOne({ userId: "test" });
-  let timeOfUsege = data.timeOfUsege;
-  let Types = data.Types;
-  const usagePercent = () => {
-    const sum = data.timeOfUsege.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-    return timeOfUsege.map((usage) => (usage / sum) * 100);
-  };
-  for (let i = 0; i < usagePercent.length; i++) {
-    for (let j = i + 1; j < usagePercent.length; j++) {
-      if (usagePercent[i] < usagePercent[j]) {
-        let temp = usagePercent[i];
-        usagePercent[i] = usagePercent[j];
-        usagePercent[j] = temp;
-        temp = Types[i];
-        Types[i] = Types[j];
-        Types[j] = temp;
-        temp = timeOfUsege[i];
-        timeOfUsege[i] = timeOfUsege[j];
-        timeOfUsege[j] = temp;
+  if (data != null) {
+    let timeOfUsege = data.timeOfUsege;
+    let Types = data.Types;
+    const usagePercent = () => {
+      const sum = data.timeOfUsege.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+      return timeOfUsege.map((usage) => (usage / sum) * 100);
+    };
+    for (let i = 0; i < usagePercent().length; i++) {
+      for (let j = i + 1; j < usagePercent().length; j++) {
+        if (usagePercent()[i] < usagePercent()[j]) {
+          let temp = usagePercent()[i];
+          usagePercent()[i] = usagePercent()[j];
+          usagePercent()[j] = temp;
+          temp = Types[i];
+          Types[i] = Types[j];
+          Types[j] = temp;
+          temp = timeOfUsege[i];
+          timeOfUsege[i] = timeOfUsege[j];
+          timeOfUsege[j] = temp;
+        }
       }
     }
+    res.status(200).json({
+      usagePercent: usagePercent(),
+      Types,
+      timeOfUsege,
+    });
+  } else {
+    res.status(200).json({
+      usagePercent: [0, 0, 0, 0, 0],
+      Types: ["Air Purifier", "Refrigerator", "Fan", "TV", "Iron"],
+      timeOfUsege: [0, 0, 0, 0, 0],
+    });
+    console.log(data);
   }
-  console.log(usagePercent());
-  res.status(200).json({
-    usagePercent: usagePercent(),
-    Types,
-    timeOfUsege,
-  });
 });
 
 app.get("/getPredictData/:userId", middleware, async (req, res) => {
@@ -219,13 +246,14 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     const powerDistribution = data.powerDistribution;
     const activeStack = data.activeStack;
     const powerDistributionStackDay =
-      data.powerDistributionStack.length > 1440
-        ? data.powerDistributionStack.slice(-1440)
-        : data.powerDistributionStack;
+      data.meanPowerStack.length > 1440
+        ? data.meanPowerStack.slice(-1440)
+        : data.meanPowerStack;
     const powerDistributionStackWeek =
-      data.powerDistributionStack.length > 10080
-        ? data.powerDistributionStack.slice(-10080)
-        : data.powerDistributionStack;
+      data.meanPowerStack.length > 10080
+        ? data.meanPowerStack.slice(-10080)
+        : data.meanPowerStack;
+    const types = data.Types;
     res.status(200).json({
       active,
       powerDistribution,
@@ -233,6 +261,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
       powerDistributionStackDay,
       powerDistributionStackWeek,
       times: data.times,
+      types,
     });
   } catch (err) {
     res.status(500).send("Error getting predict data");
@@ -265,7 +294,6 @@ app.get("/getNotification/:code", middleware, (req, res) => {
   console.log(userId);
   Notification.find({ userId: userId })
     .then(async (result) => {
-      console.log("Notification found:", result);
       const filteredNotifications = await result.filter(
         (notification) => notification.code.toString() === code
       );
@@ -300,25 +328,46 @@ app.get("/getNotification/:code", middleware, (req, res) => {
 });
 
 app.post("/addApplianceData", middleware, (req, res) => {
+  // ทำ active data
   const data = req.body;
-  const newAppliance = new Appliance({
-    userId: data.userId,
-    Type: data.Type,
-    Model: data.Model,
-    Brand: data.Brand,
-    Usage: data.Usage,
-    UsageBehavior: data.UsageBehavior,
-  });
-  newAppliance
-    .save()
+  Appliance.findOne({ userId: "test" })
     .then((result) => {
-      console.log("New appliance saved:", result);
-      return res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.error("Error saving appliance:", err);
-      return res.json(err);
-    });
+      if (result == null) {
+        Appliance.create({ userId: "test", applianceData: [] }).then((result) => {
+          console.log("Appliance created:", result);
+          return res.status(200).json(result);
+        });
+        return;
+      }
+      Appliance.findOneAndUpdate(
+        { userId: "test" },
+        { $push : { applianceData: data } },
+        { new: true, upsert: true, returnOriginal: true }
+      ).then((result) => {
+        console.log("Appliance updated:", result);
+        return res.status(200).json(result);
+      });
+  appliance.indexOf(data.Type) === -1 ? null : appliance[appliance.indexOf(data.Type)] == 1;
+  // const newAppliance = new Appliance({
+  //   userId: 'test',
+  //   applianceData: {
+  //     Type: data.Type,
+  //     Model: data.Model,
+  //     Brand: data.Brand,
+  //     Usage: data.Usage,
+  //     UsageBehavior: data.UsageBehavior,
+  //   },
+  // });
+  // newAppliance
+  //   .save()
+  //   .then((result) => {
+  //     return res.status(200).json(result);
+  //   })
+  //   .catch((err) => {
+  //     console.error("Error saving appliance:", err);
+  //     return res.json(err);
+  //   });
+  });
 });
 
 app.post("/auth", middleware, async (req, res) => {

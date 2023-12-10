@@ -99,7 +99,6 @@ function Chart(props) {
   ]);
 
   function getData() {
-    // ทำเวลาแต่ละเครื่อง
     // const userId = Cookies.get("userId");
     const userId = "test";
     fetch(`http://localhost:5500/getPredictData/${userId}`, {
@@ -120,9 +119,10 @@ function Chart(props) {
         }
         if (props.updateTimeFunc != null)
           props.updateTimeFunc(data.times[data.times.length - 1]);
+        // console.log(powerDistributionStack);
         powerDistributionStack.forEach((element, index) => {
           datasets.push({
-            label: index,
+            label: data.types[index],
             data: element,
             fill: false,
             borderColor: chartColors[index],
