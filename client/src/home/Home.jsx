@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 
 export function Home(props) {
   const [profiles, setProfiles] = useState(null);
+  const [emission, setEmission] = useState(0);
 
   useEffect(async () => {
     if (
@@ -27,10 +28,10 @@ export function Home(props) {
 
   return (
     <div className="main-home">
-      <Header profiles={profiles} />
+      <Header profiles={profiles} emission={emission} />
       <div className="body-home">
         <h1 style={{ marginTop: "15px" }}>Home</h1>
-        <Home_Dashboard />
+        <Home_Dashboard emission={setEmission} />
         <Home_Leaderboard />
       </div>
       <Blank />

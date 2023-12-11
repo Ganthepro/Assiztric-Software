@@ -21,6 +21,8 @@ function Dashboard_Leaderboard() {
 
     useEffect(() => {
         getLeaderboard();
+        const interval = setInterval(getLeaderboard, 60000);
+        return () => clearInterval(interval);
     }, []);
 
     return (

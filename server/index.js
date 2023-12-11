@@ -34,6 +34,7 @@ const applianceSchema = new Schema({
     Usage: Number,
     UsageBehavior: String,
   }],
+  appliance: [0,0,0,0,0],
 });
 const notificationSchema = new Schema({
   userId: String,
@@ -52,12 +53,14 @@ const applianceDataHistorySchema = new Schema({
   meanPowerStack: {},
   times: [String],
   timeOfUsege: [Number],
+  totalEmission: { type: Number, default: 0 },
+  totalWatt: { type: Number, default: 0 },
 });
 
 const results = [];
 let x = 0;
-// let appliance = [0, 0, 0, 0, 0];
-let appliance = [1, 1, 1, 1, 1];
+const applianceNames = ["Air Purifier", "Refrigerator", "Fan", "TV", "Iron"]
+const datapoint = 180;
 
 const User = mongoose.model("User", userSchema, "users");
 const Appliance = mongoose.model("Appliance", applianceSchema, "appliance");
@@ -110,15 +113,22 @@ function getUsage() {
 async function predictUsage() {
   const W_R = [];
   const Var_R = [];
-  for (let i = x; i < x + 180; i++) {
+  for (let i = x; i < x + datapoint; i++) {
     W_R.push(parseFloat(results[i].W_R));
     Var_R.push(parseFloat(results[i].Var_R));
+  }
+  async function getAvailableAppliance() {
+    let output = [];
+    await Appliance.findOne({ userId: "test" }).then((result) => {
+      if (result != null) output = result.appliance
+    });
+    return output;
   }
   await fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/prediction", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      user_appliance: appliance,
+      user_appliance: await getAvailableAppliance(),
       pred_threshold: 0.5,
       W_R,
       Var_R,
@@ -133,43 +143,55 @@ async function predictUsage() {
         });
         return {mean};
       }
-      console.log(getMean(data.power_distribution)); 
       function sumArrays(...arrays) {
-        const maxLength = Math.max(...arrays.map((arr) => arr.length)); // Find the length of the longest array
-        const result = new Array(maxLength).fill(0); // Initialize an array to store the sum
+        const maxLength = Math.max(...arrays.map((arr) => arr.length)); 
+        const result = new Array(maxLength).fill(0); 
         arrays.forEach((arr) => {
           for (let i = 0; i < maxLength; i++) result[i] += arr[i] || 0;
         });
         return result;
       }
-      ApplianceDataHistory.findOne({ userId: "test" }).then((result) => {
-        if (result == null) {
-          ApplianceDataHistory.create({ userId: "test", timeOfUsege: [] }).then((result) => {
-            // console.log("Appliance data history created:", result);
+      function getSpecificArray(array, usageApplicance) {
+        let arr = [];
+        for (let i = 0; i < usageApplicance.length; i++) if (usageApplicance[i] == 1) arr.push(array[i]);
+        return arr;
+      }
+      Appliance.findOne({ userId: "test" }).then((result) => {
+        if (result != null) {
+          const availableAppliance = result.appliance
+          ApplianceDataHistory.findOne({ userId: "test" }).then((result) => {
+            if (result == null) {
+              ApplianceDataHistory.create({ userId: "test", timeOfUsege: [] });
+              return;
+            }
+            console.log(data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000);
+            ApplianceDataHistory.findOneAndUpdate(
+              { userId: "test" },
+              {
+                $push: {
+                  activeStack: getSpecificArray(data.active, availableAppliance),
+                  powerDistributionStack: getSpecificArray(data.power_distribution, availableAppliance),
+                  times: getTime(),
+                  meanPowerStack: getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean,
+                },
+                $inc: { 
+                  totalEmission: (data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000) * 0.5610, 
+                  totalWatt: data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000,
+                },
+                Types: getSpecificArray(["Air Purifier", "Refrigerator", "Fan", "TV", "Iron"],availableAppliance),
+                timeOfUsege: getSpecificArray(sumArrays(result.timeOfUsege, data.active), availableAppliance),
+                active: getSpecificArray(data.active, availableAppliance),
+                powerDistribution: getSpecificArray(data.power_distribution, availableAppliance), 
+              },
+              { new: true, upsert: true, returnOriginal: true }
+            ).then((result) => {
+              console.log("Appliance data history updated");
+            });
           });
-          return;
-        }
-        ApplianceDataHistory.findOneAndUpdate(
-          { userId: "test" },
-          {
-            $push: {
-              activeStack: data.active,
-              powerDistributionStack: data.power_distribution,
-              times: getTime(),
-              meanPowerStack: getMean(data.power_distribution).mean,
-            },
-            Types: ["Air Purifier", "Refrigerator", "Fan", "TV", "Iron"],
-            timeOfUsege: sumArrays(result.timeOfUsege, data.active),
-            active: data.active,
-            powerDistribution: data.power_distribution, 
-          },
-          { new: true, upsert: true, returnOriginal: true }
-        ).then((result) => {
-          console.log("Appliance data history updated:", result);
-        });
+        };
       });
     });
-  x += 180;
+  x += datapoint;
 }
 
 async function sendNotification() {}
@@ -234,7 +256,6 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
       Types: ["Air Purifier", "Refrigerator", "Fan", "TV", "Iron"],
       timeOfUsege: [0, 0, 0, 0, 0],
     });
-    console.log(data);
   }
 });
 
@@ -245,6 +266,8 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     const active = data.active;
     const powerDistribution = data.powerDistribution;
     const activeStack = data.activeStack;
+    const totalEmission = data.totalEmission;
+    const totalWatt = data.totalWatt;
     const powerDistributionStackDay =
       data.meanPowerStack.length > 1440
         ? data.meanPowerStack.slice(-1440)
@@ -262,6 +285,8 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
       powerDistributionStackWeek,
       times: data.times,
       types,
+      totalEmission,
+      totalWatt,
     });
   } catch (err) {
     res.status(500).send("Error getting predict data");
@@ -328,45 +353,31 @@ app.get("/getNotification/:code", middleware, (req, res) => {
 });
 
 app.post("/addApplianceData", middleware, (req, res) => {
-  // ทำ active data
   const data = req.body;
+  const index = applianceNames.indexOf(data.Type);
+  let appliances = [0, 0, 0, 0, 0];
   Appliance.findOne({ userId: "test" })
     .then((result) => {
       if (result == null) {
-        Appliance.create({ userId: "test", applianceData: [] }).then((result) => {
-          console.log("Appliance created:", result);
-          return res.status(200).json(result);
-        });
+        index != -1 ? (appliances[index] = 1) : null;
+        Appliance.create({ userId: "test", applianceData: [], appliance: appliances });
         return;
-      }
+      } else {
+        result.appliance.forEach((appliance, index) => {
+          if (appliance == 1) appliances[index] = 1;
+        });
+        index != -1 ? (appliances[index] = 1) : null;
+      } 
       Appliance.findOneAndUpdate(
         { userId: "test" },
-        { $push : { applianceData: data } },
+        { 
+          $push : { applianceData: data }, 
+          appliance: appliances 
+        },
         { new: true, upsert: true, returnOriginal: true }
       ).then((result) => {
-        console.log("Appliance updated:", result);
         return res.status(200).json(result);
       });
-  appliance.indexOf(data.Type) === -1 ? null : appliance[appliance.indexOf(data.Type)] == 1;
-  // const newAppliance = new Appliance({
-  //   userId: 'test',
-  //   applianceData: {
-  //     Type: data.Type,
-  //     Model: data.Model,
-  //     Brand: data.Brand,
-  //     Usage: data.Usage,
-  //     UsageBehavior: data.UsageBehavior,
-  //   },
-  // });
-  // newAppliance
-  //   .save()
-  //   .then((result) => {
-  //     return res.status(200).json(result);
-  //   })
-  //   .catch((err) => {
-  //     console.error("Error saving appliance:", err);
-  //     return res.json(err);
-  //   });
   });
 });
 

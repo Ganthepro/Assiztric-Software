@@ -21,8 +21,8 @@ function Home_Leaderboard() {
 
     useEffect(() => {
         getLeaderboard();
-        // const interval = setInterval(getLeaderboard, 3000);
-        // return () => clearInterval(interval);
+        const interval = setInterval(getLeaderboard, 60000);
+        return () => clearInterval(interval);
     }, []);
 
     return (
