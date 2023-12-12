@@ -7,7 +7,7 @@ const csv = require("csv-parser");
 const fs = require("fs");
 
 dotenv.config();
-const dataFilePath = "./Refrigirator.csv";
+const dataFilePath = "./AirPurifier.csv";
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -164,7 +164,6 @@ async function predictUsage() {
               ApplianceDataHistory.create({ userId: "test", timeOfUsege: [] });
               return;
             }
-            console.log(data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000);
             ApplianceDataHistory.findOneAndUpdate(
               { userId: "test" },
               {
@@ -226,6 +225,8 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
   if (data != null) {
     let timeOfUsege = data.timeOfUsege;
     let Types = data.Types;
+    let active = data.active;
+    // console.log(data.active);
     const usagePercent = () => {
       const sum = data.timeOfUsege.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
       return timeOfUsege.map((usage) => (usage / sum) * 100);
@@ -242,19 +243,30 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
           temp = timeOfUsege[i];
           timeOfUsege[i] = timeOfUsege[j];
           timeOfUsege[j] = temp;
+          temp = active[i];
+          active[i] = active[j];
+          active[j] = temp;
         }
       }
     }
+    // console.log({
+    //   usagePercent: usagePercent(),
+    //   Types,
+    //   timeOfUsege,
+    //   active,
+    // });
     res.status(200).json({
       usagePercent: usagePercent(),
       Types,
       timeOfUsege,
+      active,
     });
   } else {
     res.status(200).json({
       usagePercent: [0, 0, 0, 0, 0],
       Types: ["Air Purifier", "Refrigerator", "Fan", "TV", "Iron"],
       timeOfUsege: [0, 0, 0, 0, 0],
+      active: [0, 0, 0, 0, 0],
     });
   }
 });

@@ -31,8 +31,9 @@ function Home_Leaderboard() {
             <div className="homeLeaderboard">
                 {
                     leaderboard != null ? leaderboard.Types.map((data, index) => {
+                        console.log(leaderboard.active[index]);
                         if (index < 3) {
-                            const leaderboardData = [leaderboard.Types[index], leaderboard.usagePercent[index], leaderboard.timeOfUsege[index]]
+                            const leaderboardData = [leaderboard.Types[index], leaderboard.usagePercent[index], leaderboard.timeOfUsege[index], leaderboard.active[index]];
                             return <Leaderboard_Data isLast={index === 2} data={leaderboardData} isDark={true} />
                         } 
                     }) : <h1 style={{margin:"10px"}}>Loading...</h1>

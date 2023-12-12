@@ -14,3 +14,8 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.isActive p {
+    font-size: smaller;
+    font-weight: bold;
+}

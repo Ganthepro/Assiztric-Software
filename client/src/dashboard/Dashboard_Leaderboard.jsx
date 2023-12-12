@@ -31,7 +31,7 @@ function Dashboard_Leaderboard() {
             <div className="dashboardLeaderboard">
                 {
                     leaderboard != null ? leaderboard.Types.map((data, index) => {
-                        const leaderboardData = [leaderboard.Types[index], leaderboard.usagePercent[index], leaderboard.timeOfUsege[index]]
+                        const leaderboardData = [leaderboard.Types[index], leaderboard.usagePercent[index], leaderboard.timeOfUsege[index], leaderboard.active[index]]
                         return <Leaderboard_Data isLast={index === leaderboard.Types.length - 1} data={leaderboardData} />
                     }) : <h1 style={{margin:"10px"}}>Loading...</h1>
                 }

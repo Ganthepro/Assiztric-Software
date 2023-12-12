@@ -24,7 +24,7 @@ function Home_Dashboard(props) {
         <h4>รายการเครื่องใช้ไฟฟ้าภายในครัวเรือน</h4>
         <p style={{ color: "#e9714f" }}>{`วันนี้, ${thdate}`}</p>
       </div>
-      <h4 className="detail">รวมการใช้พลังงาน {parseInt(watt)} หน่วย</h4>
+      <h4 className="detail">รวมการใช้พลังงาน {parseInt(watt)} วัตต์</h4>
       <div className="homeDashboard"><Chart emission={props.emission} watt={setWatt} /></div>
     </div>
   );
