@@ -6,9 +6,12 @@ import Nav from "../template/Nav";
 import Add from "../template/Add";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import Appliance_Info from "../template/Appliance_Info";
 
 export function Dashboard(props) {
   const [profiles, setProfiles] = useState(null);
+  const [showInfo, setShowInfo] = useState(false);
+  const [applianceId, setApplianceId] = useState(null);
 
   useEffect(async () => {
     if (
@@ -24,16 +27,21 @@ export function Dashboard(props) {
     }
   }, []);
 
+  useEffect(() => {console.log(applianceId)}, [applianceId]);
+
   return (
-    <div className="main-dashboard">
-      <div className="body-dashboard">
-        <h1>Dashboard</h1>
-        <Dashboard_Graph />
-        <Dashboard_Leaderboard />
+    <>
+      {showInfo ? <Appliance_Info setShow={setShowInfo} id={applianceId} /> : null}
+      <div className="main-dashboard">
+        <div className="body-dashboard">
+          <h1>Dashboard</h1>
+          <Dashboard_Graph />
+          <Dashboard_Leaderboard setShow={setShowInfo} setId={setApplianceId} />
+        </div>
+        <Blank />
+        {!showInfo ? <Add /> : null}
+        <Nav id={props.id} />
       </div>
-      <Blank />
-      <Add />
-      <Nav id={props.id} />
-    </div>
+    </>
   );
 }

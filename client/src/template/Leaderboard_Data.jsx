@@ -12,7 +12,7 @@ function Leaderboard_Data(props) {
 
   return (
     <>
-      <div className="main-leaderboardData">
+      <div className="main-leaderboardData" onClick={() => {props.setShow();props.setId(props.data[4])}}>
         <img src={TV_Logo_Light} style={{ width: "40px" }} className="image" />
         <div className="leaderboardData">
             <div style={{flexDirection:"column",justifyContent: "space-around",display:"flex",alignItems:"unset",height:"100%",width:"100%"}}>

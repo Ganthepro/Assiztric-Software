@@ -7,7 +7,7 @@ const csv = require("csv-parser");
 const fs = require("fs");
 
 dotenv.config();
-const dataFilePath = "./AirPurifier.csv";
+const dataFilePath = "./Refrigirator.csv";
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -33,6 +33,7 @@ const applianceSchema = new Schema({
     Brand: String,
     Usage: Number,
     UsageBehavior: String,
+    index: Number,
   }],
   appliance: [0,0,0,0,0],
 });
@@ -55,6 +56,7 @@ const applianceDataHistorySchema = new Schema({
   timeOfUsege: [Number],
   totalEmission: { type: Number, default: 0 },
   totalWatt: { type: Number, default: 0 },
+  applianceId: [String],
 });
 
 const results = [];
@@ -159,9 +161,10 @@ async function predictUsage() {
       Appliance.findOne({ userId: "test" }).then((result) => {
         if (result != null) {
           const availableAppliance = result.appliance
+          const availableApplianceData = result.applianceData.map((appliance) => appliance).sort((a, b) => a.index - b.index);
           ApplianceDataHistory.findOne({ userId: "test" }).then((result) => {
             if (result == null) {
-              ApplianceDataHistory.create({ userId: "test", timeOfUsege: [] });
+              ApplianceDataHistory.create({ userId: "test", timeOfUsege: [], applianceId: [] });
               return;
             }
             ApplianceDataHistory.findOneAndUpdate(
@@ -181,6 +184,7 @@ async function predictUsage() {
                 timeOfUsege: getSpecificArray(sumArrays(result.timeOfUsege, data.active), availableAppliance),
                 active: getSpecificArray(data.active, availableAppliance),
                 powerDistribution: getSpecificArray(data.power_distribution, availableAppliance), 
+                applianceId: getSpecificArray(availableApplianceData.map((appliance) => appliance._id), availableAppliance),
               },
               { new: true, upsert: true, returnOriginal: true }
             ).then((result) => {
@@ -219,6 +223,40 @@ async function middleware(req, res, next) {
   // }
 }
 
+app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
+  const userId = req.params.userId;
+  const id = req.params.id;
+  let avarage = 0;
+  let timeOfUsege = 0;
+  let updatedTime = 0;
+  let brand = "";
+  let model = "";
+  let name = "";
+  let meanPowerStack = [];
+  Appliance.findOne({ userId: userId }).then((result) => {
+    if (result == null) {
+      return res.status(200).json({ applianceData: [] });
+    } else {
+      const applianceData = result.applianceData.filter((appliance) => appliance._id == id);
+      brand = applianceData[0].Brand;
+      model = applianceData[0].Model;
+      name = applianceData[0].Type;
+    }
+  });
+  ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
+    if (result == null) {
+      return res.status(200).json({ timeOfUsege, avarage, updatedTime, brand, model, name, meanPowerStack });
+    } else {
+      const applianceDataIndex = result.applianceId.indexOf(id);
+      timeOfUsege = result.timeOfUsege[applianceDataIndex];
+      updatedTime = result.times[result.times.length - 1];
+      avarage = result.meanPowerStack[result.meanPowerStack.length - 1][applianceDataIndex];
+      meanPowerStack = result.meanPowerStack.map((power) => power[applianceDataIndex]);
+      return res.status(200).json({ timeOfUsege, avarage, updatedTime, brand, model, name, meanPowerStack });
+    }
+  });
+});
+
 app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
   const data = await ApplianceDataHistory.findOne({ userId: "test" });
@@ -226,7 +264,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
     let timeOfUsege = data.timeOfUsege;
     let Types = data.Types;
     let active = data.active;
-    // console.log(data.active);
+    let applianceId = data.applianceId; 
     const usagePercent = () => {
       const sum = data.timeOfUsege.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
       return timeOfUsege.map((usage) => (usage / sum) * 100);
@@ -246,20 +284,18 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
           temp = active[i];
           active[i] = active[j];
           active[j] = temp;
+          temp = applianceId[i];
+          applianceId[i] = applianceId[j];
+          applianceId[j] = temp;
         }
       }
     }
-    // console.log({
-    //   usagePercent: usagePercent(),
-    //   Types,
-    //   timeOfUsege,
-    //   active,
-    // });
     res.status(200).json({
       usagePercent: usagePercent(),
       Types,
       timeOfUsege,
       active,
+      applianceId,
     });
   } else {
     res.status(200).json({
@@ -267,6 +303,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
       Types: ["Air Purifier", "Refrigerator", "Fan", "TV", "Iron"],
       timeOfUsege: [0, 0, 0, 0, 0],
       active: [0, 0, 0, 0, 0],
+      applianceId: [0, 0, 0, 0, 0],
     });
   }
 });
@@ -364,10 +401,12 @@ app.get("/getNotification/:code", middleware, (req, res) => {
     });
 });
 
-app.post("/addApplianceData", middleware, (req, res) => {
-  const data = req.body;
-  const index = applianceNames.indexOf(data.Type);
+app.post("/addApplianceData", middleware, async (req, res) => {
+  let data = req.body;
+  const index = await applianceNames.indexOf(data.Type);
   let appliances = [0, 0, 0, 0, 0];
+  data['index'] = await index;
+  console.log(data);
   Appliance.findOne({ userId: "test" })
     .then((result) => {
       if (result == null) {

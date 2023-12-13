@@ -122,16 +122,30 @@ function Chart(props) {
         if (props.updateTimeFunc != null)
           props.updateTimeFunc(data.times[data.times.length - 1]);
         // console.log(powerDistributionStack);
-        powerDistributionStack.forEach((element, index) => {
+        console.log(props.isOnly);
+        if (props.isOnly != null && props.isOnly != undefined) {
+          const index = data.types.indexOf(props.isOnly);
           datasets.push({
             label: data.types[index],
-            data: element,
+            data: powerDistributionStack[index],
             fill: false,
             borderColor: chartColors[index],
             borderWidth: 2,
             lineTension: 0.1,
           });
-        });
+        }
+        else {
+          powerDistributionStack.forEach((element, index) => {
+            datasets.push({
+              label: data.types[index],
+              data: element,
+              fill: false,
+              borderColor: chartColors[index],
+              borderWidth: 2,
+              lineTension: 0.1,
+            });
+          });
+        }
         setData({
           labels: data.times,
           datasets: datasets,

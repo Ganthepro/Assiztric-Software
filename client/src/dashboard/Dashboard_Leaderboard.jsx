@@ -3,7 +3,7 @@ import Leaderboard_Data from "../template/Leaderboard_Data";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
-function Dashboard_Leaderboard() {
+function Dashboard_Leaderboard(props) {
     const [leaderboard, setLeaderboard] = useState(null);
 
     function getLeaderboard() {
@@ -19,6 +19,14 @@ function Dashboard_Leaderboard() {
         })
     }
 
+    function showInfo() {
+        props.setShow(true);
+    }
+
+    function setId(id) {
+        props.setId(id);
+    }   
+
     useEffect(() => {
         getLeaderboard();
         const interval = setInterval(getLeaderboard, 60000);
@@ -31,8 +39,8 @@ function Dashboard_Leaderboard() {
             <div className="dashboardLeaderboard">
                 {
                     leaderboard != null ? leaderboard.Types.map((data, index) => {
-                        const leaderboardData = [leaderboard.Types[index], leaderboard.usagePercent[index], leaderboard.timeOfUsege[index], leaderboard.active[index]]
-                        return <Leaderboard_Data isLast={index === leaderboard.Types.length - 1} data={leaderboardData} />
+                        const leaderboardData = [leaderboard.Types[index], leaderboard.usagePercent[index], leaderboard.timeOfUsege[index], leaderboard.active[index], leaderboard.applianceId[index]]
+                        return <Leaderboard_Data isLast={index === leaderboard.Types.length - 1} data={leaderboardData} setShow={showInfo} setId={setId} />
                     }) : <h1 style={{margin:"10px"}}>Loading...</h1>
                 }
             </div>

@@ -7,10 +7,13 @@ import Blank from "../template/Blank";
 import Add from "../template/Add";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import Appliance_Info from "../template/Appliance_Info";
 
 export function Home(props) {
   const [profiles, setProfiles] = useState(null);
   const [emission, setEmission] = useState(0);
+  const [showInfo, setShowInfo] = useState(false);
+  const [applianceId, setApplianceId] = useState(null);
 
   useEffect(async () => {
     if (
@@ -26,17 +29,22 @@ export function Home(props) {
     }
   }, []);
 
+  useEffect(() => {console.log(applianceId)}, [applianceId]);
+
   return (
-    <div className="main-home">
-      <Header profiles={profiles} emission={emission} />
-      <div className="body-home">
-        <h1 style={{ marginTop: "15px" }}>Home</h1>
-        <Home_Dashboard emission={setEmission} />
-        <Home_Leaderboard />
+    <>
+      {showInfo ? <Appliance_Info setShow={setShowInfo} /> : null}
+      <div className="main-home">
+        <Header profiles={profiles} emission={emission} />
+        <div className="body-home">
+          <h1 style={{ marginTop: "15px" }}>Home</h1>
+          <Home_Dashboard emission={setEmission} />
+          <Home_Leaderboard setShow={setShowInfo} setId={setApplianceId} />
+        </div>
+        <Blank />
+        {!showInfo ? <Add /> : null}
+        <Nav id={props.id} />
       </div>
-      <Blank />
-      <Add />
-      <Nav id={props.id} />
-    </div>
+    </>
   );
 }

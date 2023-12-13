@@ -10,6 +10,7 @@ import Chart from './dashboard/Chart'
 import Filter_List from './notification/Filter_List'
 import Cookies from "js-cookie";
 import liff from "@line/liff";
+import Appliance_Info from './template/Appliance_Info'
 
 async function getToken() {
   // await liff.init({ liffId: "2001224573-pxK3m42V", withLoginOnExternalBrowser:true }); // Replace with your LIFF ID
@@ -60,7 +61,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Home id={0} loginFunc={login} tokenFunc={getToken} />,
-    // element: <Chart />,
+    // element: <Appliance_Info />,
   },
   {
     path: "/dashboard",
