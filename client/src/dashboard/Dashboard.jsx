@@ -27,8 +27,6 @@ export function Dashboard(props) {
     }
   }, []);
 
-  useEffect(() => {console.log(applianceId)}, [applianceId]);
-
   return (
     <>
       {showInfo ? <Appliance_Info setShow={setShowInfo} id={applianceId} /> : null}
