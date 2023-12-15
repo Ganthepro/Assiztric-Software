@@ -13,7 +13,6 @@ async function getToken() {
   await liff.init({ liffId: "2001224573-pxK3m42V", withLoginOnExternalBrowser:true }); // Replace with your LIFF ID
   if (liff.isLoggedIn()) {
     const accessToken = await liff.getAccessToken();
-    await init(accessToken);
     return accessToken
   };
 }

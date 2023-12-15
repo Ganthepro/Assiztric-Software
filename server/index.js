@@ -355,10 +355,8 @@ app.post("/addNotification", middleware, (req, res) => {
 app.get("/getNotification/:code", middleware, (req, res) => {
   const userId = req.headers["userid"];
   const code = req.params.code;
-  // const userId = "test";
   Notification.find({ userId: userId })
     .then(async (result) => {
-      // console.log("Notifications found:", result);
       const filteredNotifications = await result.filter(
         (notification) => notification.code.toString() === code
       );
@@ -380,12 +378,10 @@ app.get("/getNotification/:code", middleware, (req, res) => {
           const year = dateObj.getFullYear().toString();
           return `${month}/${day}/${year}`;
         });
-
       const sortedGroupedNotifications = {};
       sortedKeys.forEach((key) => {
         sortedGroupedNotifications[key] = groupedNotifications[key];
       });
-      console.log(sortedGroupedNotifications);
       return res.status(200).json(sortedGroupedNotifications);
     })
     .catch((err) => {
