@@ -137,7 +137,7 @@ async function predictUsage() {
     return output;
   }
   try {
-    await fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/prediction", {
+    await fetch("https://ee53-161-246-144-205.ngrok-free.app/prediction", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -186,7 +186,9 @@ async function predictUsage() {
                 return;
               }
               // console.log(sumArrays(result.timeOfUsege, data.active), availableAppliance);
-              console.log(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)));
+              console.log(data.active);
+              console.log(getSpecificArray(data.power_distribution, availableAppliance));
+              // console.log(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)));
               // console.log(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)));
               // console.log(getSpecificArray(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)), availableAppliance));
               ApplianceDataHistory.findOneAndUpdate(
@@ -228,7 +230,7 @@ getUsage();
 const interval = setInterval(() => {
   if (x >= results.length) clearInterval(interval);
   predictUsage();
-}, 30000);
+}, 10000);
 
 async function middleware(req, res, next) {
   // const token = req.headers["token"];
@@ -431,7 +433,7 @@ app.post("/addApplianceData", middleware, async (req, res) => {
   const index = await applianceNames.indexOf(data.Type);
   let appliances = [0, 0, 0, 0, 0,0,0,0];
   data['index'] = await index;
-  console.log(data);
+  // console.log(data);
   Appliance.findOne({ userId: "test" })
     .then((result) => {
       if (result == null) {
