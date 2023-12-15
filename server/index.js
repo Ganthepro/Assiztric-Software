@@ -398,6 +398,7 @@ app.get("/getNotification/:code", middleware, (req, res) => {
   const code = req.params.code;
   Notification.find({ userId: userId })
     .then(async (result) => {
+      console.log("Notifications found:", result);
       const filteredNotifications = await result.filter(
         (notification) => notification.code.toString() === code
       );
