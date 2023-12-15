@@ -1,5 +1,5 @@
 function Blank() {
-    return <div style={{height: "100px"}}></div>
+    return <div style={{height: "40px"}}></div>
 }
 
 export default Blank
