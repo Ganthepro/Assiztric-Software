@@ -423,6 +423,7 @@ app.get("/getNotification/:code", middleware, (req, res) => {
       sortedKeys.forEach((key) => {
         sortedGroupedNotifications[key] = groupedNotifications[key];
       });
+      console.log("Notifications found:", sortedGroupedNotifications);
       return res.status(200).json(sortedGroupedNotifications);
     })
     .catch((err) => {
