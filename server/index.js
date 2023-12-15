@@ -102,7 +102,7 @@ function getDate() {
   const year = String(now.getFullYear());
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const day = String(now.getDate()).padStart(2, "0");
-  return `${day}/${month}/${year}`;
+  return `${month}/${day}/${year}`;
 }
 
 function getUsage() {
@@ -396,6 +396,8 @@ app.post("/addNotification", middleware, (req, res) => {
 app.get("/getNotification/:code", middleware, (req, res) => {
   const userId = req.headers["userid"];
   const code = req.params.code;
+  // const userId = "test";
+  console.log(userId);
   Notification.find({ userId: userId })
     .then(async (result) => {
       console.log("Notifications found:", result);
@@ -410,7 +412,6 @@ app.get("/getNotification/:code", middleware, (req, res) => {
           groupedNotifications[notification.date].push(notification);
         }
       });
-      console.log("Notifications found:", groupedNotifications);
       const sortedKeys = Object.keys(groupedNotifications)
         .map((dateString) => new Date(dateString))
         .sort((a, b) => a - b)
@@ -419,9 +420,9 @@ app.get("/getNotification/:code", middleware, (req, res) => {
           const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
           const day = dateObj.getDate().toString().padStart(2, "0");
           const year = dateObj.getFullYear().toString();
-          return `${month}/${day}/${year}`;
+          return `${day}/${month}/${year}`;
         });
-      console.log("Notifications found:", sortedKeys);
+
       const sortedGroupedNotifications = {};
       sortedKeys.forEach((key) => {
         sortedGroupedNotifications[key] = groupedNotifications[key];
