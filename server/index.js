@@ -410,6 +410,7 @@ app.get("/getNotification/:code", middleware, (req, res) => {
           groupedNotifications[notification.date].push(notification);
         }
       });
+      console.log("Notifications found:", groupedNotifications);
       const sortedKeys = Object.keys(groupedNotifications)
         .map((dateString) => new Date(dateString))
         .sort((a, b) => a - b)
@@ -420,6 +421,7 @@ app.get("/getNotification/:code", middleware, (req, res) => {
           const year = dateObj.getFullYear().toString();
           return `${month}/${day}/${year}`;
         });
+      console.log("Notifications found:", sortedKeys);
       const sortedGroupedNotifications = {};
       sortedKeys.forEach((key) => {
         sortedGroupedNotifications[key] = groupedNotifications[key];
