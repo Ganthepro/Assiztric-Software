@@ -228,7 +228,7 @@ getUsage();
 const interval = setInterval(() => {
   if (x >= results.length) clearInterval(interval);
   predictUsage();
-}, 10000);
+}, 30000);
 
 async function middleware(req, res, next) {
   // const token = req.headers["token"];
