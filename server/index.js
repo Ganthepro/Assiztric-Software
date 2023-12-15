@@ -313,8 +313,11 @@ app.get("/getPredictData", middleware, async (req, res) => {
         ? data.meanPowerStack.slice(-10080)
         : data.meanPowerStack;
     const types = data.Types;
-    for (let i = 0; i < powerDistributionStackDay.length; i++) 
+    for (let i = 0; i < powerDistributionStackDay.length; i++) {
       if (powerDistributionStackDay[i].length < active.length) powerDistributionStackDay[i].push(0);
+      if (powerDistributionStackWeek[i].length < active.length) powerDistributionStackWeek[i].push(0);
+    }
+    console.log(powerDistributionStackDay.length, powerDistributionStackWeek.length);
     res.status(200).json({
       active,
       powerDistribution,
