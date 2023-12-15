@@ -11,6 +11,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 ChartJS.register(
   CategoryScale,
