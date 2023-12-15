@@ -59,9 +59,6 @@ const applianceDataHistorySchema = new Schema({
   applianceId: [String],
 });
 
-const results = [];
-let x = 0;
-const datapoint = 30;
 let applianceNames = [
   'WashingMC',
   'RiceCooker',
@@ -105,29 +102,9 @@ function getDate() {
   return `${month}/${day}/${year}`;
 }
 
-function getUsage() {
-  fs.createReadStream(dataFilePath)
-    .pipe(csv())
-    .on("data", (data) => {
-      const { W_R, Var_R } = data;
-      const extractedData = {
-        W_R,
-        Var_R,
-      };
-      results.push(extractedData);
-    })
-    .on("error", (err) => {
-      console.error(err);
-    });
-}
-
-async function predictUsage() {
-  const W_R = [];
-  const Var_R = [];
-  for (let i = x; i < x + datapoint; i++) {
-    W_R.push(parseFloat(results[i].W_R));
-    Var_R.push(parseFloat(results[i].Var_R));
-  }
+app.post("/addApplianceDataHistory", middleware, async (req, res) => {
+  const W_R = req.body.W_R;
+  const Var_R = req.body.Var_R;
   async function getAvailableAppliance() {
     let output = [];
     await Appliance.findOne({ userId: "test" }).then((result) => {
@@ -148,7 +125,6 @@ async function predictUsage() {
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data.active);
         function getMean(power_distribution) {
           let mean = [];
           power_distribution.forEach((power, index) => {
@@ -171,21 +147,17 @@ async function predictUsage() {
           } catch (err) {
             console.error(err);
           }
-          // console.log(array,arr)
           return arr;
         }
         Appliance.findOne({ userId: "test" }).then((result) => {
           if (result != null) {
             const availableAppliance = result.appliance
             const availableApplianceData = result.applianceData.map((appliance) => appliance).sort((a, b) => a.index - b.index);
-            // applianceNames = result.class_applicance;
             ApplianceDataHistory.findOne({ userId: "test" }).then((result) => {
               if (result == null) {
                 ApplianceDataHistory.create({ userId: "test", timeOfUsege: [], applianceId: [] });
                 return;
               }
-              // console.log(result.timeOfUsege, result.Types, data.active, result.applianceId);
-              // console.log(sumArrays(getSpecificArray(result.timeOfUsege, availableAppliance), getSpecificArray(data.active, availableAppliance)));
               ApplianceDataHistory.findOneAndUpdate(
                 { userId: "test" },
                 {
@@ -216,16 +188,7 @@ async function predictUsage() {
     } catch (err) {
       console.error(err);
     }
-  x += datapoint;
-}
-
-async function sendNotification() {}
-
-getUsage();
-const interval = setInterval(() => {
-  if (x >= results.length) clearInterval(interval);
-  predictUsage();
-}, 60000);
+});
 
 async function middleware(req, res, next) {
   // const token = req.headers["token"];
