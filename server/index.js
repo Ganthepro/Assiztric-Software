@@ -208,9 +208,10 @@ async function middleware(req, res, next) {
   }
 }
 
-app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
-  const userId = req.params.userId;
+app.get("/getApplianceInfo/:id", middleware, (req, res) => {
+  const userId = req.headers["userid"];
   const id = req.params.id;
+  console.log(userId, id);
   let avarage = 0;
   let timeOfUsege = 0;
   let updatedTime = 0;
@@ -317,7 +318,6 @@ app.get("/getPredictData", middleware, async (req, res) => {
       if (powerDistributionStackDay[i].length < active.length) powerDistributionStackDay[i].push(0);
       if (powerDistributionStackWeek[i].length < active.length) powerDistributionStackWeek[i].push(0);
     }
-    console.log(powerDistributionStackDay.length, powerDistributionStackWeek.length);
     res.status(200).json({
       active,
       powerDistribution,

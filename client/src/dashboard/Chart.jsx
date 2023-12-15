@@ -125,7 +125,7 @@ function Chart(props) {
         }
         if (props.updateTimeFunc != null)
           props.updateTimeFunc(data.times[data.times.length - 1]);
-        console.log(powerDistributionStack);
+        // console.log(powerDistributionStack);
         // console.log(props.isOnly);
         if (props.isOnly != null && props.isOnly != undefined) {
           const index = data.types.indexOf(props.isOnly);
