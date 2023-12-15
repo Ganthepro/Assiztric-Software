@@ -3,11 +3,8 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const csv = require("csv-parser");
-const fs = require("fs");
 
 dotenv.config();
-const dataFilePath = "./110110000.csv";
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -105,6 +102,7 @@ function getDate() {
 app.post("/addApplianceDataHistory", middleware, async (req, res) => {
   const W_R = req.body.W_R;
   const Var_R = req.body.Var_R;
+  const userId = req.body.userId;
   async function getAvailableAppliance() {
     let output = [];
     await Appliance.findOne({ userId: userId }).then((result) => {

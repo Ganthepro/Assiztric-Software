@@ -55,6 +55,20 @@ async function login() {
           .then((data) => {
             console.log(data);
           });
+        fetch(`http://localhost:5500/init`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({
+            userId: Cookies.get("userId"),
+            token: accessToken,
+          }),
+        })
+          .then((res) => res.text())
+          .then((data) => {
+            console.log(data);
+          });
       } else {
         console.error("Access token not available");
       }
