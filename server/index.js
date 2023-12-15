@@ -385,7 +385,7 @@ app.get("/getNotification/:code", middleware, (req, res) => {
       sortedKeys.forEach((key) => {
         sortedGroupedNotifications[key] = groupedNotifications[key];
       });
-      console.log(sortedGroupedNotifications);
+      console.log(sortedGroupedNotifications.filter((notification) => notification != undefined));
       return res.status(200).json(sortedGroupedNotifications);
     })
     .catch((err) => {
