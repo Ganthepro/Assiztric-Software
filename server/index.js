@@ -386,7 +386,7 @@ app.get("/getNotification/:code", middleware, (req, res) => {
         sortedGroupedNotifications[key] = groupedNotifications[key];
       });
       console.log(sortedGroupedNotifications.filter((notification) => notification != undefined));
-      return res.status(200).json(sortedGroupedNotifications);
+      return res.status(200).json(sortedGroupedNotifications.filter((notification) => notification != undefined));
     })
     .catch((err) => {
       console.error("Error finding notification:", err);
