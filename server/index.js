@@ -152,12 +152,12 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           if (result != null) {
             const availableAppliance = result.appliance
             const availableApplianceData = result.applianceData.map((appliance) => appliance).sort((a, b) => a.index - b.index);
-            // applianceNames = result.class_applicance;
             ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
               if (result == null) {
                 ApplianceDataHistory.create({ userId: userId, timeOfUsege: [0,0,0,0,0,0,0,0], applianceId: [] });
                 return;
               }
+              console.log(data.power_distribution);
               ApplianceDataHistory.findOneAndUpdate(
                 { userId: userId },
                 {
