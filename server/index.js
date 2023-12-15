@@ -122,7 +122,7 @@ function getUsage() {
     });
 }
 
-async function predictUsage() {
+async function predictUsage(userId) {
   const W_R = [];
   const Var_R = [];
   for (let i = x; i < x + datapoint; i++) {
@@ -131,7 +131,7 @@ async function predictUsage() {
   }
   async function getAvailableAppliance() {
     let output = [];
-    await Appliance.findOne({ userId: "test" }).then((result) => {
+    await Appliance.findOne({ userId: userId }).then((result) => {
       if (result != null) output = result.appliance
     });
     return output;
@@ -149,7 +149,6 @@ async function predictUsage() {
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data.active);
         function getMean(power_distribution) {
           let mean = [];
           power_distribution.forEach((power, index) => {
@@ -167,30 +166,29 @@ async function predictUsage() {
         }
         function getSpecificArray(array, usageApplicance) {
           let arr = [];
-          try{
+          try {
             for (let i = 0; i < usageApplicance.length; i++) if (usageApplicance[i] == 1) arr.push(array[i]);
           } catch (err) {
             console.error(err);
           }
-          // console.log(array,arr)
           return arr;
         }
-        Appliance.findOne({ userId: "test" }).then((result) => {
+        Appliance.findOne({ userId: userId }).then((result) => {
           if (result != null) {
             const availableAppliance = result.appliance
             const availableApplianceData = result.applianceData.map((appliance) => appliance).sort((a, b) => a.index - b.index);
             // applianceNames = result.class_applicance;
-            ApplianceDataHistory.findOne({ userId: "test" }).then((result) => {
+            ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
               if (result == null) {
-                ApplianceDataHistory.create({ userId: "test", timeOfUsege: [0,0,0,0,0,0,0,0], applianceId: [] });
+                ApplianceDataHistory.create({ userId: userId, timeOfUsege: [0,0,0,0,0,0,0,0], applianceId: [] });
                 return;
               }
               // console.log(sumArrays(result.timeOfUsege, data.active), availableAppliance);
-              console.log(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)));
+              // console.log(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)));
               // console.log(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)));
               // console.log(getSpecificArray(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)), availableAppliance));
               ApplianceDataHistory.findOneAndUpdate(
-                { userId: "test" },
+                { userId: userId },
                 {
                   $push: {
                     activeStack: getSpecificArray(data.active, availableAppliance),
@@ -224,28 +222,36 @@ async function predictUsage() {
 
 async function sendNotification() {}
 
-getUsage();
-const interval = setInterval(() => {
-  if (x >= results.length) clearInterval(interval);
-  predictUsage();
-}, 30000);
+app.get("/:userId", middleware, (req, res) => {
+  getUsage();
+  res.status(200).json({ message: "ok" });
+  const interval = setInterval(() => {
+    if (x >= results.length) clearInterval(interval);
+    predictUsage(req.params.userId);
+  }, 30000);
+});
+// getUsage();
+// const interval = setInterval(() => {
+//   if (x >= results.length) clearInterval(interval);
+//   predictUsage();
+// }, 30000);
 
 async function middleware(req, res, next) {
-  // const token = req.headers["token"];
-  // if (!token) return res.status(401).send("Access denied, token missing");
-  // try {
-  //   const response = await fetch(
-  //     `https://api.line.me/oauth2/v2.1/verify?access_token=${token}`,
-  //     {
-  //       method: "GET",
-  //     }
-  //   );
-  //   if (!response.ok) return res.status(401).send("Invalid token");
-  next();
-  // } catch (error) {
-  //   console.error(error);
-  //   return res.status(500).send("Error verifying token");
-  // }
+  const token = req.headers["token"];
+  if (!token) return res.status(401).send("Access denied, token missing");
+  try {
+    const response = await fetch(
+      `https://api.line.me/oauth2/v2.1/verify?access_token=${token}`,
+      {
+        method: "GET",
+      }
+    );
+    if (!response.ok) return res.status(401).send("Invalid token");
+    next();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Error verifying token");
+  }
 }
 
 app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
@@ -284,7 +290,7 @@ app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
 
 app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
-  const data = await ApplianceDataHistory.findOne({ userId: "test" });
+  const data = await ApplianceDataHistory.findOne({ userId: userId });
   if (data != null) {
     let timeOfUsege = data.timeOfUsege;
     let Types = data.Types;
@@ -335,7 +341,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
 
 app.get("/getPredictData/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
-  const data = await ApplianceDataHistory.findOne({ userId: "test" });
+  const data = await ApplianceDataHistory.findOne({ userId: userId });
   try {
     const active = data.active;
     const powerDistribution = data.powerDistribution;
@@ -387,10 +393,10 @@ app.post("/addNotification", middleware, (req, res) => {
 });
 
 app.get("/getNotification/:code", middleware, (req, res) => {
-  // const userId = req.headers["userid"];
+  const userId = req.headers["userid"];
   const code = req.params.code;
-  const userId = "test";
-  console.log(userId);
+  // const userId = "test";
+  // console.log(userId);
   Notification.find({ userId: userId })
     .then(async (result) => {
       const filteredNotifications = await result.filter(
@@ -431,12 +437,13 @@ app.post("/addApplianceData", middleware, async (req, res) => {
   const index = await applianceNames.indexOf(data.Type);
   let appliances = [0, 0, 0, 0, 0,0,0,0];
   data['index'] = await index;
-  console.log(data);
-  Appliance.findOne({ userId: "test" })
+  const userId = data.userId;
+  // console.log(data);
+  Appliance.findOne({ userId: userId })
     .then((result) => {
       if (result == null) {
         index != -1 ? (appliances[index] = 1) : null;
-        return Appliance.create({ userId: "test", applianceData: [], appliance: appliances });
+        return Appliance.create({ userId: userId, applianceData: [], appliance: appliances });
       } else {
         result.appliance.forEach((appliance, index) => {
           if (appliance == 1) appliances[index] = 1;
@@ -444,7 +451,7 @@ app.post("/addApplianceData", middleware, async (req, res) => {
         index != -1 ? (appliances[index] = 1) : null;
       } 
       Appliance.findOneAndUpdate(
-        { userId: "test" },
+        { userId: userId },
         { 
           $push : { applianceData: data }, 
           appliance: appliances 

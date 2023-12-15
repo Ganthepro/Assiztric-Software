@@ -7,7 +7,7 @@ function Dashboard_Leaderboard(props) {
     const [leaderboard, setLeaderboard] = useState(null);
 
     function getLeaderboard() {
-        fetch(`http://localhost:5500/getLeaderboard/${Cookies.get("userId")}`, {
+        fetch(`https://assiztric-software.vercel.app/getLeaderboard/${Cookies.get("userId")}`, {
             method: "GET",
             headers: {
                 token: Cookies.get("token"),

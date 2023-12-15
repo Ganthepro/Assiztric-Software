@@ -99,9 +99,9 @@ function Chart(props) {
   ]);
 
   function getData() {
-    // const userId = Cookies.get("userId");
-    const userId = "test";
-    fetch(`http://localhost:5500/getPredictData/${userId}`, {
+    const userId = Cookies.get("userId");
+    // const userId = "test";
+    fetch(`https://assiztric-software.vercel.app/getPredictData/${userId}`, {
       method: "GET",
     })
       .then((res) => res.json())
