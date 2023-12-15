@@ -137,6 +137,7 @@ function Chart(props) {
             borderWidth: 2,
             lineTension: 0.1,
           });
+          props.setMean(powerDistributionStack[index].filter((element) => element != 0).reduce((a, b) => a + b, 0) / powerDistributionStack[index].filter((element) => element != 0).length);
         }
         else {
           powerDistributionStack.forEach((element, index) => {
