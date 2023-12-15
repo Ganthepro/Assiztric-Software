@@ -11,7 +11,28 @@ import liff from "@line/liff";
 
 async function getToken() {
   await liff.init({ liffId: "2001224573-pxK3m42V", withLoginOnExternalBrowser:true }); // Replace with your LIFF ID
-  if (liff.isLoggedIn()) return await liff.getAccessToken();
+  if (liff.isLoggedIn()) {
+    const accessToken = await liff.getAccessToken();
+    await init(accessToken);
+    return accessToken
+  };
+}
+
+function init(accessToken) {
+  fetch(`http://localhost:5000/init`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify({
+      userId: Cookies.get("userId"),
+      token: accessToken,
+    }),
+  })
+    .then((res) => res.text())
+    .then((data) => {
+      console.log(data);
+    });
 }
 
 async function login() {
@@ -55,20 +76,7 @@ async function login() {
           .then((data) => {
             console.log(data);
           });
-        fetch(`http://localhost:5000/init`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify({
-            userId: Cookies.get("userId"),
-            token: accessToken,
-          }),
-        })
-          .then((res) => res.text())
-          .then((data) => {
-            console.log(data);
-          });
+        init(accessToken);
       } else {
         console.error("Access token not available");
       }
