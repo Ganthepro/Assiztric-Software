@@ -7,8 +7,7 @@ const csv = require("csv-parser");
 const fs = require("fs");
 
 dotenv.config();
-const dataFilePath = "./100101000.csv";
-
+const dataFilePath = "./110110000.csv";
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -137,7 +136,7 @@ async function predictUsage() {
     return output;
   }
   try {
-    await fetch("https://ee53-161-246-144-205.ngrok-free.app/prediction", {
+    await fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/prediction", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -182,15 +181,11 @@ async function predictUsage() {
             // applianceNames = result.class_applicance;
             ApplianceDataHistory.findOne({ userId: "test" }).then((result) => {
               if (result == null) {
-                ApplianceDataHistory.create({ userId: "test", timeOfUsege: [0,0,0,0,0,0,0,0], applianceId: [] });
+                ApplianceDataHistory.create({ userId: "test", timeOfUsege: [], applianceId: [] });
                 return;
               }
-              // console.log(sumArrays(result.timeOfUsege, data.active), availableAppliance);
-              console.log(data.active);
-              console.log(getSpecificArray(data.power_distribution, availableAppliance));
-              // console.log(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)));
-              // console.log(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)));
-              // console.log(getSpecificArray(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)), availableAppliance));
+              // console.log(result.timeOfUsege, result.Types, data.active, result.applianceId);
+              // console.log(sumArrays(getSpecificArray(result.timeOfUsege, availableAppliance), getSpecificArray(data.active, availableAppliance)));
               ApplianceDataHistory.findOneAndUpdate(
                 { userId: "test" },
                 {
@@ -230,7 +225,7 @@ getUsage();
 const interval = setInterval(() => {
   if (x >= results.length) clearInterval(interval);
   predictUsage();
-}, 10000);
+}, 60000);
 
 async function middleware(req, res, next) {
   // const token = req.headers["token"];
@@ -292,6 +287,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
     let Types = data.Types;
     let active = data.active;
     let applianceId = data.applianceId; 
+    console.log(timeOfUsege, Types, active, applianceId);
     const usagePercent = () => {
       const sum = data.timeOfUsege.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
       return timeOfUsege.map((usage) => (usage / sum) * 100);
@@ -353,6 +349,9 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
         ? data.meanPowerStack.slice(-10080)
         : data.meanPowerStack;
     const types = data.Types;
+    for (let i = 0; i < powerDistributionStackDay.length; i++) 
+      if (powerDistributionStackDay[i].length < active.length) powerDistributionStackDay[i].push(0);
+    console.log(powerDistributionStackDay);
     res.status(200).json({
       active,
       powerDistribution,
@@ -431,9 +430,9 @@ app.get("/getNotification/:code", middleware, (req, res) => {
 app.post("/addApplianceData", middleware, async (req, res) => {
   let data = req.body;
   const index = await applianceNames.indexOf(data.Type);
-  let appliances = [0, 0, 0, 0, 0,0,0,0];
+  let appliances = [0, 0, 0, 0, 0, 0, 0, 0];
   data['index'] = await index;
-  // console.log(data);
+  console.log(data);
   Appliance.findOne({ userId: "test" })
     .then((result) => {
       if (result == null) {
