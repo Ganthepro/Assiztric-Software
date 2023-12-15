@@ -29,11 +29,9 @@ export function Home(props) {
     }
   }, []);
 
-  useEffect(() => {console.log(applianceId)}, [applianceId]);
-
   return (
     <>
-      {showInfo ? <Appliance_Info setShow={setShowInfo} /> : null}
+      {showInfo ? <Appliance_Info setShow={setShowInfo} id={applianceId} /> : null}
       <div className="main-home">
         <Header profiles={profiles} emission={emission} />
         <div className="body-home">

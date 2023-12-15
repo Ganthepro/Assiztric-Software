@@ -182,13 +182,10 @@ async function predictUsage() {
             // applianceNames = result.class_applicance;
             ApplianceDataHistory.findOne({ userId: "test" }).then((result) => {
               if (result == null) {
-                ApplianceDataHistory.create({ userId: "test", timeOfUsege: [0,0,0,0,0,0,0,0], applianceId: [] });
+                ApplianceDataHistory.create({ userId: "test", timeOfUsege: [], applianceId: [] });
                 return;
               }
-              // console.log(sumArrays(result.timeOfUsege, data.active), availableAppliance);
-              console.log(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)));
-              // console.log(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)));
-              // console.log(getSpecificArray(sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)), availableAppliance));
+              console.log(result.timeOfUsege, data.active);
               ApplianceDataHistory.findOneAndUpdate(
                 { userId: "test" },
                 {
@@ -203,7 +200,7 @@ async function predictUsage() {
                     totalWatt: data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000,
                   },
                   Types: getSpecificArray(applianceNames, availableAppliance),
-                  timeOfUsege: sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)),
+                  timeOfUsege: getSpecificArray(sumArrays(result.timeOfUsege, data.active), availableAppliance),
                   active: getSpecificArray(data.active, availableAppliance),
                   powerDistribution: getSpecificArray(data.power_distribution, availableAppliance), 
                   applianceId: getSpecificArray(availableApplianceData.map((appliance) => appliance._id), availableAppliance),
