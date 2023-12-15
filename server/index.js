@@ -123,7 +123,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.power_distribution);
         function getMean(power_distribution) {
           let mean = [];
           power_distribution.forEach((power, index) => {
