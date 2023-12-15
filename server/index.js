@@ -203,7 +203,7 @@ async function predictUsage() {
                   timeOfUsege: sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)),
                   active: getSpecificArray(data.active, availableAppliance),
                   powerDistribution: getSpecificArray(data.power_distribution, availableAppliance), 
-                  applianceId: getSpecificArray(availableApplianceData.map((appliance) => appliance._id), availableAppliance),
+                  applianceId: availableApplianceData.map((appliance) => appliance._id),
                 },
                 { new: true, upsert: true, returnOriginal: true }
               ).then((result) => {
@@ -274,6 +274,7 @@ app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
       updatedTime = result.times[result.times.length - 1];
       avarage = result.meanPowerStack.filter((power) => power[applianceDataIndex] != 0).reduce((acc, val) => acc + val[applianceDataIndex], 0) / result.meanPowerStack.filter((power) => power[applianceDataIndex] != 0).length;
       meanPowerStack = result.meanPowerStack.map((power) => power[applianceDataIndex]);
+      console.log(timeOfUsege, avarage, updatedTime, brand, model, name, meanPowerStack);
       return res.status(200).json({ timeOfUsege, avarage, updatedTime, brand, model, name, meanPowerStack });
     }
   });
@@ -351,7 +352,6 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     const types = data.Types;
     for (let i = 0; i < powerDistributionStackDay.length; i++) 
       if (powerDistributionStackDay[i].length < active.length) powerDistributionStackDay[i].push(0);
-    console.log(powerDistributionStackDay);
     res.status(200).json({
       active,
       powerDistribution,
@@ -432,7 +432,6 @@ app.post("/addApplianceData", middleware, async (req, res) => {
   const index = await applianceNames.indexOf(data.Type);
   let appliances = [0, 0, 0, 0, 0, 0, 0, 0];
   data['index'] = await index;
-  console.log(data);
   Appliance.findOne({ userId: "test" })
     .then((result) => {
       if (result == null) {
