@@ -55,7 +55,7 @@ async function login() {
           .then((data) => {
             console.log(data);
           });
-        fetch(`http://localhost:5500/init`, {
+        fetch(`http://localhost:5000/init`, {
           headers: {
             "Content-Type": "application/json",
           },
