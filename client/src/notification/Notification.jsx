@@ -38,7 +38,7 @@ export function Notification(props) {
           {
             method: "GET",
             headers: {
-              token: "eyJhbGciOiJIUzI1NiJ9.iCpN0hYuiq2NrlMp1nzEGcBJfqnsUjwRm9F_6J6GHQNghdZr8Cn4st28bgEPNd800Cex8HxNUvIfU-VsLmghJ5rI5poMrVtac4TUt5E3zXhwqkygDsKAuuyoVcWDHAJMJAEPV6c_OoWhDfKfcfKuOl0QNfJ9SupGe21BVZ2_0-Y.z3XrwW9vHh6v-JmY560NpIzSS3vKZFCYws7c8e5eq-Y",
+              token: Cookies.get("token"),
               userId: Cookies.get("userId"),
             },
           }

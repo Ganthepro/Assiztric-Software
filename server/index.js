@@ -396,8 +396,6 @@ app.post("/addNotification", middleware, (req, res) => {
 app.get("/getNotification/:code", middleware, (req, res) => {
   const userId = req.headers["userid"];
   const code = req.params.code;
-  // const userId = "test";
-  // console.log(userId);
   Notification.find({ userId: userId })
     .then(async (result) => {
       const filteredNotifications = await result.filter(
