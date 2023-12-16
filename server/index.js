@@ -217,7 +217,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 },
                 { new: true, upsert: true, returnOriginal: true }
               ).then((respone) => {
-                console.log("test");
                 fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/notification", {
                     method: "POST",
                     headers: {
@@ -233,7 +232,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 )
                   .then((res) => res.json())
                   .then((data) => {
-                    res.status(200).send(data);
+                    res.status(200).send("test");
                   });
               });
             });
