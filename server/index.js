@@ -150,10 +150,10 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           }
           return arr;
         }
-        Appliance.findOne({ userId: userId }).then((result) => {
-          if (result != null) {
-            const availableAppliance = result.appliance;
-            const availableApplianceData = result.applianceData
+        Appliance.findOne({ userId: userId }).then((result1) => {
+          if (result1 != null) {
+            const availableAppliance = result1.appliance;
+            const availableApplianceData = result1.applianceData
               .map((appliance) => appliance)
               .sort((a, b) => a.index - b.index);
             ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
@@ -237,7 +237,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     body: JSON.stringify({
                       userId: userId,
                       token: req.headers["token"],
-                      user_appliance: result.appliance,
+                      user_appliance: result1.appliance,
                       W_R: W_R(),
                     }),
                   }
