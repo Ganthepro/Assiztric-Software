@@ -224,9 +224,9 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     },
                     body: JSON.stringify({
                       userId,
-                      token,
-                      user_appliance : result.appliance,
-                      W_R : respone.powerDistributionStack,
+                      token: req.headers["token"],
+                      user_appliance: result.appliance,
+                      W_R: respone.powerDistributionStack,
                     }),
                   }
                 )
