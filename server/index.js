@@ -244,7 +244,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 )
                   .then((res) => res.json())
                   .then((data) => {
-                    res.status(200).send("test");
+                    res.status(200).send(data);
                   });
               });
             });
