@@ -217,6 +217,18 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 },
                 { new: true, upsert: true, returnOriginal: true }
               ).then((respone) => {
+                const W_R = () => {
+                  let W_R = [];
+                  for (let i = 0; i < respone.powerDistributionStack.length; i++) {
+                    let object = {};
+                    respone.powerDistributionStack[i].forEach((power, index) => {
+                      object[availableApplianceData[index].Type] = power;
+                    });
+                    W_R.push(object);
+                  }
+                  return W_R;
+                }
+                console.log(W_R());
                 fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/notification", {
                     method: "POST",
                     headers: {
@@ -226,7 +238,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                       userId: userId,
                       token: req.headers["token"],
                       user_appliance: result.appliance,
-                      W_R: respone.powerDistributionStack,
+                      W_R: W_R(),
                     }),
                   }
                 )
