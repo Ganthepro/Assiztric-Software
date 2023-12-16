@@ -218,7 +218,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 { new: true, upsert: true, returnOriginal: true }
               ).then((respone) => {
                 const W_R = () => {
-                  let W_R = [];
+                  const W_R = [];
                   for (let i = 0; i < respone.powerDistributionStack.length; i++) {
                     let object = {};
                     respone.powerDistributionStack[i].forEach((power, index) => {
@@ -229,7 +229,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                   return W_R;
                 }
                 console.log(W_R());
-                fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/notification", {
+                fetch("https://b925-161-246-144-205.ngrok-free.app/notification", {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
