@@ -224,7 +224,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                       "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                      userId,
+                      userId: userId,
                       token: req.headers["token"],
                       user_appliance: result.appliance,
                       W_R: respone.powerDistributionStack,
@@ -233,14 +233,14 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 )
                   .then((res) => res.json())
                   .then((data) => {
-                    console.log(data);
+                    res.status(200).send(data);
                   });
               });
             });
           }
         });
       });
-    res.status(200).send("Appliance data history updated");
+    // res.status(200).send("Appliance data history updated");
   } catch (err) {
     console.error(err);
     res.status(500).send("Error adding appliance data history");
