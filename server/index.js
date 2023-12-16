@@ -229,7 +229,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                   return W_R;
                 }
                 console.log(W_R());
-                fetch("https://b925-161-246-144-205.ngrok-free.app/notification", {
+                fetch("https://0a07-161-246-144-205.ngrok-free.app/notification", {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
