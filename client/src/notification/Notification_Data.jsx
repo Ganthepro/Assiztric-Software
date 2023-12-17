@@ -34,7 +34,7 @@ function Notification_Data(props) {
                 </div>
                 <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
                     <p>{props.data.time}</p>
-                    <button onClick={() => setShow(!show)} className="more-btn">ดูรายละเอียด</button>
+                    <button onClick={() => setShow(!show)} className="more-btn">{show ? "ลดรายละเอียด" : "ดูรายละเอียด"}</button>
                 </div>
             </div>
             <hr />
