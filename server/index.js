@@ -42,6 +42,7 @@ const notificationSchema = new Schema({
   time: { type: String, default: getTime },
   detail: String,
   date: { type: String, default: getDate },
+  id: String,
 });
 const applianceDataHistorySchema = new Schema({
   userId: String,
@@ -193,7 +194,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                         0
                       ) /
                         1000) *
-                      0.561,
+                      0.5986,
                     totalWatt:
                       data.power_distribution.reduce(
                         (acc, val) =>
@@ -251,7 +252,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           }
         });
       });
-    // res.status(200).send("Appliance data history updated");
   } catch (err) {
     console.error(err);
     res.status(500).send("Error adding appliance data history");
@@ -450,6 +450,7 @@ app.post("/addNotification", middleware, (req, res) => {
     userId: data.userId,
     code: data.code, // 0: Tip, 1: Alert, 2: Ft
     detail: data.detail,
+    id: data.id,
   });
   newNotification
     .save()
@@ -459,6 +460,19 @@ app.post("/addNotification", middleware, (req, res) => {
     })
     .catch((err) => {
       console.error("Error saving notification:", err);
+      return res.json(err);
+    });
+});
+
+app.delete("/deleteNotification/:id", middleware, (req, res) => {
+  const id = req.params.id;
+  Notification.findByIdAndDelete(id)
+    .then((result) => {
+      console.log("Notification deleted:", result);
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.error("Error deleting notification:", err);
       return res.json(err);
     });
 });
@@ -473,11 +487,8 @@ app.get("/getNotification/:code", middleware, (req, res) => {
       );
       const groupedNotifications = {};
       await filteredNotifications.forEach((notification) => {
-        if (!groupedNotifications[notification.date]) {
-          groupedNotifications[notification.date] = [notification];
-        } else {
-          groupedNotifications[notification.date].push(notification);
-        }
+        if (!groupedNotifications[notification.date]) groupedNotifications[notification.date] = [notification];
+        else groupedNotifications[notification.date].push(notification);
       });
       const sortedKeys = Object.keys(groupedNotifications)
         .map((dateString) => new Date(dateString))
@@ -507,7 +518,6 @@ app.post("/addApplianceData", middleware, async (req, res) => {
   let appliances = [0, 0, 0, 0, 0, 0, 0, 0];
   data["index"] = await index;
   const userId = data.userId;
-  // console.log(data);
   Appliance.findOne({ userId: userId }).then((result) => {
     if (result == null) {
       index != -1 ? (appliances[index] = 1) : null;
