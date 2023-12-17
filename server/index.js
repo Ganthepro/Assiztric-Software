@@ -479,7 +479,8 @@ app.delete("/deleteNotification/:id", middleware, (req, res) => {
 });
 
 app.get("/getNotification/:code", middleware, (req, res) => {
-  const userId = req.headers["userid"];
+  // const userId = req.headers["userid"];
+  const userId = "test";
   const code = req.params.code;
   Notification.find({ userId: userId })
     .then(async (result) => {
@@ -505,6 +506,7 @@ app.get("/getNotification/:code", middleware, (req, res) => {
       sortedKeys.forEach((key) => {
         sortedGroupedNotifications[key] = groupedNotifications[key];
       });
+      console.log("Notifications found:", sortedGroupedNotifications);
       return res.status(200).json(sortedGroupedNotifications);
     })
     .catch((err) => {

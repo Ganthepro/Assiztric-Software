@@ -1,6 +1,13 @@
 .main-notificationData {
     display: flex;
     justify-content: space-between;
-    /* border: 2px solid red; */
     padding: 5px;
+    align-items: center;
+}
+
+.more-btn {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color:rgb(253, 161, 40)
 }
