@@ -479,8 +479,7 @@ app.delete("/deleteNotification/:id", middleware, (req, res) => {
 });
 
 app.get("/getNotification/:code", middleware, (req, res) => {
-  // const userId = req.headers["userid"];
-  const userId = "test";
+  const userId = req.headers["userid"];
   const code = req.params.code;
   Notification.find({ userId: userId })
     .then(async (result) => {
