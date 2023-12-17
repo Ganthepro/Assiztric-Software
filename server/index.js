@@ -394,12 +394,13 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
       applianceId,
     });
   } else {
+    const arr = [0, 0, 0, 0, 0, 0, 0, 0];
     res.status(200).json({
-      usagePercent: [0, 0, 0, 0, 0],
-      Types: ["Air Purifier", "Refrigerator", "Fan", "TV", "Iron"],
-      timeOfUsege: [0, 0, 0, 0, 0],
-      active: [0, 0, 0, 0, 0],
-      applianceId: [0, 0, 0, 0, 0],
+      usagePercent: arr,
+      Types: applianceNames,
+      timeOfUsege: arr,
+      active: arr,
+      applianceId: arr,
     });
   }
 });
