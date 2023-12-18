@@ -433,7 +433,7 @@ app.post("/addApplianceData", middleware, async (req, res) => {
   data['index'] = await index;
   console.log(data);
   Appliance.findOne({ userId: "test" })
-    .then((result) => {
+    .then((result) => {d
       if (result == null) {
         index != -1 ? (appliances[index] = 1) : null;
         return Appliance.create({ userId: "test", applianceData: [], appliance: appliances });
