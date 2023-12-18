@@ -6,8 +6,8 @@ import { useRef, useEffect } from "react";
 function Leaderboard_Data(props) {
   const ref = useRef(null);
   useEffect(() => {
-    if (props.data[3]) ref.current.style.color = "#35a152";
-    else ref.current.style.color = "#FF0000";
+    if (props.data[3]) ref.current.style.backgroundColor = "#82DA85";
+    else ref.current.style.backgroundColor = "#E94F4F";
   }, [ref,props.data[3]]);
 
   return (
@@ -16,7 +16,7 @@ function Leaderboard_Data(props) {
         <img src={TV_Logo_Light} style={{ width: "40px" }} className="image" />
         <div className="leaderboardData">
             <div style={{flexDirection:"column",justifyContent: "space-around",display:"flex",alignItems:"unset",height:"100%",width:"100%"}}>
-                <p>{props.data[0]} {<p style={{fontSize:"smaller"}} ref={ref}>{props.data[3] ? "Active" : "Inactive"}</p>}</p>
+                <p style={{display:"flex", alignItems:"center"}}>{<div style={{height:"7px", borderRadius:"50%",aspectRatio:"1/1",marginRight:"5px"}} ref={ref}></div>}{props.data[0]}</p>
                 <div
                     style={{
                       height: "5px",

@@ -9,6 +9,7 @@ function Appliance_Info(props) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
+    // console .log(props.id);
     fetch(`http://localhost:5500/getApplianceInfo/test/${props.id}`, {
       method: "GET",
       headers: {
