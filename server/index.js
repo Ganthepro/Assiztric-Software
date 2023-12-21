@@ -154,6 +154,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
             const sumInnerArray = innerArray.reduce((acc, val) => acc + val, 0);
             if (timeOfUsege[outerIndex]) totalEmission += (sumInnerArray / 1000) * (timeOfUsege[outerIndex] / 60) * 0.4857;
           });
+          console.log(totalEmission);
           return totalEmission;
         }
         Appliance.findOne({ userId: "test" }).then((result) => {
