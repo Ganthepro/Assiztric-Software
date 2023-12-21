@@ -3,12 +3,8 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const csv = require("csv-parser");
-const fs = require("fs");
 
 dotenv.config();
-const dataFilePath = "./110110000.csv";
-
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
@@ -35,7 +31,7 @@ const applianceSchema = new Schema({
     UsageBehavior: String,
     index: Number,
   }],
-  appliance: [0,0,0,0,0],
+  appliance: [0,0,0,0,0,0,0,0],
 });
 const notificationSchema = new Schema({
   userId: String,
@@ -149,6 +145,14 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           }
           return arr;
         }
+        function findEmission(power_distribution, timeOfUsege) {
+          let totalEmission = 0;
+          power_distribution.forEach((innerArray, outerIndex) => {
+            const sumInnerArray = innerArray.reduce((acc, val) => acc + val, 0);
+            if (timeOfUsege[outerIndex]) totalEmission += (sumInnerArray / 1000) * (timeOfUsege[outerIndex] / 60) * 0.4857;
+          });
+          return totalEmission;
+        }
         Appliance.findOne({ userId: "test" }).then((result) => {
           if (result != null) {
             const availableAppliance = result.appliance
@@ -168,7 +172,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     meanPowerStack: getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean,
                   },
                   $inc: {
-                    totalEmission: (data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000) * 0.5610,
+                    totalEmission: findEmission(data.power_distribution, result.timeOfUsege), // แก้ผลรวมให้เป็น kWh แล้วคูณด้วย 0.5610
                     totalWatt: data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000,
                   },
                   Types: getSpecificArray(applianceNames, availableAppliance),
