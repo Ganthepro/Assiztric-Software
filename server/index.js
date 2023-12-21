@@ -149,8 +149,10 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           let totalEmission = 0;
           power_distribution.forEach((innerArray, outerIndex) => {
             const sumInnerArray = innerArray.reduce((acc, val) => acc + val, 0);
-            if (timeOfUsege[outerIndex]) totalEmission += (sumInnerArray / 1000) * (timeOfUsege[outerIndex] / 60) * 0.4857;
+            console.log(sumInnerArray);
+            if (timeOfUsege[outerIndex]) totalEmission += (sumInnerArray / 1000) * (1 / 120) * 0.4857;
           });
+          console.log(totalEmission);
           return totalEmission;
         }
         Appliance.findOne({ userId: "test" }).then((result) => {
@@ -172,11 +174,11 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     meanPowerStack: getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean,
                   },
                   $inc: {
-                    totalEmission: findEmission(data.power_distribution, result.timeOfUsege), // แก้ผลรวมให้เป็น kWh แล้วคูณด้วย 0.5610
+                    totalEmission: findEmission(getSpecificArray(data.power_distribution, availableAppliance), result.timeOfUsege), // แก้ผลรวมให้เป็น kWh แล้วคูณด้วย 0.5610
                     totalWatt: data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000,
                   },
                   Types: getSpecificArray(applianceNames, availableAppliance),
-                  timeOfUsege: sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance)),
+                  timeOfUsege: sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance).map((active) => active * 0.5)),
                   active: getSpecificArray(data.active, availableAppliance),
                   powerDistribution: getSpecificArray(data.power_distribution, availableAppliance), 
                   applianceId: availableApplianceData.map((appliance) => appliance._id),
@@ -241,7 +243,6 @@ app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
       updatedTime = result.times[result.times.length - 1];
       avarage = result.meanPowerStack.filter((power) => power[applianceDataIndex] != 0).reduce((acc, val) => acc + val[applianceDataIndex], 0) / result.meanPowerStack.filter((power) => power[applianceDataIndex] != 0).length;
       meanPowerStack = result.meanPowerStack.map((power) => power[applianceDataIndex]);
-      console.log(timeOfUsege, avarage, updatedTime, brand, model, name, meanPowerStack);
       return res.status(200).json({ timeOfUsege, avarage, updatedTime, brand, model, name, meanPowerStack });
     }
   });
@@ -255,7 +256,6 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
     let Types = data.Types;
     let active = data.active;
     let applianceId = data.applianceId; 
-    console.log(timeOfUsege, Types, active, applianceId);
     const usagePercent = () => {
       const sum = data.timeOfUsege.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
       return timeOfUsege.map((usage) => (usage / sum) * 100);
@@ -359,7 +359,6 @@ app.get("/getNotification/:code", middleware, (req, res) => {
   // const userId = req.headers["userid"];
   const userId = "test";
   const code = req.params.code;
-  console.log(userId);
   Notification.find({ userId: userId })
     .then(async (result) => {
       const filteredNotifications = await result.filter(
