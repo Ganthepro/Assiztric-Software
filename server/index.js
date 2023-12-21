@@ -3,7 +3,6 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-
 dotenv.config();
 
 mongoose
@@ -24,17 +23,15 @@ const userSchema = new Schema({
 });
 const applianceSchema = new Schema({
   userId: String,
-  applianceData: [
-    {
-      Type: String,
-      Model: String,
-      Brand: String,
-      Usage: Number,
-      UsageBehavior: String,
-      index: Number,
-    },
-  ],
-  appliance: [0, 0, 0, 0, 0],
+  applianceData: [{
+    Type: String,
+    Model: String,
+    Brand: String,
+    Usage: Number,
+    UsageBehavior: String,
+    index: Number,
+  }],
+  appliance: [0,0,0,0,0,0,0,0],
 });
 const notificationSchema = new Schema({
   userId: String,
@@ -151,13 +148,19 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           }
           return arr;
         }
-        Appliance.findOne({ userId: userId }).then((result1) => {
-          if (result1 != null) {
-            const availableAppliance = result1.appliance;
-            const availableApplianceData = result1.applianceData
-              .map((appliance) => appliance)
-              .sort((a, b) => a.index - b.index);
-            ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
+        function findEmission(power_distribution, timeOfUsege) {
+          let totalEmission = 0;
+          power_distribution.forEach((innerArray, outerIndex) => {
+            const sumInnerArray = innerArray.reduce((acc, val) => acc + val, 0);
+            if (timeOfUsege[outerIndex]) totalEmission += (sumInnerArray / 1000) * (timeOfUsege[outerIndex] / 60) * 0.4857;
+          });
+          return totalEmission;
+        }
+        Appliance.findOne({ userId: "test" }).then((result) => {
+          if (result != null) {
+            const availableAppliance = result.appliance
+            const availableApplianceData = result.applianceData.map((appliance) => appliance).sort((a, b) => a.index - b.index);
+            ApplianceDataHistory.findOne({ userId: "test" }).then((result) => {
               if (result == null) {
                 ApplianceDataHistory.create({
                   userId: userId,
@@ -187,20 +190,8 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     ).mean,
                   },
                   $inc: {
-                    totalEmission:
-                      (data.power_distribution.reduce(
-                        (acc, val) =>
-                          acc + val.reduce((acc, val) => acc + val, 0),
-                        0
-                      ) /
-                        1000) *
-                      0.5986,
-                    totalWatt:
-                      data.power_distribution.reduce(
-                        (acc, val) =>
-                          acc + val.reduce((acc, val) => acc + val, 0),
-                        0
-                      ) / 1000,
+                    totalEmission: findEmission(data.power_distribution, result.timeOfUsege), // แก้ผลรวมให้เป็น kWh แล้วคูณด้วย 0.5610
+                    totalWatt: data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000,
                   },
                   Types: getSpecificArray(applianceNames, availableAppliance),
                   timeOfUsege: sumArrays(

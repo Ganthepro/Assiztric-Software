@@ -11,10 +11,12 @@
 }
 
 .detail {
-    background-color: #F3B5A3;
+    background-color: #E9714F;
+    color: white;
     width: fit-content;
-    padding: 5px;
+    padding: 5px 20px;
     border-radius: 20px;
+    margin: 0 auto;
 }
 
 .homeDashboard {
