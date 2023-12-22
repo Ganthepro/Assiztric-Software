@@ -18,7 +18,7 @@ async function getToken() {
 }
 
 function init(accessToken) {
-  fetch(`http://localhost:5000/init`, {
+  fetch(`http://10.10.10.38:5000/init`, {
     headers: {
       "Content-Type": "application/json",
     },
