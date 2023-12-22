@@ -30,6 +30,8 @@ const applianceSchema = new Schema({
     Usage: Number,
     UsageBehavior: String,
     index: Number,
+    appliance_alert_idx: String,
+    isAlert: Boolean,
   }],
   appliance: [0,0,0,0,0,0,0,0],
 });
@@ -39,7 +41,10 @@ const notificationSchema = new Schema({
   time: { type: String, default: getTime },
   detail: String,
   date: { type: String, default: getDate },
+  timestamp: { type: Date, default: Date.now },
+  notification_id: String,
 });
+notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
 const applianceDataHistorySchema = new Schema({
   userId: String,
   Types: [String],
@@ -97,6 +102,8 @@ function getDate() {
   const day = String(now.getDate()).padStart(2, "0");
   return `${month}/${day}/${year}`;
 }
+
+// สร้าง API เพื่อลบ notification
 
 app.post("/addApplianceDataHistory", middleware, async (req, res) => {
   const W_R = req.body.W_R;
