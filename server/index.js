@@ -339,7 +339,6 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
 
 app.get("/getPredictData/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
-  console.log(userId);
   const data = await ApplianceDataHistory.findOne({ userId: userId });
   try {
     const active = data.active;
@@ -403,8 +402,7 @@ app.post("/addNotification", middleware, (req, res) => {
 });
 
 app.get("/getNotification/:code", middleware, (req, res) => {
-  // const userId = req.headers["userid"];
-  const userId = userId;
+  const userId = req.headers["userId"];
   const code = req.params.code;
   Notification.find({ userId: userId })
     .then(async (result) => {
@@ -441,6 +439,7 @@ app.get("/getNotification/:code", middleware, (req, res) => {
 
 app.post("/addApplianceData", middleware, async (req, res) => {
   let data = req.body;
+  const userId = data.userId;
   const index = await applianceNames.indexOf(data.Type);
   let appliances = [0, 0, 0, 0, 0, 0, 0, 0];
   data['index'] = await index;
