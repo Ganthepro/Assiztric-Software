@@ -115,8 +115,8 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
       body: JSON.stringify({
         user_appliance: await getAvailableAppliance(),
         pred_threshold: 0.5,
-        W_R: W_R,
-        Var_R: Var_R,
+        W_R,
+        Var_R,
       }),
     })
       .then((response) => response.json())
