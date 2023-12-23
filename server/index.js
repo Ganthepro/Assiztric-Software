@@ -188,6 +188,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
             const availableApplianceData = result.applianceData.map((appliance) => appliance).sort((a, b) => a.index - b.index);
             ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
               if (result == null) {
+                console.log("No data found"); 
                 ApplianceDataHistory.create({ userId: userId, timeOfUsege: [], applianceId: [] });
                 return;
               }
