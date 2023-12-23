@@ -26,7 +26,7 @@ function init(accessToken) {
     },
     method: "POST",
     body: JSON.stringify({
-      userId: Cookies.get("userId"),
+      userID: Cookies.get("userId"),
       token: accessToken,
     }),
   })
