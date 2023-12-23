@@ -43,6 +43,7 @@ const notificationSchema = new Schema({
   date: { type: String, default: getDate },
   timestamp: { type: Date, default: Date.now },
   notification_id: String,
+  createdAt: { type: Date, default: Date.now },
 });
 notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
 const applianceDataHistorySchema = new Schema({
@@ -104,6 +105,25 @@ function getDate() {
 }
 
 // สร้าง API เพื่อลบ notification
+app.post("/deleteNotification", middleware, (req, res) => {
+  const { notification_id, appliance_alert_idx, userId } = req.body;
+  Notification.deleteOne({ notification_id: notification_id })
+    .then((result) => {
+      console.log("Notification deleted");
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.error("Error deleting notification:", err);
+      return res.json(err);
+    });
+  Appliance.findOneAndUpdate(
+    { userId: "test" },
+    { $set: { [`applianceData.${appliance_alert_idx}.isAlert`]: false } },
+    { new: true, upsert: true, returnOriginal: true }
+  ).then((result) => {
+    console.log(`Appliance updated : ${result}`);
+  });
+});
 
 app.post("/addApplianceDataHistory", middleware, async (req, res) => {
   const W_R = req.body.W_R;
@@ -360,6 +380,12 @@ app.post("/addNotification", middleware, (req, res) => {
       console.error("Error saving notification:", err);
       return res.json(err);
     });
+  const result = Appliance.findOneAndUpdate(
+    { userId: "test" },
+    { $set: { [`applianceData.${data.appliance_alert_idx}.isAlert`]: true } },
+    { new: true, upsert: true, returnOriginal: true }
+  )
+  console.log(result);
 });
 
 app.get("/getNotification/:code", middleware, (req, res) => {
