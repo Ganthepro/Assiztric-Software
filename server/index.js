@@ -136,6 +136,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
     return output;
   }
   try {
+    console.log("Getting prediction...");
     await fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/prediction", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
