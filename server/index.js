@@ -337,8 +337,8 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
   }
 });
 
-app.get("/getPredictData", middleware, async (req, res) => {
-  const userId = req.headers["userId"];
+app.get("/getPredictData/:userId", middleware, async (req, res) => {
+  const userId = req.params.userId;
   console.log(userId);
   const data = await ApplianceDataHistory.findOne({ userId: userId });
   try {
