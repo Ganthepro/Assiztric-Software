@@ -128,7 +128,6 @@ app.post("/deleteNotification", middleware, (req, res) => {
 
 app.post("/addApplianceDataHistory", middleware, async (req, res) => {
   const { W_R, Var_R, userId } = req.body;
-  console.log(W_R, Var_R, userId);
   async function getAvailableAppliance() {
     let output = [];
     await Appliance.findOne({ userId: userId }).then((result) => {
@@ -149,6 +148,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         function getMean(power_distribution) {
           let mean = [];
           power_distribution.forEach((power, index) => {
