@@ -104,13 +104,12 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
   const Var_R = req.body.Var_R;
   const userId = req.body.userId;
   console.log(W_R, Var_R, userId);  
-  console.log(typeof W_R[0]);  
+  console.log(typeof W_R[0]);
   async function getAvailableAppliance() {
     let output = [];
     await Appliance.findOne({ userId: userId }).then((result) => {
       if (result != null) output = result.appliance;
     });
-    console.log(output);
     return output;
   }
   try {
@@ -120,8 +119,8 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
       body: JSON.stringify({
         user_appliance: await getAvailableAppliance(),
         pred_threshold: 0.5,
-        W_R,
-        Var_R,
+        W_R: W_R,
+        Var_R: Var_R,
       }),
     })
       .then((response) => response.json())
