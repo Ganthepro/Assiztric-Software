@@ -136,7 +136,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
     return output;
   }
   try {
-    console.log(W_R, Var_R, await getAvailableAppliance());
+    console.log(typeof W_R[0], Var_R, await getAvailableAppliance());
     await fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/prediction", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
