@@ -128,6 +128,7 @@ app.post("/deleteNotification", middleware, (req, res) => {
 
 app.post("/addApplianceDataHistory", middleware, async (req, res) => {
   const { W_R, Var_R, userId } = req.body;
+  console.log(W_R, Var_R, userId);
   async function getAvailableAppliance() {
     let output = [];
     await Appliance.findOne({ userId: userId }).then((result) => {
