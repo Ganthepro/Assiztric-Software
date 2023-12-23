@@ -113,7 +113,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
     return output;
   }
   try {
-    await fetch("https://2565-2001-fb1-aa-46eb-68af-2186-97fb-6881.ngrok-free.app", {
+    await fetch("https://2565-2001-fb1-aa-46eb-68af-2186-97fb-6881.ngrok-free.app/prediction", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
