@@ -100,11 +100,7 @@ function getDate() {
 }
 
 app.post("/addApplianceDataHistory", middleware, async (req, res) => {
-  const W_R = req.body.W_R;
-  const Var_R = req.body.Var_R;
-  const userId = req.body.userId;
-  console.log(W_R, Var_R, userId);  
-  console.log(typeof W_R[0]);
+  const { W_R, Var_R, userId } = req.body;
   async function getAvailableAppliance() {
     let output = [];
     await Appliance.findOne({ userId: userId }).then((result) => {
@@ -125,7 +121,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         function getMean(power_distribution) {
           let mean = [];
           power_distribution.forEach((power, index) => {
