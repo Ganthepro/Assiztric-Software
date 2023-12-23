@@ -39,7 +39,8 @@ const notificationSchema = new Schema({
   userId: String,
   code: Number, // 0: Tip, 1: Alert, 2: Ft
   time: { type: String, default: getTime },
-  detail: String,
+  heading: String,
+  advice: String,
   date: { type: String, default: getDate },
   timestamp: { type: Date, default: Date.now },
   notification_id: String,
@@ -368,7 +369,8 @@ app.post("/addNotification", middleware, (req, res) => {
   const newNotification = new Notification({
     userId: data.userId,
     code: data.code, // 0: Tip, 1: Alert, 2: Ft
-    detail: data.detail,
+    heading: data.heading,
+    advice: data.advice,
   });
   newNotification
     .save()
@@ -399,11 +401,8 @@ app.get("/getNotification/:code", middleware, (req, res) => {
       );
       const groupedNotifications = {};
       await filteredNotifications.forEach((notification) => {
-        if (!groupedNotifications[notification.date]) {
-          groupedNotifications[notification.date] = [notification];
-        } else {
-          groupedNotifications[notification.date].push(notification);
-        }
+        if (!groupedNotifications[notification.date]) groupedNotifications[notification.date] = [notification];
+        else groupedNotifications[notification.date].push(notification);
       });
       const sortedKeys = Object.keys(groupedNotifications)
         .map((dateString) => new Date(dateString))
@@ -448,7 +447,7 @@ app.post("/addApplianceData", middleware, async (req, res) => {
         { userId: "test" },
         { 
           $push : { applianceData: data }, 
-          appliance: appliances 
+          appliance: appliances
         },
         { new: true, upsert: true, returnOriginal: true }
       ).then((result) => {
@@ -468,7 +467,6 @@ app.post("/auth", middleware, async (req, res) => {
         displayName: data.displayName,
         pictureUrl: data.pictureUrl,
       });
-      console.log(newUser);
       await newUser
         .save()
         .then((result) => {
