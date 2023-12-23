@@ -104,6 +104,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
   const Var_R = req.body.Var_R;
   const userId = req.body.userId;
   console.log(W_R, Var_R, userId);  
+  console.log(typeof W_R[0]);  
   async function getAvailableAppliance() {
     let output = [];
     await Appliance.findOne({ userId: userId }).then((result) => {
