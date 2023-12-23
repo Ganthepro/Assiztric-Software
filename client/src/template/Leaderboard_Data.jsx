@@ -41,7 +41,7 @@ function Leaderboard_Data(props) {
                     }}
                 ></div>
             </div>
-            <p style={{height:"fit-content",whiteSpace:"nowrap"}}>{props.data[2]} นาที</p>    
+            <p style={{height:"fit-content",whiteSpace:"nowrap"}}>{parseInt(props.data[2])} นาที</p>    
         </div>
         <img src={RightArrow} alt="" style={{height:"17px"}} />
       </div>

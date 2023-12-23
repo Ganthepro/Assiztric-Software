@@ -30,6 +30,8 @@ const applianceSchema = new Schema({
     Usage: Number,
     UsageBehavior: String,
     index: Number,
+    appliance_alert_idx: String,
+    isAlert: Boolean,
   }],
   appliance: [0,0,0,0,0,0,0,0],
 });
@@ -37,10 +39,14 @@ const notificationSchema = new Schema({
   userId: String,
   code: Number, // 0: Tip, 1: Alert, 2: Ft
   time: { type: String, default: getTime },
-  detail: String,
+  heading: String,
+  advice: String,
   date: { type: String, default: getDate },
-  id: String,
+  timestamp: { type: Date, default: Date.now },
+  notification_id: String,
+  createdAt: { type: Date, default: Date.now },
 });
+notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
 const applianceDataHistorySchema = new Schema({
   userId: String,
   Types: [String],
@@ -99,6 +105,27 @@ function getDate() {
   return `${month}/${day}/${year}`;
 }
 
+// สร้าง API เพื่อลบ notification
+app.post("/deleteNotification", middleware, (req, res) => {
+  const { notification_id, appliance_alert_idx, userId } = req.body;
+  Notification.deleteOne({ notification_id: notification_id })
+    .then((result) => {
+      console.log("Notification deleted");
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.error("Error deleting notification:", err);
+      return res.json(err);
+    });
+  Appliance.findOneAndUpdate(
+    { userId: "test" },
+    { $set: { [`applianceData.${appliance_alert_idx}.isAlert`]: false } },
+    { new: true, upsert: true, returnOriginal: true }
+  ).then((result) => {
+    console.log(`Appliance updated : ${result}`);
+  });
+});
+
 app.post("/addApplianceDataHistory", middleware, async (req, res) => {
   const { W_R, Var_R, userId } = req.body;
   async function getAvailableAppliance() {
@@ -150,9 +177,9 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           let totalEmission = 0;
           power_distribution.forEach((innerArray, outerIndex) => {
             const sumInnerArray = innerArray.reduce((acc, val) => acc + val, 0);
-            if (timeOfUsege[outerIndex]) totalEmission += (sumInnerArray / 1000) * (timeOfUsege[outerIndex] / 60) * 0.4857;
+            console.log(sumInnerArray);
+            if (timeOfUsege[outerIndex]) totalEmission += (sumInnerArray / 1000) * (1 / 120) * 0.4857;
           });
-          console.log(totalEmission);
           return totalEmission;
         }
         Appliance.findOne({ userId: "test" }).then((result) => {
@@ -189,14 +216,11 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     ).mean,
                   },
                   $inc: {
-                    totalEmission: findEmission(data.power_distribution, result.timeOfUsege), // แก้ผลรวมให้เป็น kWh แล้วคูณด้วย 0.5610
+                    totalEmission: findEmission(getSpecificArray(data.power_distribution, availableAppliance), result.timeOfUsege), // แก้ผลรวมให้เป็น kWh แล้วคูณด้วย 0.5610
                     totalWatt: data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000,
                   },
                   Types: getSpecificArray(applianceNames, availableAppliance),
-                  timeOfUsege: sumArrays(
-                    result.timeOfUsege,
-                    getSpecificArray(data.active, availableAppliance)
-                  ),
+                  timeOfUsege: sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance).map((active) => active * 0.5)),
                   active: getSpecificArray(data.active, availableAppliance),
                   powerDistribution: getSpecificArray(
                     data.power_distribution,
@@ -346,8 +370,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
     let timeOfUsege = data.timeOfUsege;
     let Types = data.Types;
     let active = data.active;
-    let applianceId = data.applianceId;
-    console.log(timeOfUsege, Types, active, applianceId);
+    let applianceId = data.applianceId; 
     const usagePercent = () => {
       const sum = data.timeOfUsege.reduce(
         (accumulator, currentValue) => accumulator + currentValue,
@@ -440,8 +463,8 @@ app.post("/addNotification", middleware, (req, res) => {
   const newNotification = new Notification({
     userId: data.userId,
     code: data.code, // 0: Tip, 1: Alert, 2: Ft
-    detail: data.detail,
-    id: data.id,
+    heading: data.heading,
+    advice: data.advice,
   });
   newNotification
     .save()
@@ -451,19 +474,6 @@ app.post("/addNotification", middleware, (req, res) => {
     })
     .catch((err) => {
       console.error("Error saving notification:", err);
-      return res.json(err);
-    });
-});
-
-app.delete("/deleteNotification/:id", middleware, (req, res) => {
-  const id = req.params.id;
-  Notification.findByIdAndDelete(id)
-    .then((result) => {
-      console.log("Notification deleted:", result);
-      return res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.error("Error deleting notification:", err);
       return res.json(err);
     });
 });
@@ -478,8 +488,11 @@ app.get("/getNotification/:code", middleware, (req, res) => {
       );
       const groupedNotifications = {};
       await filteredNotifications.forEach((notification) => {
-        if (!groupedNotifications[notification.date]) groupedNotifications[notification.date] = [notification];
-        else groupedNotifications[notification.date].push(notification);
+        if (!groupedNotifications[notification.date]) {
+          groupedNotifications[notification.date] = [notification];
+        } else {
+          groupedNotifications[notification.date].push(notification);
+        }
       });
       const sortedKeys = Object.keys(groupedNotifications)
         .map((dateString) => new Date(dateString))
@@ -508,32 +521,28 @@ app.post("/addApplianceData", middleware, async (req, res) => {
   let data = req.body;
   const index = await applianceNames.indexOf(data.Type);
   let appliances = [0, 0, 0, 0, 0, 0, 0, 0];
-  data["index"] = await index;
-  const userId = data.userId;
-  Appliance.findOne({ userId: userId }).then((result) => {
-    if (result == null) {
-      index != -1 ? (appliances[index] = 1) : null;
-      return Appliance.create({
-        userId: userId,
-        applianceData: [],
-        appliance: appliances,
+  data['index'] = await index;
+  Appliance.findOne({ userId: "test" })
+    .then((result) => {
+      if (result == null) {
+        index != -1 ? (appliances[index] = 1) : null;
+        return Appliance.create({ userId: "test", applianceData: [], appliance: appliances });
+      } else {
+        result.appliance.forEach((appliance, index) => {
+          if (appliance == 1) appliances[index] = 1;
+        });
+        index != -1 ? (appliances[index] = 1) : null;
+      } 
+      Appliance.findOneAndUpdate(
+        { userId: "test" },
+        { 
+          $push : { applianceData: data }, 
+          appliance: appliances
+        },
+        { new: true, upsert: true, returnOriginal: true }
+      ).then((result) => {
+        return res.status(200).json(result);
       });
-    } else {
-      result.appliance.forEach((appliance, index) => {
-        if (appliance == 1) appliances[index] = 1;
-      });
-      index != -1 ? (appliances[index] = 1) : null;
-    }
-    Appliance.findOneAndUpdate(
-      { userId: userId },
-      {
-        $push: { applianceData: data },
-        appliance: appliances,
-      },
-      { new: true, upsert: true, returnOriginal: true }
-    ).then((result) => {
-      return res.status(200).json(result);
-    });
   });
 });
 
@@ -548,7 +557,6 @@ app.post("/auth", middleware, async (req, res) => {
         displayName: data.displayName,
         pictureUrl: data.pictureUrl,
       });
-      console.log(newUser);
       await newUser
         .save()
         .then((result) => {
