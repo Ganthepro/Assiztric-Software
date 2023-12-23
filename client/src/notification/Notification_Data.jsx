@@ -25,9 +25,9 @@ function Notification_Data(props) {
     return (
         <>
             <div className='main-notificationData'>
-                <div style={{width:"300px",display:"flex", alignItems:"center"}}>
+                <div style={{width:"250px",display:"flex", alignItems:"center"}}>
                     <img src={code == 0 ? NofiSuggest : code == 1 ? NotiAlert : code == 2 ? NotiChange : "Loading"} style={{height:"30px"}} />
-                    <div style={{display:"flex",flexDirection:"column",justifyContent:"space-between",width:"80%",marginLeft:"10px"}}>
+                    <div style={{display:"flex",flexDirection:"column",justifyContent:"space-between",width:"70%",marginLeft:"10px"}}>
                         <p>{code == 0 ? "แนะนำการใช้เครื่องใช้ไฟฟ้า" : code == 1 ? "การใช้งานเครื่องใช้ไฟฟ้าที่ผิดปกติ" : code == 2 ? "การเปลี่ยนแปลงของค่า Ft." : "Loading"}</p>
                         <h6 style={{textOverflow:"ellipsis",whiteSpace:"nowrap",overflow:"hidden"}} ref={notificationDataRef}>{props.data.detail}</h6>
                     </div>

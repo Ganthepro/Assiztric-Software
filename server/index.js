@@ -42,7 +42,6 @@ const notificationSchema = new Schema({
   heading: String,
   advice: String,
   date: { type: String, default: getDate },
-  timestamp: { type: Date, default: Date.now },
   notification_id: String,
   appliance_alert_idx: Number,
   createdAt: { type: Date, default: Date.now },
@@ -105,26 +104,6 @@ function getDate() {
   const day = String(now.getDate()).padStart(2, "0");
   return `${month}/${day}/${year}`;
 }
-
-app.post("/deleteNotification", middleware, (req, res) => {
-  const { notification_id, appliance_alert_idx, userId } = req.body;
-  Notification.deleteOne({ notification_id: notification_id })
-    .then((result) => {
-      console.log("Notification deleted");
-      return res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.error("Error deleting notification:", err);
-      return res.json(err);
-    });
-  Appliance.findOneAndUpdate(
-    { userId: userId },
-    { $set: { [`user_alert_appliance[${appliance_alert_idx}]`]: 0 } },
-    { new: true, upsert: true, returnOriginal: true }
-  ).then((result) => {
-    console.log(`Appliance updated : ${result}`);
-  });
-});
 
 app.post("/addApplianceDataHistory", middleware, async (req, res) => {
   const { W_R, Var_R, userId } = req.body;
@@ -234,21 +213,21 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
 });
 
 async function middleware(req, res, next) {
-  const token = req.headers["token"];
-  if (!token) return res.status(401).send("Access denied, token missing");
-  try {
-    const response = await fetch(
-      `https://api.line.me/oauth2/v2.1/verify?access_token=${token}`,
-      {
-        method: "GET",
-      }
-    );
-    if (!response.ok) return res.status(401).send("Invalid token");
-    next();
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send("Error verifying token");
-  }
+  // const token = req.headers["token"];
+  // if (!token) return res.status(401).send("Access denied, token missing");
+  // try {
+  //   const response = await fetch(
+  //     `https://api.line.me/oauth2/v2.1/verify?access_token=${token}`,
+  //     {
+  //       method: "GET",
+  //     }
+  //   );
+  //   if (!response.ok) return res.status(401).send("Invalid token");
+  next();
+  // } catch (error) {
+  //   console.error(error);
+  //   return res.status(500).send("Error verifying token");
+  // }
 }
 
 app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
@@ -373,6 +352,26 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
   }
 });
 
+app.post("/deleteNotification", middleware, (req, res) => {
+  const { notification_id, appliance_alert_idx, userId } = req.body;
+  Notification.deleteOne({ notification_id: notification_id })
+    .then((result) => {
+      console.log("Notification deleted");
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.error("Error deleting notification:", err);
+      return res.json(err);
+    });
+  Appliance.findOneAndUpdate(
+    { userId: userId },
+    { $set: { [`user_alert_appliance.${appliance_alert_idx}`]: 0 } },
+    { new: true, upsert: true, returnOriginal: true }
+  ).then((result) => {
+    console.log(`Appliance updated : ${result}`);
+  });
+});
+
 app.post("/addNotification", middleware, (req, res) => {
   const data = req.body;
   const appliance_alert_idx = data.appliance_alert_idx;
@@ -382,6 +381,8 @@ app.post("/addNotification", middleware, (req, res) => {
     code: data.code, // 0: Tip, 1: Alert, 2: Ft
     heading: data.heading,
     advice: data.advice,
+    notification_id: data.notification_id,
+    appliance_alert_idx: appliance_alert_idx,
   });
   newNotification
     .save()
@@ -393,17 +394,19 @@ app.post("/addNotification", middleware, (req, res) => {
       console.error("Error saving notification:", err);
       return res.json(err);
     });
-  const result = Appliance.findOneAndUpdate(
+  Appliance.findOneAndUpdate(
     { userId: userId },
-    { $set: { [`user_alert_appliance[${appliance_alert_idx}]`]: 1 } },
-    { new: true, upsert: true, returnOriginal: true }
+    { $set: { [`user_alert_appliance.${appliance_alert_idx}`]: 1 } },
+    { new: true, upsert: true }
   )
-  console.log(result);
+    .then((result) => {
+      console.log(`Appliance updated : ${result}`);
+    });
 });
 
 app.get("/getNotification/:code", middleware, (req, res) => {
   // const userId = req.headers["userid"];
-  const userId = userId;
+  const userId = "test";
   const code = req.params.code;
   Notification.find({ userId: userId })
     .then(async (result) => {
@@ -440,6 +443,7 @@ app.get("/getNotification/:code", middleware, (req, res) => {
 
 app.post("/addApplianceData", middleware, async (req, res) => {
   let data = req.body;
+  const userId = "test";
   const index = await applianceNames.indexOf(data.Type);
   let appliances = [0, 0, 0, 0, 0, 0, 0, 0];
   data['index'] = await index;
@@ -447,7 +451,7 @@ app.post("/addApplianceData", middleware, async (req, res) => {
     .then((result) => {
       if (result == null) {
         index != -1 ? (appliances[index] = 1) : null;
-        return Appliance.create({ userId: userId, applianceData: [], appliance: appliances });
+        return Appliance.create({ userId: userId, applianceData: [],user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0], appliance: appliances });
       } else {
         result.appliance.forEach((appliance, index) => {
           if (appliance == 1) appliances[index] = 1;
