@@ -25,7 +25,14 @@
 }
 
 .inputs-overlayAdd > * {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 20px;
+}
+
+.Dropdown{
+    width: 100%;
+    height: 30px;
 }
 
 .real-main {

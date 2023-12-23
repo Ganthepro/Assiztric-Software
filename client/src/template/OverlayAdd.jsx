@@ -52,6 +52,17 @@ function OverlayAdd(props) {
           ปิด
         </button>
         <div className="inputs-overlayAdd">
+          ประเภทเครื่องใช้ไฟฟ้า
+          <select className="Dropdown" name="appliances" id="appliances">
+          <option value="1">เครื่องซักผ้า</option>
+          <option value="2">หม้อหุงข้าว</option>
+          <option value="3">พัดลม</option>
+          <option value="4">ตู้เย็น</option>
+          <option value="5">เครื่องปรับอากาศ</option>
+          <option value="6">เตารีด</option>
+          <option value="7">โทรทัศน์</option>
+          <option value="8">เครื่องกรองอากาศ</option>
+          </select>
           <Input
             title="ประเภทเครื่องใช้ไฟฟ้า"
             placeholder="กรุณากรอกประเภท"
