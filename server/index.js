@@ -3,8 +3,8 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-dotenv.config();
 
+dotenv.config();
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
@@ -30,11 +30,11 @@ const applianceSchema = new Schema({
     Usage: Number,
     UsageBehavior: String,
     index: Number,
-    appliance_alert_idx: String,
-    isAlert: Boolean,
   }],
-  appliance: [0,0,0,0,0,0,0,0],
+  user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0],
+  appliance: [0, 0, 0, 0, 0, 0, 0, 0],
 });
+// เช็ก appliance_alert_idx แล้วหา index ของ appliance ที่ตรงกัน แล้วเอาไปใส่ใน user_alert_appliance
 const notificationSchema = new Schema({
   userId: String,
   code: Number, // 0: Tip, 1: Alert, 2: Ft
@@ -44,6 +44,7 @@ const notificationSchema = new Schema({
   date: { type: String, default: getDate },
   timestamp: { type: Date, default: Date.now },
   notification_id: String,
+  appliance_alert_idx: Number,
   createdAt: { type: Date, default: Date.now },
 });
 notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
@@ -63,15 +64,15 @@ const applianceDataHistorySchema = new Schema({
 });
 
 let applianceNames = [
-  "WashingMC",
-  "RiceCooker",
-  "ElecFan",
-  "Fridge",
-  "AirCon",
-  "Iron",
-  "TV",
-  "AirPurifier",
-];
+  'WashingMC',
+  'RiceCooker',
+  'ElecFan',
+  'Fridge',
+  'AirCon',
+  'Iron',
+  'TV',
+  'AirPurifier'
+]
 
 const User = mongoose.model("User", userSchema, "users");
 const Appliance = mongoose.model("Appliance", applianceSchema, "appliance");
@@ -105,7 +106,6 @@ function getDate() {
   return `${month}/${day}/${year}`;
 }
 
-// สร้าง API เพื่อลบ notification
 app.post("/deleteNotification", middleware, (req, res) => {
   const { notification_id, appliance_alert_idx, userId } = req.body;
   Notification.deleteOne({ notification_id: notification_id })
@@ -118,8 +118,8 @@ app.post("/deleteNotification", middleware, (req, res) => {
       return res.json(err);
     });
   Appliance.findOneAndUpdate(
-    { userId: "test" },
-    { $set: { [`applianceData.${appliance_alert_idx}.isAlert`]: false } },
+    { userId: userId },
+    { $set: { [`user_alert_appliance[${appliance_alert_idx}]`]: 0 } },
     { new: true, upsert: true, returnOriginal: true }
   ).then((result) => {
     console.log(`Appliance updated : ${result}`);
@@ -131,12 +131,12 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
   async function getAvailableAppliance() {
     let output = [];
     await Appliance.findOne({ userId: userId }).then((result) => {
-      if (result != null) output = result.appliance;
+      if (result != null) output = result.appliance
     });
     return output;
   }
   try {
-    await fetch("https://2565-2001-fb1-aa-46eb-68af-2186-97fb-6881.ngrok-free.app/prediction", {
+    await fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/prediction", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -153,11 +153,11 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           power_distribution.forEach((power, index) => {
             mean.push(power.reduce((acc, val) => acc + val, 0) / power.length);
           });
-          return { mean };
+          return {mean};
         }
         function sumArrays(...arrays) {
-          const maxLength = Math.max(...arrays.map((arr) => arr.length));
-          const result = new Array(maxLength).fill(0);
+          const maxLength = Math.max(...arrays.map((arr) => arr.length)); 
+          const result = new Array(maxLength).fill(0); 
           arrays.forEach((arr) => {
             for (let i = 0; i < maxLength; i++) result[i] += arr[i] || 0;
           });
@@ -165,9 +165,8 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
         }
         function getSpecificArray(array, usageApplicance) {
           let arr = [];
-          try {
-            for (let i = 0; i < usageApplicance.length; i++)
-              if (usageApplicance[i] == 1) arr.push(array[i]);
+          try{
+            for (let i = 0; i < usageApplicance.length; i++) if (usageApplicance[i] == 1) arr.push(array[i]);
           } catch (err) {
             console.error(err);
           }
@@ -180,40 +179,26 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
             console.log(sumInnerArray);
             if (timeOfUsege[outerIndex]) totalEmission += (sumInnerArray / 1000) * (1 / 120) * 0.4857;
           });
+          console.log(totalEmission);
           return totalEmission;
         }
-        Appliance.findOne({ userId: "test" }).then((result) => {
+        Appliance.findOne({ userId: userId }).then((result) => {
           if (result != null) {
             const availableAppliance = result.appliance
             const availableApplianceData = result.applianceData.map((appliance) => appliance).sort((a, b) => a.index - b.index);
-            ApplianceDataHistory.findOne({ userId: "test" }).then((result) => {
+            ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
               if (result == null) {
-                ApplianceDataHistory.create({
-                  userId: userId,
-                  timeOfUsege: [],
-                  applianceId: [],
-                });
+                ApplianceDataHistory.create({ userId: userId, timeOfUsege: [], applianceId: [] });
                 return;
               }
               ApplianceDataHistory.findOneAndUpdate(
                 { userId: userId },
                 {
                   $push: {
-                    activeStack: getSpecificArray(
-                      data.active,
-                      availableAppliance
-                    ),
-                    powerDistributionStack: getSpecificArray(
-                      data.power_distribution,
-                      availableAppliance
-                    ),
+                    activeStack: getSpecificArray(data.active, availableAppliance),
+                    powerDistributionStack: getSpecificArray(data.power_distribution, availableAppliance),
                     times: getTime(),
-                    meanPowerStack: getMean(
-                      getSpecificArray(
-                        data.power_distribution,
-                        availableAppliance
-                      )
-                    ).mean,
+                    meanPowerStack: getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean,
                   },
                   $inc: {
                     totalEmission: findEmission(getSpecificArray(data.power_distribution, availableAppliance), result.timeOfUsege), // แก้ผลรวมให้เป็น kWh แล้วคูณด้วย 0.5610
@@ -222,54 +207,30 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                   Types: getSpecificArray(applianceNames, availableAppliance),
                   timeOfUsege: sumArrays(result.timeOfUsege, getSpecificArray(data.active, availableAppliance).map((active) => active * 0.5)),
                   active: getSpecificArray(data.active, availableAppliance),
-                  powerDistribution: getSpecificArray(
-                    data.power_distribution,
-                    availableAppliance
-                  ),
-                  applianceId: availableApplianceData.map(
-                    (appliance) => appliance._id
-                  ),
+                  powerDistribution: getSpecificArray(data.power_distribution, availableAppliance), 
+                  applianceId: availableApplianceData.map((appliance) => appliance._id),
                 },
                 { new: true, upsert: true, returnOriginal: true }
-              ).then((respone) => {
-                const W_R = () => {
-                  const W_R = [];
-                  for (let i = 0; i < respone.powerDistributionStack.length; i++) {
-                    let object = {};
-                    respone.powerDistributionStack[i].forEach((power, index) => {
-                      object[availableApplianceData[index].Type] = power;
-                    });
-                    W_R.push(object);
-                  }
-                  return W_R;
-                }
-                console.log(W_R());
-                fetch("https://0a07-161-246-144-205.ngrok-free.app/notification", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      userId: userId,
-                      token: req.headers["token"],
-                      user_appliance: result1.appliance,
-                      W_R: W_R(),
-                    }),
-                  }
-                )
-                  .then((res) => res.json())
-                  .then((data) => {
-                    res.status(200).send(data);
-                  });
+              ).then(async (result) => {
+                fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/notification", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    user_appliance: await getAvailableAppliance(),
+                    user_id: userId,
+                    token: req.headers["token"],
+                    W_R: result.powerDistributionStack,
+                    user_alert_appliance
+                  }),
+                })
               });
             });
-          }
+          };
         });
       });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error adding appliance data history");
-  }
+    } catch (err) {
+      console.error(err);
+    }
 });
 
 async function middleware(req, res, next) {
@@ -290,10 +251,9 @@ async function middleware(req, res, next) {
   }
 }
 
-app.get("/getApplianceInfo/:id", middleware, (req, res) => {
-  const userId = req.headers["userid"];
+app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
+  const userId = req.params.userId;
   const id = req.params.id;
-  console.log(userId, id);
   let avarage = 0;
   let timeOfUsege = 0;
   let updatedTime = 0;
@@ -305,9 +265,7 @@ app.get("/getApplianceInfo/:id", middleware, (req, res) => {
     if (result == null) {
       return res.status(200).json({ applianceData: [] });
     } else {
-      const applianceData = result.applianceData.filter(
-        (appliance) => appliance._id == id
-      );
+      const applianceData = result.applianceData.filter((appliance) => appliance._id == id);
       brand = applianceData[0].Brand;
       model = applianceData[0].Model;
       name = applianceData[0].Type;
@@ -315,50 +273,14 @@ app.get("/getApplianceInfo/:id", middleware, (req, res) => {
   });
   ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
     if (result == null) {
-      return res
-        .status(200)
-        .json({
-          timeOfUsege,
-          avarage,
-          updatedTime,
-          brand,
-          model,
-          name,
-          meanPowerStack,
-        });
+      return res.status(200).json({ timeOfUsege, avarage, updatedTime, brand, model, name, meanPowerStack });
     } else {
       const applianceDataIndex = result.applianceId.indexOf(id);
       timeOfUsege = result.timeOfUsege[applianceDataIndex];
       updatedTime = result.times[result.times.length - 1];
-      avarage =
-        result.meanPowerStack
-          .filter((power) => power[applianceDataIndex] != 0)
-          .reduce((acc, val) => acc + val[applianceDataIndex], 0) /
-        result.meanPowerStack.filter((power) => power[applianceDataIndex] != 0)
-          .length;
-      meanPowerStack = result.meanPowerStack.map(
-        (power) => power[applianceDataIndex]
-      );
-      console.log(
-        timeOfUsege,
-        avarage,
-        updatedTime,
-        brand,
-        model,
-        name,
-        meanPowerStack
-      );
-      return res
-        .status(200)
-        .json({
-          timeOfUsege,
-          avarage,
-          updatedTime,
-          brand,
-          model,
-          name,
-          meanPowerStack,
-        });
+      avarage = result.meanPowerStack.filter((power) => power[applianceDataIndex] != 0).reduce((acc, val) => acc + val[applianceDataIndex], 0) / result.meanPowerStack.filter((power) => power[applianceDataIndex] != 0).length;
+      meanPowerStack = result.meanPowerStack.map((power) => power[applianceDataIndex]);
+      return res.status(200).json({ timeOfUsege, avarage, updatedTime, brand, model, name, meanPowerStack });
     }
   });
 });
@@ -372,10 +294,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
     let active = data.active;
     let applianceId = data.applianceId; 
     const usagePercent = () => {
-      const sum = data.timeOfUsege.reduce(
-        (accumulator, currentValue) => accumulator + currentValue,
-        0
-      );
+      const sum = data.timeOfUsege.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
       return timeOfUsege.map((usage) => (usage / sum) * 100);
     };
     for (let i = 0; i < usagePercent().length; i++) {
@@ -418,8 +337,8 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
   }
 });
 
-app.get("/getPredictData", middleware, async (req, res) => {
-  const userId = req.headers["userid"];
+app.get("/getPredictData/:userId", middleware, async (req, res) => {
+  const userId = req.params.userId;
   const data = await ApplianceDataHistory.findOne({ userId: userId });
   try {
     const active = data.active;
@@ -436,12 +355,8 @@ app.get("/getPredictData", middleware, async (req, res) => {
         ? data.meanPowerStack.slice(-10080)
         : data.meanPowerStack;
     const types = data.Types;
-    for (let i = 0; i < powerDistributionStackDay.length; i++) {
-      if (powerDistributionStackDay[i].length < active.length)
-        powerDistributionStackDay[i].push(0);
-      if (powerDistributionStackWeek[i].length < active.length)
-        powerDistributionStackWeek[i].push(0);
-    }
+    for (let i = 0; i < powerDistributionStackDay.length; i++) 
+      if (powerDistributionStackDay[i].length < active.length) powerDistributionStackDay[i].push(0);
     res.status(200).json({
       active,
       powerDistribution,
@@ -460,8 +375,10 @@ app.get("/getPredictData", middleware, async (req, res) => {
 
 app.post("/addNotification", middleware, (req, res) => {
   const data = req.body;
+  const appliance_alert_idx = data.appliance_alert_idx;
+  const userId = data.userId;
   const newNotification = new Notification({
-    userId: data.userId,
+    userId: userId,
     code: data.code, // 0: Tip, 1: Alert, 2: Ft
     heading: data.heading,
     advice: data.advice,
@@ -476,10 +393,17 @@ app.post("/addNotification", middleware, (req, res) => {
       console.error("Error saving notification:", err);
       return res.json(err);
     });
+  const result = Appliance.findOneAndUpdate(
+    { userId: userId },
+    { $set: { [`user_alert_appliance[${appliance_alert_idx}]`]: 1 } },
+    { new: true, upsert: true, returnOriginal: true }
+  )
+  console.log(result);
 });
 
 app.get("/getNotification/:code", middleware, (req, res) => {
-  const userId = req.headers["userid"];
+  // const userId = req.headers["userid"];
+  const userId = userId;
   const code = req.params.code;
   Notification.find({ userId: userId })
     .then(async (result) => {
@@ -488,11 +412,8 @@ app.get("/getNotification/:code", middleware, (req, res) => {
       );
       const groupedNotifications = {};
       await filteredNotifications.forEach((notification) => {
-        if (!groupedNotifications[notification.date]) {
-          groupedNotifications[notification.date] = [notification];
-        } else {
-          groupedNotifications[notification.date].push(notification);
-        }
+        if (!groupedNotifications[notification.date]) groupedNotifications[notification.date] = [notification];
+        else groupedNotifications[notification.date].push(notification);
       });
       const sortedKeys = Object.keys(groupedNotifications)
         .map((dateString) => new Date(dateString))
@@ -522,11 +443,11 @@ app.post("/addApplianceData", middleware, async (req, res) => {
   const index = await applianceNames.indexOf(data.Type);
   let appliances = [0, 0, 0, 0, 0, 0, 0, 0];
   data['index'] = await index;
-  Appliance.findOne({ userId: "test" })
+  Appliance.findOne({ userId: userId })
     .then((result) => {
       if (result == null) {
         index != -1 ? (appliances[index] = 1) : null;
-        return Appliance.create({ userId: "test", applianceData: [], appliance: appliances });
+        return Appliance.create({ userId: userId, applianceData: [], appliance: appliances });
       } else {
         result.appliance.forEach((appliance, index) => {
           if (appliance == 1) appliances[index] = 1;
@@ -534,7 +455,7 @@ app.post("/addApplianceData", middleware, async (req, res) => {
         index != -1 ? (appliances[index] = 1) : null;
       } 
       Appliance.findOneAndUpdate(
-        { userId: "test" },
+        { userId: userId },
         { 
           $push : { applianceData: data }, 
           appliance: appliances
@@ -557,6 +478,7 @@ app.post("/auth", middleware, async (req, res) => {
         displayName: data.displayName,
         pictureUrl: data.pictureUrl,
       });
+      console.log(newUser);
       await newUser
         .save()
         .then((result) => {
