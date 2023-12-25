@@ -136,7 +136,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
     return output;
   }
   try {
-    console.log(typeof W_R[0], Var_R, await getAvailableAppliance());
     await fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/prediction", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -178,10 +177,8 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           let totalEmission = 0;
           power_distribution.forEach((innerArray, outerIndex) => {
             const sumInnerArray = innerArray.reduce((acc, val) => acc + val, 0);
-            console.log(sumInnerArray);
             if (timeOfUsege[outerIndex]) totalEmission += (sumInnerArray / 1000) * (1 / 120) * 0.4857;
           });
-          console.log(totalEmission);
           return totalEmission;
         }
         Appliance.findOne({ userId: userId }).then((result) => {
