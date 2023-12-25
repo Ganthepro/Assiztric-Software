@@ -20,6 +20,7 @@ const userSchema = new Schema({
   userId: String,
   displayName: String,
   pictureUrl: String,
+  isInit: { type: Boolean, default: false },
 });
 const applianceSchema = new Schema({
   userId: String,
@@ -251,8 +252,8 @@ async function middleware(req, res, next) {
   }
 }
 
-app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
-  const userId = req.params.userId;
+app.get("/getApplianceInfo/:id", middleware, (req, res) => {
+  const userId = req.headers["userId"];
   const id = req.params.id;
   let avarage = 0;
   let timeOfUsege = 0;
