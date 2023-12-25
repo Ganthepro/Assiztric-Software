@@ -252,8 +252,8 @@ async function middleware(req, res, next) {
   }
 }
 
-app.get("/getApplianceInfo/:id", middleware, (req, res) => {
-  const userId = req.headers["userId"];
+app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
+  const userId = req.params.userId;
   const id = req.params.id;
   let avarage = 0;
   let timeOfUsege = 0;

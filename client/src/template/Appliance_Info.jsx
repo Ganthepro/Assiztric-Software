@@ -9,7 +9,7 @@ function Appliance_Info(props) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch(`https://assiztric-software.vercel.app/getApplianceInfo/${props.id}`, {
+    fetch(`https://assiztric-software.vercel.app/getApplianceInfo/${Cookies.get('userId')}/${props.id}`, {
       method: "GET",
       headers: {
         token: Cookies.get("token"),
