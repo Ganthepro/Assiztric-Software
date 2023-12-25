@@ -281,7 +281,6 @@ app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
       updatedTime = result.times[result.times.length - 1];
       avarage = result.meanPowerStack.filter((power) => power[applianceDataIndex] != 0).reduce((acc, val) => acc + val[applianceDataIndex], 0) / result.meanPowerStack.filter((power) => power[applianceDataIndex] != 0).length;
       meanPowerStack = result.meanPowerStack.map((power) => power[applianceDataIndex]);
-      console.log(timeOfUsege, avarage, updatedTime, brand, model, name, meanPowerStack);
       return res.status(200).json({ timeOfUsege, avarage, updatedTime, brand, model, name, meanPowerStack });
     }
   });
