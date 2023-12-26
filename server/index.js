@@ -418,8 +418,8 @@ app.post("/addNotification", middleware, (req, res) => {
     });
 });
 
-app.get("/getNotification/:code", middleware, (req, res) => {
-  const userId = req.headers["userId"];
+app.get("/getNotification/:userId/:code", middleware, (req, res) => {
+  const userId = req.params.userId;
   const code = req.params.code;
   Notification.find({ userId: userId })
     .then(async (result) => {
