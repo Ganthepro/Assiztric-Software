@@ -1,12 +1,27 @@
-import { useEffect } from 'react';
 import './Appliance_Info_Info.css'
-import TV_Logo_Light from "../assets/Television_Icon_Light.svg";
+import Washing_Logo from '../assets/Washing_Icon.svg';
+import Fan_Logo from '../assets/Fan_Icon.svg';
+import Fridge_Logo from '../assets/Fridge_Icon.svg';
+import TV_Logo_Dark from '../assets/Television_Icon.svg';
 
 function Appliance_Info_Info(props) {
+    const icons = [
+      ['WashingMC',Washing_Logo],
+      ['RiceCooker',TV_Logo_Dark],
+      ['ElecFan',Fan_Logo],
+      ['Fridge',Fridge_Logo],
+      ['AirCon',TV_Logo_Dark],
+      ['Iron',TV_Logo_Dark],
+      ['TV',TV_Logo_Dark],
+      ['AirPurifier',TV_Logo_Dark]
+    ]
+
     return (
         <div className='main-applianceInfoInfo'>
             <div style={{display:"flex",alignItems:"center"}}>
-                <img src={TV_Logo_Light} alt="TV Logo" style={{marginRight:"10px",height:"35px"}} />
+                <img src={props.data != null ? icons.filter((value) => {
+                    return value[0] === props.data.name ? value[1] : null
+                })[0][1] : TV_Logo_Dark} alt="Logo" style={{marginRight:"10px",height:"35px"}} />
                 <h4 className='applianceInfo'>{props.data != null ? props.data.name : "Name"}</h4>
             </div>
             <hr />
