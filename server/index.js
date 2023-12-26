@@ -192,8 +192,8 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 },
                 { new: true, upsert: true, returnOriginal: true }
               ).then(async (result) => {
+                console.log(user_alert_appliance)
                 async function toObject(arr) {
-                  console.log(arr);
                   let rs = []
                   for (let i = 0; i < arr.length; ++i) {
                     let rv = {};
