@@ -192,7 +192,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 },
                 { new: true, upsert: true, returnOriginal: true }
               ).then(async (result) => {
-                console.log(user_alert_appliance)
                 async function toObject(arr) {
                   let rs = []
                   for (let i = 0; i < arr.length; ++i) {
@@ -210,8 +209,8 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     user_appliance: await getAvailableAppliance(),
                     user_id: userId,
                     token: req.headers["token"],
-                    W_R: result.powerDistributionStack,
-                    user_alert_appliance: await toObject(user_alert_appliance),
+                    W_R: await toObject(result.powerDistributionStack),
+                    user_alert_appliance: user_alert_appliance,
                   }),
                 })
               });
