@@ -6,6 +6,7 @@ import { Dashboard } from './dashboard/Dashboard.jsx'
 import { Error } from './auth/Error.jsx'
 import { Notification } from './notification/notification.jsx'
 import {createBrowserRouter,RouterProvider} from "react-router-dom";
+import Appliance_Info from './template/Appliance_Info'
 import Cookies from "js-cookie";
 import liff from "@line/liff";
 
@@ -19,78 +20,79 @@ async function getToken() {
 
 function init(accessToken) {
   // ทำ isLogin?
-  const api = 'https://assiztric.ddns.net/init'
-  fetch(api, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    body: JSON.stringify({
-      userID: Cookies.get("userId"),
-      token: accessToken,
-    }),
-  })
-    .then((res) => res.text())
-    .then((data) => {
-      console.log(data);
-    });
+  // const api = 'https://assiztric.ddns.net/init'
+  // fetch(api, {
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   method: "POST",
+  //   body: JSON.stringify({
+  //     userID: Cookies.get("userId"),
+  //     token: accessToken,
+  //   }),
+  // })
+  //   .then((res) => res.text())
+  //   .then((data) => {
+  //     console.log(data);
+  //   });
 }
 
 async function login() {
-  try {
-    await liff.init({ liffId: "2001224573-pxK3m42V", withLoginOnExternalBrowser:true }); // Replace with your LIFF ID
-    Cookies.set("isLogin", false, { expires: 1 })
-    if (!liff.isLoggedIn()) {
-      liff.login();
-    } else {
-      const accessToken = liff.getAccessToken();
-      const profile = await liff.getProfile();
-      if (accessToken) {
-        Cookies.set("token", accessToken, { expires: 1 });
-        Cookies.set("userId", profile.userId, { expires: 1 });
-        Cookies.set("pictureUrl", profile.pictureUrl, { expires: 1 });
-        Cookies.set("displayName", profile.displayName, { expires: 1 });
-        Cookies.set("isLogin", true, { expires: 1 })
-        fetch(`http://localhost:5500/auth`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "token": accessToken,
-          },
-          body: JSON.stringify({
-            userId: Cookies.get("userId"),
-            displayName: profile.displayName,
-            pictureUrl: profile.pictureUrl
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            setProfiles([data.displayName, data.pictureUrl]);
-        })
-        fetch(`http://localhost:5500/${Cookies.get("userId")}`, {
-          headers: {
-            token: accessToken,
-          },
-          method: "GET",
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-          });
-        init(accessToken);
-      } else {
-        console.error("Access token not available");
-      }
-    }
-  } catch (error) {
-    console.error("LIFF initialization failed", error);
-  }
+  // try {
+  //   await liff.init({ liffId: "2001224573-pxK3m42V", withLoginOnExternalBrowser:true }); // Replace with your LIFF ID
+  //   Cookies.set("isLogin", false, { expires: 1 })
+  //   if (!liff.isLoggedIn()) {
+  //     liff.login();
+  //   } else {
+  //     const accessToken = liff.getAccessToken();
+  //     const profile = await liff.getProfile();
+  //     if (accessToken) {
+  //       Cookies.set("token", accessToken, { expires: 1 });
+  //       Cookies.set("userId", profile.userId, { expires: 1 });
+  //       Cookies.set("pictureUrl", profile.pictureUrl, { expires: 1 });
+  //       Cookies.set("displayName", profile.displayName, { expires: 1 });
+  //       Cookies.set("isLogin", true, { expires: 1 })
+  //       fetch(`http://localhost:5500/auth`, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           "token": accessToken,
+  //         },
+  //         body: JSON.stringify({
+  //           userId: Cookies.get("userId"),
+  //           displayName: profile.displayName,
+  //           pictureUrl: profile.pictureUrl
+  //         }),
+  //       })
+  //         .then((res) => res.json())
+  //         .then((data) => {
+  //           setProfiles([data.displayName, data.pictureUrl]);
+  //       })
+  //       fetch(`http://localhost:5500/${Cookies.get("userId")}`, {
+  //         headers: {
+  //           token: accessToken,
+  //         },
+  //         method: "GET",
+  //       })
+  //         .then((res) => res.json())
+  //         .then((data) => {
+  //           console.log(data);
+  //         });
+  //       init(accessToken);
+  //     } else {
+  //       console.error("Access token not available");
+  //     }
+  //   }
+  // } catch (error) {
+  //   console.error("LIFF initialization failed", error);
+  // }
 }
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home id={0} loginFunc={login} tokenFunc={getToken} />,
+    // element: <Home id={0} loginFunc={login} tokenFunc={getToken} />,
+    element: <Appliance_Info id={0} />,
   },
   {
     path: "/dashboard",
