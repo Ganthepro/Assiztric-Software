@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const schedule = require('node-schedule');
 
 dotenv.config();
 mongoose
@@ -89,6 +90,24 @@ const ApplianceDataHistory = mongoose.model(
 
 app.use(express.json());
 app.use(cors());
+
+async function resetData() {
+  const existingDocument = await ApplianceDataHistory.findOne({});
+  const timeOfUsegeLength = existingDocument.timeOfUsege.length;
+  const zerosArray = Array(timeOfUsegeLength).fill(0);
+  await ApplianceDataHistory.findOneAndUpdate(
+    {},
+    { $set: { timeOfUsege: zerosArray } },
+    { new: true, upsert: true, returnOriginal: true }
+  ).then((result) => {
+    console.log(`Appliance updated : ${result}`);
+  });
+}
+
+schedule.scheduleJob('0 0 * * *', () => {
+  console.log('Running data reset at midnight...');
+  resetData();
+});
 
 function getTime() {
   const now = new Date();
@@ -202,8 +221,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                   };
                   return rs;
                 }
-                const powerDistributionStack = await toObject(result.powerDistributionStack);
-                console.log(powerDistributionStack);
                 fetch("https://ab18-161-246-144-17.ngrok-free.app/notification", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
@@ -211,8 +228,9 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     user_appliance: await getAvailableAppliance(),
                     user_id: userId,
                     token: req.headers["token"],
-                    W_R: powerDistributionStack,
+                    W_R: await toObject(result.powerDistributionStack),
                     user_alert_appliance: user_alert_appliance,
+                    timeOfUsege: await toObject(result.timeOfUsege),
                   }),
                 })
               });
@@ -367,7 +385,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
 });
 
 app.post("/deleteNotification", middleware, (req, res) => {
-  const { notification_id, appliance_alert_idx, userId } = req.body;
+  const { notification_id, appliance_alert_idx, userId } = req.body; // body that required
   Notification.deleteOne({ notification_id: notification_id })
     .then((result) => {
       console.log("Notification deleted");
