@@ -203,6 +203,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                   return rs;
                 }
                 const powerDistributionStack = await toObject(result.powerDistributionStack);
+                console.log(powerDistributionStack);
                 fetch("https://ab18-161-246-144-17.ngrok-free.app/notification", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
