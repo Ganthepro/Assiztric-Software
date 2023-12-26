@@ -165,6 +165,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           if (result != null) {
             const availableAppliance = result.appliance
             const availableApplianceData = result.applianceData.map((appliance) => appliance).sort((a, b) => a.index - b.index);
+            const user_alert_appliance = result.user_alert_appliance;
             ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
               if (result == null) {
                 ApplianceDataHistory.create({ userId: userId, timeOfUsege: [], applianceId: [] });
@@ -191,7 +192,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 },
                 { new: true, upsert: true, returnOriginal: true }
               ).then(async (result) => {
-                fetch("https://assiztric-nilm-634c4s4qnq-as.a.run.app/notification", {
+                fetch("https://ab18-161-246-144-17.ngrok-free.app/notification", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
@@ -199,7 +200,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     user_id: userId,
                     token: req.headers["token"],
                     W_R: result.powerDistributionStack,
-                    user_alert_appliance
+                    user_alert_appliance: user_alert_appliance,
                   }),
                 })
               });
