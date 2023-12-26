@@ -200,9 +200,9 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                       rv[result.Types[j]] = arr[i][j];
                     rs.push(rv);
                   };
-                  console.log(rs);
                   return rs;
                 }
+                const powerDistributionStack = await toObject(result.powerDistributionStack);
                 fetch("https://ab18-161-246-144-17.ngrok-free.app/notification", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
@@ -210,7 +210,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     user_appliance: await getAvailableAppliance(),
                     user_id: userId,
                     token: req.headers["token"],
-                    W_R: await toObject(result.powerDistributionStack),
+                    W_R: powerDistributionStack,
                     user_alert_appliance: user_alert_appliance,
                   }),
                 })
