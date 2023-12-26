@@ -215,21 +215,21 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
 });
 
 async function middleware(req, res, next) {
-  // const token = req.headers["token"];
-  // if (!token) return res.status(401).send("Access denied, token missing");
-  // try {
-  //   const response = await fetch(
-  //     `https://api.line.me/oauth2/v2.1/verify?access_token=${token}`,
-  //     {
-  //       method: "GET",
-  //     }
-  //   );
-  //   if (!response.ok) return res.status(401).send("Invalid token");
-  next();
-  // } catch (error) {
-  //   console.error(error);
-  //   return res.status(500).send("Error verifying token");
-  // }
+  const token = req.headers["token"];
+  if (!token) return res.status(401).send("Access denied, token missing");
+  try {
+    const response = await fetch(
+      `https://api.line.me/oauth2/v2.1/verify?access_token=${token}`,
+      {
+        method: "GET",
+      }
+    );
+    if (!response.ok) return res.status(401).send("Invalid token");
+    next();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Error verifying token");
+  }
 }
 
 app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
