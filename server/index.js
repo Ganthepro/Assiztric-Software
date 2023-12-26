@@ -192,15 +192,15 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 },
                 { new: true, upsert: true, returnOriginal: true }
               ).then(async (result) => {
-                function toObject(arr) {
+                async function toObject(arr) {
                   let rs = []
                   for (let i = 0; i < arr.length; ++i) {
                     let rv = {};
                     for (let j = 0; j < result.Types.length; ++j)
                       rv[result.Types[j]] = arr[i][j];
                     rs.push(rv);
+                    console.log(rs);
                   };
-                  console.log(rs);
                   return rs;
                 }
                 fetch("https://ab18-161-246-144-17.ngrok-free.app/notification", {
