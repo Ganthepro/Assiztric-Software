@@ -19,7 +19,7 @@ function OverlayAdd(props) {
       UsageBehavior: descriptionRef.current.value,
     };
     try {
-      const response = await fetch(`https://assiztric-software.vercel.app/addApplianceData`, {
+      const response = await fetch(`http://localhost:5500/addApplianceData`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -51,7 +51,7 @@ async function login() {
         Cookies.set("pictureUrl", profile.pictureUrl, { expires: 1 });
         Cookies.set("displayName", profile.displayName, { expires: 1 });
         Cookies.set("isLogin", true, { expires: 1 })
-        fetch(`https://assiztric-software.vercel.app/auth`, {
+        fetch(`http://localhost:5500/auth`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -67,7 +67,7 @@ async function login() {
           .then((data) => {
             setProfiles([data.displayName, data.pictureUrl]);
         })
-        fetch(`https://assiztric-software.vercel.app/${Cookies.get("userId")}`, {
+        fetch(`http://localhost:5500/${Cookies.get("userId")}`, {
           headers: {
             token: accessToken,
           },

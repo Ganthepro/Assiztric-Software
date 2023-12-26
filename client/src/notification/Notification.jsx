@@ -34,7 +34,7 @@ export function Notification(props) {
   useEffect(() => {
     async function fetchNotification() {
       try {
-        const response = await fetch(`https://assiztric-software.vercel.app/getNotification/${code}`,
+        const response = await fetch(`http://localhost:5500/getNotification/${code}`,
           {
             method: "GET",
             headers: {

@@ -8,7 +8,7 @@ function Home_Leaderboard(props) {
 
     function getLeaderboard() {
         if (Cookies.get("userId") == "" || Cookies.get("userId") == undefined || Cookies.get("userId") == null) return;
-        fetch(`https://assiztric-software.vercel.app/getLeaderboard/${Cookies.get("userId")}`, {
+        fetch(`http://localhost:5500/getLeaderboard/${Cookies.get("userId")}`, {
             method: "GET",
             headers: {
                 token: Cookies.get("token"),
