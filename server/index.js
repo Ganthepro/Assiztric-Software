@@ -194,6 +194,16 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 },
                 { new: true, upsert: true, returnOriginal: true }
               ).then(async (result) => {
+                function toObject(arr) {
+                  let rs = []
+                  for (let i = 0; i < arr.length; ++i) {
+                    let rv = {};
+                    for (let j = 0; j < result.Types.length; ++j)
+                      rv[result.Types[j]] = arr[i][j];
+                    rs.push(rv);
+                  };
+                  return rs;
+                }
                 fetch("https://ab18-161-246-144-17.ngrok-free.app/notification", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
@@ -202,7 +212,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     user_id: userId,
                     token: req.headers["token"],
                     W_R: result.powerDistributionStack,
-                    user_alert_appliance: user_alert_appliance,
+                    user_alert_appliance: toObject(user_alert_appliance),
                   }),
                 })
               });
