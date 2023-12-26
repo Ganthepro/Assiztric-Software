@@ -212,7 +212,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     user_id: userId,
                     token: req.headers["token"],
                     W_R: result.powerDistributionStack,
-                    user_alert_appliance: toObject(user_alert_appliance),
+                    user_alert_appliance: await toObject(user_alert_appliance),
                   }),
                 })
               });
