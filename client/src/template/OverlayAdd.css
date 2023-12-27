@@ -25,7 +25,18 @@
 }
 
 .inputs-overlayAdd > * {
+    display: flex;
     margin-bottom: 20px;
+}
+
+.Dropdown{
+    width: 100%;
+    height: 30px;
+    border: none;
+    border-bottom: 1px solid #E9714F;
+    padding: 5px;
+    outline: none;
+    background-color: whitesmoke;
 }
 
 .real-main {
