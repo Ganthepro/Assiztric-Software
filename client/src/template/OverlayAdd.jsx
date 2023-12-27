@@ -4,8 +4,6 @@ import { useRef } from "react";
 import Cookies from "js-cookie";
 
 function OverlayAdd(props) {
-  // TODO: Drop Down List
-  const typeRef = useRef(null);
   const modelRef = useRef(null);
   const brandRef = useRef(null);
   const powerRef = useRef(null);
@@ -67,11 +65,6 @@ function OverlayAdd(props) {
             <option value="TV">โทรทัศน์</option>
             <option value="AirPurifier">เครื่องกรองอากาศ</option>
           </select>
-          <Input
-            title="ประเภทเครื่องใช้ไฟฟ้า"
-            placeholder="กรุณากรอกประเภท"
-            ref={typeRef}
-          />
           <Input
             title="ชื่อรุ่น"
             placeholder="กรุณากรอกชื่อรุ่น"
