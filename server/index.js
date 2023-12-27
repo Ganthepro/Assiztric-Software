@@ -88,8 +88,13 @@ const ApplianceDataHistory = mongoose.model(
   "applianceDataHistory"
 );
 
+const corsOptions = {
+  origin: 'https://assiztric.vercel.app',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 async function resetData() {
   const existingDocument = await ApplianceDataHistory.findOne({});
