@@ -384,7 +384,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
   }
 });
 
-app.post("/deleteNotification", middleware, (req, res) => {
+app.post("/deleteNotification", (req, res) => {
   const { notification_id, appliance_alert_idx, userId } = req.body; // body that required
   Notification.deleteOne({ notification_id: notification_id })
     .then((result) => {
