@@ -6,6 +6,7 @@ import { Dashboard } from './dashboard/Dashboard.jsx'
 import { Error } from './auth/Error.jsx'
 import { Notification } from './notification/notification'
 import {createBrowserRouter,RouterProvider} from "react-router-dom";
+import OverlayAdd from './template/OverlayAdd'
 import Chart from './dashboard/Chart'
 import Filter_List from './notification/Filter_List'
 import Cookies from "js-cookie";
@@ -60,8 +61,8 @@ async function login() {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home id={0} loginFunc={login} tokenFunc={getToken} />,
-    // element: <Appliance_Info />,
+    // element: <Home id={0} loginFunc={login} tokenFunc={getToken} />,
+    element: <OverlayAdd />,
   },
   {
     path: "/dashboard",
