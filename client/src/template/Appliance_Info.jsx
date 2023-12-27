@@ -14,7 +14,6 @@ function Appliance_Info(props) {
       cors: "no-cors",
       headers: {
         token: Cookies.get("token"),
-        userid: Cookies.get("userId"),
       },
     })
     .then((res) => res.json())
