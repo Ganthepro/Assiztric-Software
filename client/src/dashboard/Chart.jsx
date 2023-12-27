@@ -149,7 +149,6 @@ function Chart(props) {
             });
           });
         }
-        console.log(data.timeDay);
         setData({
           labels: props.mode === 0 ? data.timeDay : data.timeWeek,
           datasets: datasets,
