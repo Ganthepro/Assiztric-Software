@@ -363,20 +363,25 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
       data.meanPowerStack.length > 1440
         ? data.meanPowerStack.slice(-1440)
         : data.meanPowerStack;
+    const timeDay = data.times.length > 1440 ? data.times.slice(-1440) : data.times;
     const powerDistributionStackWeek =
       data.meanPowerStack.length > 10080
         ? data.meanPowerStack.slice(-10080)
         : data.meanPowerStack;
+    const timeWeek = data.times.length > 10080 ? data.times.slice(-10080) : data.times;
     const types = data.Types;
     for (let i = 0; i < powerDistributionStackDay.length; i++) 
       if (powerDistributionStackDay[i].length < active.length) powerDistributionStackDay[i].push(0);
+    for (let i = 0; i < powerDistributionStackWeek.length; i++)
+      if (powerDistributionStackWeek[i].length < active.length) powerDistributionStackWeek[i].push(0);
     res.status(200).json({
       active,
       powerDistribution,
       activeStack,
       powerDistributionStackDay,
       powerDistributionStackWeek,
-      times: data.times,
+      timeDay,
+      timeWeek,
       types,
       totalEmission,
       totalWatt,

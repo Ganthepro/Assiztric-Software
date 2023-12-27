@@ -152,7 +152,7 @@ function Chart(props) {
           });
         }
         setData({
-          labels: data.times,
+          labels: props.mode === 0 ? data.timeDay : data.timeWeek,
           datasets: datasets,
         });
       });
