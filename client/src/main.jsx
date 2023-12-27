@@ -71,7 +71,7 @@ async function login() {
           headers: {
             token: accessToken,
           },
-          method: "GET",
+          method: "POST",
         })
           .then((res) => res.json())
           .then((data) => {

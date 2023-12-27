@@ -252,7 +252,7 @@ async function middleware(req, res, next) {
     const response = await fetch(
       `https://api.line.me/oauth2/v2.1/verify?access_token=${token}`,
       {
-        method: "GET",
+        method: "POST",
       }
     );
     if (!response.ok) return res.status(401).send("Invalid token");
@@ -263,7 +263,7 @@ async function middleware(req, res, next) {
   }
 }
 
-app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
+app.post("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
   const userId = req.params.userId;
   const id = req.params.id;
   let avarage = 0;
@@ -297,7 +297,7 @@ app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
   });
 });
 
-app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
+app.post("/getLeaderboard/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
   const data = await ApplianceDataHistory.findOne({ userId: userId });
   if (data != null) {
@@ -349,7 +349,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
   }
 });
 
-app.get("/getPredictData/:userId", middleware, async (req, res) => {
+app.post("/getPredictData/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
   const data = await ApplianceDataHistory.findOne({ userId: userId });
   try {
@@ -442,7 +442,7 @@ app.post("/addNotification", middleware, (req, res) => {
     });
 });
 
-app.get("/getNotification/:userId/:code", middleware, (req, res) => {
+app.post("/getNotification/:userId/:code", middleware, (req, res) => {
   const userId = req.params.userId;
   const code = req.params.code;
   Notification.find({ userId: userId })

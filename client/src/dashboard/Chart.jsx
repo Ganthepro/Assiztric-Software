@@ -103,7 +103,7 @@ function Chart(props) {
     // ข้อมูลสลับกัน
     const userId = Cookies.get("userId");
     fetch(`https://assiztric-software.vercel.app/getPredictData/${userId}`, {
-      method: "GET",
+      method: "POST",
       headers: {
         token: Cookies.get("token"),
       }

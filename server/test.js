@@ -234,7 +234,7 @@ async function middleware(req, res, next) {
   //   const response = await fetch(
   //     `https://api.line.me/oauth2/v2.1/verify?access_token=${token}`,
   //     {
-  //       method: "GET",
+  //       method: "POST",
   //     }
   //   );
   //   if (!response.ok) return res.status(401).send("Invalid token");
