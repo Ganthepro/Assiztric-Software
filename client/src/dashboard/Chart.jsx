@@ -125,8 +125,6 @@ function Chart(props) {
         }
         if (props.updateTimeFunc != null)
           props.updateTimeFunc(data.times[data.times.length - 1]);
-        // console.log(powerDistributionStack);
-        // console.log(props.isOnly);
         if (props.isOnly != null && props.isOnly != undefined) {
           const index = data.types.indexOf(props.isOnly);
           datasets.push({
@@ -151,6 +149,7 @@ function Chart(props) {
             });
           });
         }
+        console.log(data.timeDay);
         setData({
           labels: props.mode === 0 ? data.timeDay : data.timeWeek,
           datasets: datasets,
