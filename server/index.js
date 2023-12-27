@@ -238,8 +238,10 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           };
         });
       });
+      res.send("Success")
     } catch (err) {
       console.error(err);
+      res.status(500).send("Error adding appliance data history");
     }
 });
 
