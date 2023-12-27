@@ -124,7 +124,7 @@ function Chart(props) {
           powerDistributionStack.push(powerDistributionStackConcat);
         }
         if (props.updateTimeFunc != null)
-          props.updateTimeFunc(data.times[data.times.length - 1]);
+          props.updateTimeFunc(data.timeDay[data.timeDay.length - 1]);
         if (props.isOnly != null && props.isOnly != undefined) {
           const index = data.types.indexOf(props.isOnly);
           datasets.push({
