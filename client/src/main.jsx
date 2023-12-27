@@ -71,7 +71,7 @@ async function login() {
           headers: {
             token: accessToken,
           },
-          method: "POST",
+          method: "GET",
         })
           .then((res) => res.json())
           .then((data) => {
@@ -91,6 +91,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Home id={0} loginFunc={login} tokenFunc={getToken} />,
+    // element: <Appliance_Info />,
   },
   {
     path: "/dashboard",
