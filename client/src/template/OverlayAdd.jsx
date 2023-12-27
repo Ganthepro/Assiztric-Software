@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Cookies from "js-cookie";
 
 function OverlayAdd(props) {
+  // TODO: Drop Down List
   const typeRef = useRef(null);
   const modelRef = useRef(null);
   const brandRef = useRef(null);
@@ -19,7 +20,7 @@ function OverlayAdd(props) {
       UsageBehavior: descriptionRef.current.value,
     };
     try {
-      const response = await fetch(`http://localhost:5500/addApplianceData`, {
+      const response = await fetch(`https://assiztric-software.vercel.app/addApplianceData`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

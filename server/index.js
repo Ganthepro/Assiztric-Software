@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const schedule = require('node-schedule');
 
 dotenv.config();
 mongoose
@@ -90,6 +91,24 @@ const ApplianceDataHistory = mongoose.model(
 app.use(express.json());
 app.use(cors());
 
+async function resetData() {
+  const existingDocument = await ApplianceDataHistory.findOne({});
+  const timeOfUsegeLength = existingDocument.timeOfUsege.length;
+  const zerosArray = Array(timeOfUsegeLength).fill(0);
+  await ApplianceDataHistory.findOneAndUpdate(
+    {},
+    { $set: { timeOfUsege: zerosArray } },
+    { new: true, upsert: true, returnOriginal: true }
+  ).then((result) => {
+    console.log(`Appliance updated : ${result}`);
+  });
+}
+
+schedule.scheduleJob('0 0 * * *', () => {
+  console.log('Running data reset at midnight...');
+  resetData();
+});
+
 function getTime() {
   const now = new Date();
   const hours = String(now.getHours()).padStart(2, "0");
@@ -128,7 +147,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         function getMean(power_distribution) {
           let mean = [];
           power_distribution.forEach((power, index) => {
@@ -193,15 +211,26 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 },
                 { new: true, upsert: true, returnOriginal: true }
               ).then(async (result) => {
-                fetch("https://ab18-161-246-144-17.ngrok-free.app/notification", {
+                async function toObject(arr) {
+                  let rs = []
+                  for (let i = 0; i < arr.length; ++i) {
+                    let rv = {};
+                    for (let j = 0; j < result.Types.length; ++j)
+                      rv[result.Types[j]] = arr[i][j];
+                    rs.push(rv);
+                  };
+                  return rs;
+                }
+                fetch("https://9e64-161-246-144-17.ngrok-free.app/notification", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
                     user_appliance: await getAvailableAppliance(),
                     user_id: userId,
                     token: req.headers["token"],
-                    W_R: result.powerDistributionStack,
+                    W_R: await toObject(result.powerDistributionStack),
                     user_alert_appliance: user_alert_appliance,
+                    timeOfUsege: await toObject(result.timeOfUsege),
                   }),
                 })
               });
@@ -209,8 +238,10 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           };
         });
       });
+      res.send("Success")
     } catch (err) {
       console.error(err);
+      res.status(500).send("Error adding appliance data history");
     }
 });
 
@@ -320,7 +351,6 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
 
 app.get("/getPredictData/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
-  console.log(userId);
   const data = await ApplianceDataHistory.findOne({ userId: userId });
   try {
     const active = data.active;
@@ -332,20 +362,25 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
       data.meanPowerStack.length > 1440
         ? data.meanPowerStack.slice(-1440)
         : data.meanPowerStack;
+    const timeDay = data.times.length > 1440 ? data.times.slice(-1440) : data.times;
     const powerDistributionStackWeek =
       data.meanPowerStack.length > 10080
         ? data.meanPowerStack.slice(-10080)
         : data.meanPowerStack;
+    const timeWeek = data.times.length > 10080 ? data.times.slice(-10080) : data.times;
     const types = data.Types;
     for (let i = 0; i < powerDistributionStackDay.length; i++) 
       if (powerDistributionStackDay[i].length < active.length) powerDistributionStackDay[i].push(0);
+    for (let i = 0; i < powerDistributionStackWeek.length; i++)
+      if (powerDistributionStackWeek[i].length < active.length) powerDistributionStackWeek[i].push(0);
     res.status(200).json({
       active,
       powerDistribution,
       activeStack,
       powerDistributionStackDay,
       powerDistributionStackWeek,
-      times: data.times,
+      timeDay,
+      timeWeek,
       types,
       totalEmission,
       totalWatt,
@@ -355,8 +390,8 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
   }
 });
 
-app.post("/deleteNotification", middleware, (req, res) => {
-  const { notification_id, appliance_alert_idx, userId } = req.body;
+app.post("/deleteNotification", (req, res) => {
+  const { notification_id, appliance_alert_idx, userId } = req.body; // body that required
   Notification.deleteOne({ notification_id: notification_id })
     .then((result) => {
       console.log("Notification deleted");
@@ -407,8 +442,8 @@ app.post("/addNotification", middleware, (req, res) => {
     });
 });
 
-app.get("/getNotification/:code", middleware, (req, res) => {
-  const userId = req.headers["userId"];
+app.get("/getNotification/:userId/:code", middleware, (req, res) => {
+  const userId = req.params.userId;
   const code = req.params.code;
   Notification.find({ userId: userId })
     .then(async (result) => {
