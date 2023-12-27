@@ -37,6 +37,7 @@ export function Notification(props) {
         const response = await fetch(`https://assiztric-software.vercel.app/getNotification/${Cookies.get('userId')}/${code}`,
           {
             method: "GET",
+            cors: "no-cors",
             headers: {
               token: Cookies.get("token"),
             },

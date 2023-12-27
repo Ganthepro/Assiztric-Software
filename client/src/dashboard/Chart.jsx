@@ -104,6 +104,7 @@ function Chart(props) {
     const userId = Cookies.get("userId");
     fetch(`https://assiztric-software.vercel.app/getPredictData/${userId}`, {
       method: "GET",
+      cors: "no-cors",
       headers: {
         token: Cookies.get("token"),
       }
