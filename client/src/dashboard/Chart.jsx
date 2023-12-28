@@ -101,11 +101,10 @@ function Chart(props) {
   let interval;
 
   function getData(mode) {
-    console.log(mode);
     const userId = Cookies.get("userId");
     fetch(`https://assiztric-software.vercel.app/getPredictData/${userId}`, {
       method: "GET",
-      cors: "no-cors",
+      
       headers: {
         token: Cookies.get("token"),
       }
@@ -169,14 +168,8 @@ function Chart(props) {
       });
   }
 
-  // useEffect(() => {
-  //   interval = setInterval(() => getData(props.mode), 60000);
-  //   return () => clearInterval(interval);
-  // }, []);
-
   useEffect(() => {
     clearInterval(interval);
-    console.log("clear");
     interval = setInterval(() => getData(props.mode), 60000);
     async function fetchData() {
       await setData(null);

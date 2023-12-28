@@ -10,7 +10,6 @@ function Home_Leaderboard(props) {
         if (Cookies.get("userId") == "" || Cookies.get("userId") == undefined || Cookies.get("userId") == null) return;
         fetch(`https://assiztric-software.vercel.app/getLeaderboard/${Cookies.get("userId")}`, {
             method: "GET",
-            cors: "no-cors",
             headers: {
                 token: Cookies.get("token"),
             },

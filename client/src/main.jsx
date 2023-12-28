@@ -72,7 +72,7 @@ async function login() {
             token: accessToken,
           },
           method: "GET",
-          cors: "no-cors",
+          
         })
           .then((res) => res.json())
           .then((data) => {
