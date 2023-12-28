@@ -295,6 +295,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     rs[result.Types[i]] = arr[i];
                   return rs;
                 }
+                console.log(user_alert_appliance);
                 fetch(
                   "https://2a69-2001-fb1-ab-a967-11f9-3e1b-4531-bcf7.ngrok-free.app/notification",
                   {
