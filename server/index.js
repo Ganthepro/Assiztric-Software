@@ -191,6 +191,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
               .map((appliance) => appliance)
               .sort((a, b) => a.index - b.index);
             const user_alert_appliance = result.user_alert_appliance;
+            console.log("Available appliance:", availableAppliance);
             ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
               if (result == null) {
                 console.log("No data found");
@@ -223,9 +224,12 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
               ApplianceDataHistory.findOneAndUpdate(
                 { userId: userId },
                 {
-                  powerDistributionWeek: result.activeStack.length < 1439 ? result.powerDistributionWeek : shiftArray(result.powerDistributionWeek),
+                  // powerDistributionWeek: result.activeStack.length < 1439 ? result.powerDistributionWeek : shiftArray(result.powerDistributionWeek),
                   $set: {
-                    // 'powerDistributionWeek.6': result.totalWatt,
+                    powerDistributionWeek: result.activeStack.length < 1439
+                      ? result.powerDistributionWeek
+                      : shiftArray(result.powerDistributionWeek),
+                    'powerDistributionWeek.6': result.totalWatt,
                     activeStack: setArray(result.activeStack, getSpecificArray(
                       data.active,
                       availableAppliance
