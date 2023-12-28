@@ -128,6 +128,7 @@ function Chart(props) {
           props.updateTimeFunc(data.timeDay[data.timeDay.length - 1]);
         if (props.isOnly != null && props.isOnly != undefined) {
           const index = data.types.indexOf(props.isOnly);
+          console.log(data.powerDistributionStackDay);
           datasets.push({
             label: data.types[index],
             data: data.powerDistributionStackDay[index],
