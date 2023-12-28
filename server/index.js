@@ -450,7 +450,6 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
 app.get("/getPredictData/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
   const data = await ApplianceDataHistory.findOne({ userId: userId });
-  console.log(data);
   try {
     const active = data.active;
     const powerDistribution = data.powerDistribution;
@@ -465,6 +464,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     for (let i = 0; i < powerDistributionStackDay.length; i++)
       if (powerDistributionStackDay[i].length < active.length)
         powerDistributionStackDay[i].push(0);
+    console.log(powerDistributionStackWeek, timeWeek)
     res.status(200).json({
       active,
       powerDistribution,
