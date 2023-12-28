@@ -229,7 +229,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     // powerDistributionWeek: result.activeStack.length < 1439
                     //   ? result.powerDistributionWeek
                     //   : shiftArray(result.powerDistributionWeek),
-                    // 'powerDistributionWeek.6': result.totalWatt,
+                    ['powerDistributionWeek.6']: result.totalWatt,
                     activeStack: setArray(result.activeStack, getSpecificArray(
                       data.active,
                       availableAppliance
@@ -520,6 +520,7 @@ app.post("/deleteNotification", (req, res) => {
     { new: true, upsert: true, returnOriginal: true }
   ).then((result) => {
     console.log(`Appliance updated : ${result}`);
+    res.status(200).json(result);
   });
 });
 
@@ -539,11 +540,9 @@ app.post("/addNotification", middleware, (req, res) => {
     .save()
     .then((result) => {
       console.log("New notification saved:", result);
-      return res.status(200).json(result);
     })
     .catch((err) => {
       console.error("Error saving notification:", err);
-      return res.json(err);
     });
   Appliance.findOneAndUpdate(
     { userId: userId },
@@ -551,6 +550,7 @@ app.post("/addNotification", middleware, (req, res) => {
     { new: true, upsert: true }
   ).then((result) => {
     console.log(`Appliance updated : ${result}`);
+    res.status(200).json(result);
   });
 });
 
