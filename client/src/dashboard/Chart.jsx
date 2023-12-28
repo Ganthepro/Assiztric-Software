@@ -100,7 +100,6 @@ function Chart(props) {
   ]);
 
   function getData() {
-    // ข้อมูลสลับกัน
     const userId = Cookies.get("userId");
     fetch(`https://assiztric-software.vercel.app/getPredictData/${userId}`, {
       method: "GET",
@@ -161,7 +160,6 @@ function Chart(props) {
             });
           }
         }
-        console.log(props.mode);
         setData({
           labels: props.isOnly != null || props.isOnly != undefined ? data.timeDay : props.mode == 0 ? data.timeDay : data.timeWeek,
           datasets: datasets,
@@ -175,6 +173,7 @@ function Chart(props) {
   }, []);
 
   useEffect(() => {
+    console.log(props.mode);
     async function fetchData() {
       await setData(null);
       getData();
