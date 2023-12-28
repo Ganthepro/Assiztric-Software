@@ -99,7 +99,7 @@ function Chart(props) {
     "darkslategray",
   ]);
 
-  function getData() {
+  function getData(mode) {
     const userId = Cookies.get("userId");
     fetch(`https://assiztric-software.vercel.app/getPredictData/${userId}`, {
       method: "GET",
@@ -138,7 +138,7 @@ function Chart(props) {
           props.setMean(powerDistributionStack[index].filter((element) => element != 0).reduce((a, b) => a + b, 0) / powerDistributionStack[index].filter((element) => element != 0).length);
         }
         else {
-          if (props.mode == 0) {
+          if (mode == 0) {
             powerDistributionStack.forEach((element, index) => {
               datasets.push({
                 label: data.types[index],
@@ -161,7 +161,7 @@ function Chart(props) {
           }
         }
         setData({
-          labels: props.isOnly != null || props.isOnly != undefined ? data.timeDay : props.mode == 0 ? data.timeDay : data.timeWeek,
+          labels: props.isOnly != null || props.isOnly != undefined ? data.timeDay : mode == 0 ? data.timeDay : data.timeWeek,
           datasets: datasets,
         });
       });
@@ -173,10 +173,10 @@ function Chart(props) {
   }, []);
 
   useEffect(() => {
-    console.log(props.mode);
+    // console.log(props.mode);
     async function fetchData() {
       await setData(null);
-      getData();
+      getData(props.mode);
     }
     fetchData();
   }, [props.mode]);
