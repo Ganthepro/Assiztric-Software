@@ -282,6 +282,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                       rv[result.Types[j]] = arr[i][j];
                     rs.push(rv);
                   }
+                  console.log(rs);
                   return rs;
                 }
                 fetch(
