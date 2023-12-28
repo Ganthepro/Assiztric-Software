@@ -162,7 +162,7 @@ function Chart(props) {
           }
         }
         setData({
-          labels: props.mode === 0 ? data.timeDay : data.timeWeek,
+          labels: props.isOnly != null && props.isOnly != undefined ? data.timeWeek : props.mode === 0 ?  data.timeDay : data.timeWeek,
           datasets: datasets,
         });
       });
