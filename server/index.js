@@ -200,11 +200,18 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                   applianceId: [],
                   powerDistributionStack: [],
                   meanPowerStack: [],
+                  powerDistributionWeek: new Array(7).fill(0),
                 });
                 return;
               }
-              function setArray(arr,newData) {
-                return arr.length < 1440 ? [...arr, newData] : [];
+              function setArray(arr,newData,isPowerDistribution=false) {
+                return arr.length < 1440 ? [...arr, newData] : () => {
+                  if (isPowerDistribution) {
+                    arr.shift();
+                    arr.push(newData);
+                    return arr;
+                  }
+                };
               }
               ApplianceDataHistory.findOneAndUpdate(
                 { userId: userId },
@@ -217,7 +224,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     powerDistributionStack: setArray(result.powerDistributionStack, getSpecificArray(
                       data.power_distribution,
                       availableAppliance
-                    )),
+                    ),true),
                     times: setArray(result.times, getTime()),
                     meanPowerStack: setArray(result.meanPowerStack, getMean(
                       getSpecificArray(
@@ -226,48 +233,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                       )
                     ).mean),
                   },
-                  // $push: {
-                  //   activeStack: result.activeStack.length < 1440 ? getSpecificArray(
-                  //     data.active,
-                  //     availableAppliance //clear array ทุกวัน
-                  //   ) : result.activeStack.slice(-1439).concat(getSpecificArray(data.active, availableAppliance)),
-                  //   powerDistributionStack:
-                  //     result.powerDistributionStack.length < 1440
-                  //       ? getSpecificArray(
-                  //           data.power_distribution,
-                  //           availableAppliance
-                  //         )
-                  //       : result.powerDistributionStack
-                  //           .slice(-1439)
-                  //           .concat(
-                  //             getSpecificArray(
-                  //               data.power_distribution,
-                  //               availableAppliance
-                  //             )
-                  //           ),
-                  //   times:
-                  //     result.times.length < 1440
-                  //       ? getTime()
-                  //       : result.times.slice(-1439).concat(getTime()),
-                  //   meanPowerStack:
-                  //     result.meanPowerStack.length < 1440
-                  //       ? getMean(
-                  //           getSpecificArray(
-                  //             data.power_distribution,
-                  //             availableAppliance
-                  //           )
-                  //         ).mean
-                  //       : result.meanPowerStack
-                  //           .slice(-1439)
-                  //           .concat(
-                  //             getMean(
-                  //               getSpecificArray(
-                  //                 data.power_distribution,
-                  //                 availableAppliance
-                  //               )
-                  //             ).mean
-                  //           ),
-                  // },
                   $inc: {
                     totalEmission: findEmission(
                       getSpecificArray(
@@ -275,7 +240,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                         availableAppliance
                       ),
                       result.timeOfUsege
-                    ), // แก้ผลรวมให้เป็น kWh แล้วคูณด้วย 0.5610
+                    ), 
                     totalWatt:
                       data.power_distribution.reduce(
                         (acc, val) =>
