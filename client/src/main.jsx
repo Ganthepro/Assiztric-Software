@@ -92,7 +92,6 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Home id={0} loginFunc={login} tokenFunc={getToken} />,
-    // element: <Appliance_Info />,
   },
   {
     path: "/dashboard",

@@ -168,7 +168,7 @@ function Chart(props) {
   }
 
   useEffect(() => {
-    const interval = setInterval(getData, 60000);
+    const interval = setInterval(() => getData(props.mode), 60000);
     return () => clearInterval(interval);
   }, []);
 
