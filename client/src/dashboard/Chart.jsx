@@ -161,7 +161,7 @@ function Chart(props) {
             });
           }
         }
-        console.log(mode);
+        console.log(props.mode);
         setData({
           labels: props.isOnly != null || props.isOnly != undefined ? data.timeDay : props.mode == 0 ? data.timeDay : data.timeWeek,
           datasets: datasets,
