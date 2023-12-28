@@ -150,6 +150,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         function getMean(power_distribution) {
           let mean = [];
           power_distribution.forEach((power, index) => {
@@ -305,7 +306,11 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                       timeOfUsage: await toObjectTime(result.timeOfUsege),
                     }),
                   }
-                );
+                )
+                  .then((response) => response.json())
+                  .then((data) => {
+                    console.log(data);
+                  });
               });
             });
           }
