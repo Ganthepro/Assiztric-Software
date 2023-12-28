@@ -459,12 +459,8 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     const totalWatt = data.totalWatt;
     const powerDistributionStackDay = data.meanPowerStack
     const timeDay = data.times;
-    const powerDistributionStackWeek = // แก้เป็นค่าเฉลี่ยของแต่ละวันในสัปดาห์
-      data.meanPowerStack.length > 10080
-        ? data.meanPowerStack.slice(-10080)
-        : data.meanPowerStack;
-    const timeWeek = // แก้เป็นเวลาที่เป็นวันที่
-      data.times.length > 10080 ? data.times.slice(-10080) : data.times;
+    const powerDistributionStackWeek = data.powerDistributionWeek
+    const timeWeek = [20, 21, 22, 23, 24, 25, 26]
     const types = data.Types;
     for (let i = 0; i < powerDistributionStackDay.length; i++)
       if (powerDistributionStackDay[i].length < active.length)
