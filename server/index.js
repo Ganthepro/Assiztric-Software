@@ -450,6 +450,15 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
 app.get("/getPredictData/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
   const data = await ApplianceDataHistory.findOne({ userId: userId });
+  function getPastSevenDays() {
+    let dates = [];
+    for (let i = 6; i >= 0; i--) {
+      let date = new Date();
+      date.setDate(date.getDate() - i);
+      dates.push(date.toISOString().split('T')[0]);
+    }
+    return dates;
+  }
   try {
     const active = data.active;
     const powerDistribution = data.powerDistribution;
@@ -459,7 +468,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     const powerDistributionStackDay = data.meanPowerStack
     const timeDay = data.times;
     const powerDistributionStackWeek = data.powerDistributionWeek
-    const timeWeek = [20, 21, 22, 23, 24, 25, 26]
+    const timeWeek = getPastSevenDays()
     const types = data.Types;
     for (let i = 0; i < powerDistributionStackDay.length; i++)
       if (powerDistributionStackDay[i].length < active.length)
