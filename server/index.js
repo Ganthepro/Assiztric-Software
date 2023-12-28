@@ -61,7 +61,7 @@ const applianceDataHistorySchema = new Schema({
   powerDistributionWeek: [Number],
   meanPowerStack: {},
   times: [String],
-  timeOfUsage: [Number],
+  timeOfUsege: [Number],
   totalEmission: { type: Number, default: 0 },
   totalWatt: { type: Number, default: 0 },
   applianceId: [String],
@@ -96,11 +96,11 @@ app.use(cors());
 
 async function resetData() {
   const existingDocument = await ApplianceDataHistory.findOne({});
-  const timeOfUsageLength = existingDocument.timeOfUsage.length;
-  const zerosArray = Array(timeOfUsageLength).fill(0);
+  const timeOfUsegeLength = existingDocument.timeOfUsege.length;
+  const zerosArray = Array(timeOfUsegeLength).fill(0);
   await ApplianceDataHistory.findOneAndUpdate(
     {},
-    { $set: { timeOfUsage: zerosArray } },
+    { $set: { timeOfUsege: zerosArray } },
     { new: true, upsert: true, returnOriginal: true }
   ).then((result) => {
     console.log(`Appliance updated : ${result}`);
@@ -175,11 +175,11 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           }
           return arr;
         }
-        function findEmission(power_distribution, timeOfUsage) {
+        function findEmission(power_distribution, timeOfUsege) {
           let totalEmission = 0;
           power_distribution.forEach((innerArray, outerIndex) => {
             const sumInnerArray = innerArray.reduce((acc, val) => acc + val, 0);
-            if (timeOfUsage[outerIndex])
+            if (timeOfUsege[outerIndex])
               totalEmission += (sumInnerArray / 1000) * (1 / 120) * 0.4857;
           });
           return totalEmission;
@@ -196,7 +196,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 console.log("No data found");
                 ApplianceDataHistory.create({
                   userId: userId,
-                  timeOfUsage: [],
+                  timeOfUsege: [],
                   applianceId: [],
                   powerDistributionStack: [],
                   meanPowerStack: [],
@@ -247,7 +247,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                         data.power_distribution,
                         availableAppliance
                       ),
-                      result.timeOfUsage
+                      result.timeOfUsege
                     ), 
                     totalWatt:
                       data.power_distribution.reduce(
@@ -257,12 +257,12 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                       ) / 1000,
                   },
                   Types: getSpecificArray(applianceNames, availableAppliance),
-                  timeOfUsage: result.activeStack.length < 1439 ? sumArrays(
-                    result.timeOfUsage,
+                  timeOfUsege: result.activeStack.length < 1439 ? sumArrays(
+                    result.timeOfUsege,
                     getSpecificArray(data.active, availableAppliance).map(
                       (active) => active * 0.5
                     )
-                  ) : new Array(result.timeOfUsage.length).fill(0),
+                  ) : new Array(result.timeOfUsege.length).fill(0),
                   active: getSpecificArray(data.active, availableAppliance),
                   powerDistribution: getSpecificArray(
                     data.power_distribution,
@@ -295,7 +295,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                       token: req.headers["token"],
                       W_R: await toObject(result.powerDistributionStack),
                       user_alert_appliance: user_alert_appliance,
-                      timeOfUsage: await toObject(result.timeOfUsage),
+                      timeOfUsage: await toObject(result.timeOfUsege),
                     }),
                   }
                 );
@@ -333,7 +333,7 @@ app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
   const userId = req.params.userId;
   const id = req.params.id;
   let avarage = 0;
-  let timeOfUsage = 0;
+  let timeOfUsege = 0;
   let updatedTime = 0;
   let brand = "";
   let model = "";
@@ -356,7 +356,7 @@ app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
       return res
         .status(200)
         .json({
-          timeOfUsage,
+          timeOfUsege,
           avarage,
           updatedTime,
           brand,
@@ -366,7 +366,7 @@ app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
         });
     } else {
       const applianceDataIndex = result.applianceId.indexOf(id);
-      timeOfUsage = result.timeOfUsage[applianceDataIndex];
+      timeOfUsege = result.timeOfUsege[applianceDataIndex];
       updatedTime = result.times[result.times.length - 1];
       avarage =
         result.meanPowerStack
@@ -380,7 +380,7 @@ app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
       return res
         .status(200)
         .json({
-          timeOfUsage,
+          timeOfUsege,
           avarage,
           updatedTime,
           brand,
@@ -396,16 +396,16 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
   const data = await ApplianceDataHistory.findOne({ userId: userId });
   if (data != null) {
-    let timeOfUsage = data.timeOfUsage;
+    let timeOfUsege = data.timeOfUsege;
     let Types = data.Types;
     let active = data.active;
     let applianceId = data.applianceId;
     const usagePercent = () => {
-      const sum = data.timeOfUsage.reduce(
+      const sum = data.timeOfUsege.reduce(
         (accumulator, currentValue) => accumulator + currentValue,
         0
       );
-      return timeOfUsage.map((usage) => (usage / sum) * 100);
+      return timeOfUsege.map((usage) => (usage / sum) * 100);
     };
     for (let i = 0; i < usagePercent().length; i++) {
       for (let j = i + 1; j < usagePercent().length; j++) {
@@ -416,9 +416,9 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
           temp = Types[i];
           Types[i] = Types[j];
           Types[j] = temp;
-          temp = timeOfUsage[i];
-          timeOfUsage[i] = timeOfUsage[j];
-          timeOfUsage[j] = temp;
+          temp = timeOfUsege[i];
+          timeOfUsege[i] = timeOfUsege[j];
+          timeOfUsege[j] = temp;
           temp = active[i];
           active[i] = active[j];
           active[j] = temp;
@@ -431,7 +431,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
     res.status(200).json({
       usagePercent: usagePercent(),
       Types,
-      timeOfUsage,
+      timeOfUsege,
       active,
       applianceId,
     });
@@ -440,7 +440,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
     res.status(200).json({
       usagePercent: arr,
       Types: applianceNames,
-      timeOfUsage: arr,
+      timeOfUsege: arr,
       active: arr,
       applianceId: arr,
     });
