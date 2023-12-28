@@ -101,6 +101,7 @@ function Chart(props) {
   let mode = 0;
 
   function getData() {
+    console.log(mode);
     const userId = Cookies.get("userId");
     fetch(`https://assiztric-software.vercel.app/getPredictData/${userId}`, {
       method: "GET",
