@@ -139,16 +139,27 @@ function Chart(props) {
           props.setMean(powerDistributionStack[index].filter((element) => element != 0).reduce((a, b) => a + b, 0) / powerDistributionStack[index].filter((element) => element != 0).length);
         }
         else {
-          powerDistributionStack.forEach((element, index) => {
+          if (props.mode == 0) {
+            powerDistributionStack.forEach((element, index) => {
+              datasets.push({
+                label: data.types[index],
+                data: element,
+                fill: false,
+                borderColor: chartColors[index],
+                borderWidth: 2,
+                lineTension: 0.1,
+              });
+            });
+          } else {
             datasets.push({
-              label: data.types[index],
-              data: element,
+              label: "Total",
+              data: powerData,
               fill: false,
-              borderColor: chartColors[index],
+              borderColor: chartColors[Math.random() * chartColors.length],
               borderWidth: 2,
               lineTension: 0.1,
             });
-          });
+          }
         }
         setData({
           labels: props.mode === 0 ? data.timeDay : data.timeWeek,
