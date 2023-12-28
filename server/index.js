@@ -285,7 +285,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                   return rs;
                 }
                 fetch(
-                  "https://9e64-161-246-144-17.ngrok-free.app/notification",
+                  "https://2a69-2001-fb1-ab-a967-11f9-3e1b-4531-bcf7.ngrok-free.app/notification",
                   {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -474,7 +474,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     for (let i = 0; i < powerDistributionStackDay.length; i++)
       if (powerDistributionStackDay[i].length < active.length)
         powerDistributionStackDay[i].push(0);
-    console.log(powerDistributionStackWeek, timeWeek)
+    // console.log(powerDistributionStackWeek, timeWeek)
     res.status(200).json({
       active,
       powerDistribution,
