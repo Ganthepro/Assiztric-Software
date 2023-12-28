@@ -207,15 +207,23 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
               function setArray(arr,newData,isPowerDistribution=false) {
                 return arr.length < 1440 ? [...arr, newData] : () => {
                   if (isPowerDistribution) {
-                    arr.shift();
-                    arr.push(newData);
-                    return arr;
+                    let weekArr = result.powerDistributionWeek;
+                    weekArr.shift();
+                    weekArr.push(newData);
+                    return weekArr;
                   }
                 };
+              }
+              function shiftArray(arr) {
+                let out = arr;
+                out.shift();
+                out.push(result.totalWatt - out[out.length - 1]);
+                return out;
               }
               ApplianceDataHistory.findOneAndUpdate(
                 { userId: userId },
                 {
+                  powerDistributionWeek: result.activeStack.length < 1439 ? result.powerDistributionWeek : shiftArray(result.powerDistributionWeek),
                   $set: {
                     activeStack: setArray(result.activeStack, getSpecificArray(
                       data.active,
