@@ -457,6 +457,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
       date.setDate(date.getDate() - i);
       dates.push(date.toISOString().split('T')[0]);
     }
+    dates[0] = 'Today'
     return dates;
   }
   try {
