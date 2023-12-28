@@ -99,6 +99,7 @@ function Chart(props) {
     "darkslategray",
   ]);
   let mode = props.mode;
+  let interval;
 
   function getData() {
     const userId = Cookies.get("userId");
@@ -155,7 +156,7 @@ function Chart(props) {
               label: "Total",
               data: data.powerDistributionStackWeek,
               fill: false,
-              borderColor: chartColors[Math.random() * chartColors.length],
+              borderColor: 'orange',
               borderWidth: 2,
               lineTension: 0.1,
             });
@@ -169,12 +170,15 @@ function Chart(props) {
   }
 
   useEffect(() => {
-    const interval = setInterval(() => getData(), 60000);
+    interval = setInterval(() => getData(), 60000);
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
     mode = props.mode;
+    clearInterval(interval);
+    console.log("clear");
+    interval = setInterval(() => getData(), 60000);
     async function fetchData() {
       await setData(null);
       getData();
