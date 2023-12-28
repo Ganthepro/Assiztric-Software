@@ -150,7 +150,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         function getMean(power_distribution) {
           let mean = [];
           power_distribution.forEach((power, index) => {
@@ -226,7 +225,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 {
                   powerDistributionWeek: result.activeStack.length < 1439 ? result.powerDistributionWeek : shiftArray(result.powerDistributionWeek),
                   $set: {
-                    'powerDistributionWeek.6': result.totalWatt,
+                    // 'powerDistributionWeek.6': result.totalWatt,
                     activeStack: setArray(result.activeStack, getSpecificArray(
                       data.active,
                       availableAppliance
@@ -307,10 +306,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     }),
                   }
                 )
-                  .then((response) => response.json())
-                  .then((data) => {
-                    console.log(data);
-                  });
               });
             });
           }
