@@ -369,6 +369,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
         : data.meanPowerStack;
     const timeWeek = data.times.length > 10080 ? data.times.slice(-10080) : data.times;
     const types = data.Types;
+    console.log("Predict data found");
     for (let i = 0; i < powerDistributionStackDay.length; i++) 
       if (powerDistributionStackDay[i].length < active.length) powerDistributionStackDay[i].push(0);
     for (let i = 0; i < powerDistributionStackWeek.length; i++)
