@@ -126,7 +126,7 @@ function Chart(props) {
         }
         if (props.updateTimeFunc != null)
           props.updateTimeFunc(data.timeDay[data.timeDay.length - 1]);
-        if (props.isOnly != null && props.isOnly != undefined) {
+        if (props.isOnly != null || props.isOnly != undefined) {
           const index = data.types.indexOf(props.isOnly);
           datasets.push({
             label: data.types[index],
@@ -162,7 +162,7 @@ function Chart(props) {
           }
         }
         setData({
-          labels: props.isOnly != null && props.isOnly != undefined || props.mode === 0 ? data.timeDay : data.timeWeek,
+          labels: props.isOnly != null || props.isOnly != undefined ? data.timeDay : props.mode === 0 ? data.timeDay : data.timeWeek,
           datasets: datasets,
         });
       });
