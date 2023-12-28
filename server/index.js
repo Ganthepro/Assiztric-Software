@@ -225,10 +225,10 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 {
                   // powerDistributionWeek: result.activeStack.length < 1439 ? result.powerDistributionWeek : shiftArray(result.powerDistributionWeek),
                   $set: {
-                    // powerDistributionWeek: result.activeStack.length < 1439
-                    //   ? result.powerDistributionWeek
-                    //   : shiftArray(result.powerDistributionWeek),
                     ['powerDistributionWeek.6']: result.totalWatt,
+                    powerDistributionWeek: result.activeStack.length < 1439
+                      ? result.powerDistributionWeek
+                      : shiftArray(result.powerDistributionWeek),
                     activeStack: setArray(result.activeStack, getSpecificArray(
                       data.active,
                       availableAppliance
