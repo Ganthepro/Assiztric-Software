@@ -98,10 +98,10 @@ function Chart(props) {
     "darkslateblue",
     "darkslategray",
   ]);
-  let mode = props.mode;
   let interval;
 
-  function getData() {
+  function getData(mode) {
+    console.log(mode);
     const userId = Cookies.get("userId");
     fetch(`https://assiztric-software.vercel.app/getPredictData/${userId}`, {
       method: "GET",
@@ -170,18 +170,17 @@ function Chart(props) {
   }
 
   useEffect(() => {
-    interval = setInterval(() => getData(), 60000);
+    interval = setInterval(() => getData(props.mode), 60000);
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    mode = props.mode;
     clearInterval(interval);
     console.log("clear");
-    interval = setInterval(() => getData(), 60000);
+    interval = setInterval(() => getData(props.mode), 60000);
     async function fetchData() {
       await setData(null);
-      getData();
+      getData(props.mode);
     }
     fetchData();
   }, [props.mode]);
