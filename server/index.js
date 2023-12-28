@@ -224,7 +224,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
               ApplianceDataHistory.findOneAndUpdate(
                 { userId: userId },
                 {
-                  powerDistributionWeek: result.activeStack.length < 1439 ? result.powerDistributionWeek : shiftArray(result.powerDistributionWeek),
+                  // powerDistributionWeek: result.activeStack.length < 1439 ? result.powerDistributionWeek : shiftArray(result.powerDistributionWeek),
                   $set: {
                     // powerDistributionWeek: result.activeStack.length < 1439
                     //   ? result.powerDistributionWeek
