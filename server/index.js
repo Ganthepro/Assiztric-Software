@@ -282,7 +282,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                       rv[result.Types[j]] = arr[i][j];
                     rs.push(rv);
                   }
-                  console.log(rs)
                   return rs;
                 }
                 fetch(
@@ -296,7 +295,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                       token: req.headers["token"],
                       W_R: await toObject(result.powerDistributionStack),
                       user_alert_appliance: user_alert_appliance,
-                      timeOfUsege: await toObject(result.timeOfUsege),
+                      timeOfUsage: await toObject(result.timeOfUsege),
                     }),
                   }
                 );
