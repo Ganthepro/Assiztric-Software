@@ -169,10 +169,10 @@ function Chart(props) {
       });
   }
 
-  useEffect(() => {
-    interval = setInterval(() => getData(props.mode), 60000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   interval = setInterval(() => getData(props.mode), 60000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   useEffect(() => {
     clearInterval(interval);
@@ -183,6 +183,7 @@ function Chart(props) {
       getData(props.mode);
     }
     fetchData();
+    return () => clearInterval(interval);
   }, [props.mode]);
 
   return (
