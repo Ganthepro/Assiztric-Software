@@ -223,8 +223,11 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 return out;
               }
               function setPowerDistributionWeek(arr) {
-                if (result.activeStack.length < 9) return arr;
                 let out = arr;
+                if (result.activeStack.length < 9) {
+                  out[out.length - 1] = result.totalWatt;
+                  return out
+                }
                 out.shift();
                 out.push(result.totalWatt);
                 return out;
