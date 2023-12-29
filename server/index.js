@@ -205,22 +205,25 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 return;
               }
               function setArray(arr,newData,isPowerDistribution=false) {
-                return arr.length < 10 ? [...arr, newData] : () => {
-                  if (isPowerDistribution) {
-                    let weekArr = result.powerDistributionWeek;
-                    weekArr.shift();
-                    weekArr.push(newData);
-                    return weekArr;
-                  }
-                };
+                return arr.length < 10 ? [...arr, newData] : []; 
+                // () => {
+                //   if (isPowerDistribution) {
+                //     let weekArr = result.powerDistributionWeek;
+                //     weekArr.shift();
+                //     weekArr.push(newData);
+                //     return weekArr;
+                //   }
+                // };
               }
               function shiftArray(arr) {
+                if (result.activeStack.length < 9) return arr;
                 let out = arr;
                 out.shift();
                 out.push(result.totalWatt - out[out.length - 1]);
                 return out;
               }
               function setPowerDistributionWeek(arr) {
+                if (result.activeStack.length < 9) return arr;
                 let out = arr;
                 out.shift();
                 out.push(result.totalWatt);
@@ -229,11 +232,8 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
               ApplianceDataHistory.findOneAndUpdate(
                 { userId: userId },
                 {
-                  // powerDistributionWeek: result.activeStack.length < 1439 ? result.powerDistributionWeek : shiftArray(result.powerDistributionWeek),
                   $set: {
-                    powerDistributionWeek: result.activeStack.length < 9
-                      ? result.powerDistributionWeek
-                      : setPowerDistributionWeek(result.powerDistributionWeek),
+                    powerDistributionWeek: setPowerDistributionWeek(result.powerDistributionWeek),
                     activeStack: setArray(result.activeStack, getSpecificArray(
                       data.active,
                       availableAppliance
