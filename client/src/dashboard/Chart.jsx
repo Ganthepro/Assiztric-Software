@@ -139,7 +139,7 @@ function Chart(props) {
           props.setMean(powerDistributionStack[index].filter((element) => element != 0).reduce((a, b) => a + b, 0) / powerDistributionStack[index].filter((element) => element != 0).length);
         }
         else {
-          if (mode == 0) {
+          if (mode == 0 || props.watt != undefined) {
             powerDistributionStack.forEach((element, index) => {
               datasets.push({
                 label: data.types[index],
