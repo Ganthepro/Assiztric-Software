@@ -19,8 +19,7 @@ async function getToken() {
 
 function init(accessToken) {
   // ทำ isLogin?
-  // https://assiztric.ddns.net/init
-  const api = 'http://10.10.10.38/init'
+  const api = 'https://assiztric.ddns.net/init'
   fetch(api, {
     headers: {
       "Content-Type": "application/json",
