@@ -149,7 +149,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
       }),
     })
       .then((response) => response.json())
-      .then((data) => {
+      .then(async (data) => {
         function getMean(power_distribution) {
           let mean = [];
           power_distribution.forEach((power, index) => {
@@ -184,7 +184,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           });
           return totalEmission;
         }
-        Appliance.findOne({ userId: userId }).then((result) => {
+        await Appliance.findOne({ userId: userId }).then(async (result) => {
           if (result != null) {
             const maxArray = 10;
             const availableAppliance = result.appliance;
@@ -192,7 +192,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
               .map((appliance) => appliance)
               .sort((a, b) => a.index - b.index);
             const user_alert_appliance = result.user_alert_appliance;
-            ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
+            await ApplianceDataHistory.findOne({ userId: userId }).then(async (result) => {
               if (result == null) {
                 console.log("No data found");
                 ApplianceDataHistory.create({
@@ -228,7 +228,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                   return arr
                 }
               }
-              fetch("https://assiztric.ddns.net/saveData", {
+              await fetch("https://assiztric.ddns.net/saveData", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -267,7 +267,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
               .then((data) => {
                 console.log(data)
               })
-              ApplianceDataHistory.findOneAndUpdate(
+              await ApplianceDataHistory.findOneAndUpdate(
                 { userId: userId },
                 {
                   $set: {
