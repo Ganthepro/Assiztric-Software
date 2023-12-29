@@ -128,7 +128,7 @@ function getDate() {
   return `${month}/${day}/${year}`;
 }
 
-app.post("/addApplianceDataHistory", middleware, async (req, res) => {
+app.post("/addApplianceDataHistory", middleware, async (req, res) => { // ทำ 1 วันแล้ว reset ใหม่
   const { W_R, Var_R, userId } = req.body;
   async function getAvailableAppliance() {
     let output = [];
@@ -205,19 +205,19 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 });
                 return;
               }
-              function setArray(arr,newData) {
-                return arr.length < maxArray ? [...arr, newData] : []; 
-              }
-              function setPowerDistributionWeek(arr) {
-                let out = arr;
-                if (result.activeStack.length < maxArray) {
-                  out[out.length - 1] = result.totalWatt;
-                  return out
-                }
-                out.shift();
-                out.push(result.totalWatt);
-                return out;
-              }
+              // function setArray(arr,newData) {
+              //   return arr.length < maxArray ? [...arr, newData] : []; 
+              // }
+              // function setPowerDistributionWeek(arr) {
+              //   let out = arr;
+              //   if (result.activeStack.length < maxArray) {
+              //     out[out.length - 1] = result.totalWatt;
+              //     return out
+              //   }
+              //   out.shift();
+              //   out.push(result.totalWatt);
+              //   return out;
+              // }
               // function updateTimeOfUsage(arr) {
               //   if (result.activeStack.length < maxArray - 1) 
               //     return sumArrays(arr,getSpecificArray(data.active, availableAppliance).map((active) => active * 0.5));
@@ -523,7 +523,6 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
     let Types = data.Types;
     let active = data.active;
     let applianceId = data.applianceId;
-    console.log(timeOfUsege, Types, active, applianceId);
     const usagePercent = () => {
       const sum = data.timeOfUsege.reduce(
         (accumulator, currentValue) => accumulator + currentValue,
