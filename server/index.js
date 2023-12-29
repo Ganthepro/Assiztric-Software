@@ -418,7 +418,7 @@ app.get("/getApplianceInfo/:userId/:id", middleware, async (req, res) => {
   let model = "";
   let name = "";
   let meanPowerStack = [];
-  Appliance.findOne({ userId: userId }).then((result) => {
+  await Appliance.findOne({ userId: userId }).then((result) => {
     if (result == null) {
       return res.status(200).json({ applianceData: [] });
     } else {
