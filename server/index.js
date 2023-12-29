@@ -186,6 +186,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
         }
         Appliance.findOne({ userId: userId }).then((result) => {
           if (result != null) {
+            const maxArray = 10;
             const availableAppliance = result.appliance;
             const availableApplianceData = result.applianceData
               .map((appliance) => appliance)
@@ -204,27 +205,12 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 });
                 return;
               }
-              function setArray(arr,newData,isPowerDistribution=false) {
-                return arr.length < 10 ? [...arr, newData] : []; 
-                // () => {
-                //   if (isPowerDistribution) {
-                //     let weekArr = result.powerDistributionWeek;
-                //     weekArr.shift();
-                //     weekArr.push(newData);
-                //     return weekArr;
-                //   }
-                // };
-              }
-              function shiftArray(arr) {
-                if (result.activeStack.length < 9) return arr;
-                let out = arr;
-                out.shift();
-                out.push(result.totalWatt - out[out.length - 1]);
-                return out;
+              function setArray(arr,newData) {
+                return arr.length < maxArray ? [...arr, newData] : []; 
               }
               function setPowerDistributionWeek(arr) {
                 let out = arr;
-                if (result.activeStack.length < 9) {
+                if (result.activeStack.length < maxArray) {
                   out[out.length - 1] = result.totalWatt;
                   return out
                 }
