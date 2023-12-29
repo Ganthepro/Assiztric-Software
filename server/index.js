@@ -241,7 +241,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     availableAppliance
                   ),
                   meanPowerStack: getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean,
-                  timeOfUsege: sumArrays(arr,getSpecificArray(data.active, availableAppliance).map((active) => active * 0.5)),
+                  timeOfUsege: getSpecificArray(data.active, availableAppliance).map((active) => active * 0.5),
                   totalEmission: findEmission(
                     getSpecificArray(
                       data.power_distribution,
