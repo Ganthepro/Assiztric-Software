@@ -575,6 +575,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
   const response = await fetch(`https://assiztric.ddns.net/getData/${userId}`, { method: "GET" });
   if (!response.ok) throw new Error('Network response was not ok.');
   const data = await response.json();
+  console.log(data);
   function getPastSevenDays() {
     let dates = [];
     for (let i = 6; i >= 0; i--) {
