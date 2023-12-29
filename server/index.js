@@ -208,16 +208,16 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => { // ทำ
               // function setArray(arr,newData) {
               //   return arr.length < maxArray ? [...arr, newData] : []; 
               // }
-              // function setPowerDistributionWeek(arr) {
-              //   let out = arr;
-              //   if (result.activeStack.length < maxArray) {
-              //     out[out.length - 1] = result.totalWatt;
-              //     return out
-              //   }
-              //   out.shift();
-              //   out.push(result.totalWatt);
-              //   return out;
-              // }
+              function setPowerDistributionWeek(arr) {
+                let out = arr;
+                if (result.activeStack.length < maxArray) {
+                  out[out.length - 1] = result.totalWatt;
+                  return out
+                }
+                out.shift();
+                out.push(result.totalWatt);
+                return out;
+              }
               // function updateTimeOfUsage(arr) {
               //   if (result.activeStack.length < maxArray - 1) 
               //     return sumArrays(arr,getSpecificArray(data.active, availableAppliance).map((active) => active * 0.5));
