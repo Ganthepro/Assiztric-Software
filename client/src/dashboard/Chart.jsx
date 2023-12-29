@@ -115,7 +115,7 @@ function Chart(props) {
         if (props.watt != null || props.watt != undefined) props.watt(data.totalWatt);
         let datasets = [];
         const powerDistributionStack = [];
-        const powerData = props.isOnly != null || props.isOnly != undefined ? data.powerDistributionStackDay : mode == 0 ? data.powerDistributionStackDay : data.powerDistributionStackWeek;
+        const powerData = props.isOnly != null || props.isOnly != undefined || props.watt != undefined ? data.powerDistributionStackDay : mode == 0 ? data.powerDistributionStackDay : data.powerDistributionStackWeek;
         for (let j = 0; j < powerData[0].length; j++) {
           let powerDistributionStackConcat = [];
           for (let i = 0; i < powerData.length; i++)
