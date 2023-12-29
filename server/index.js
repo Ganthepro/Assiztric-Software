@@ -228,7 +228,39 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                   return arr
                 }
               }
-              console.log(updateTimeOfUsage(result.timeOfUsege))
+              fetch("https://assiztric.ddns.net/saveData", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  userId: userId,
+                  applianceId: availableApplianceData.map((appliance) => appliance._id),
+                  powerDistribution: getSpecificArray(data.power_distribution, availableAppliance),
+                  active: getSpecificArray(data.active, availableAppliance),
+                  powerDistributionStack: getSpecificArray(
+                    data.power_distribution,
+                    availableAppliance
+                  ),
+                  meanPowerStack: getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean,
+                  timeOfUsege: updateTimeOfUsage(result.timeOfUsege),
+                  totalEmission: findEmission(
+                    getSpecificArray(
+                      data.power_distribution,
+                      availableAppliance
+                    ),
+                    result.timeOfUsege
+                  ),
+                  totalWatt: data.power_distribution.reduce(
+                    (acc, val) =>
+                      acc + val.reduce((acc, val) => acc + val, 0),
+                    0
+                  ) / 1000,
+                  powerDistributionWeek: setPowerDistributionWeek(result.powerDistributionWeek),
+                }),
+              })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log(data)
+              })
               ApplianceDataHistory.findOneAndUpdate(
                 { userId: userId },
                 {
