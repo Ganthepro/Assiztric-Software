@@ -223,6 +223,12 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 {
                   $set: {
                     powerDistributionWeek: setPowerDistributionWeek(result.powerDistributionWeek),
+                    timeOfUsege: result.activeStack.length < maxArray ? sumArrays(
+                      result.timeOfUsege,
+                      getSpecificArray(data.active, availableAppliance).map(
+                        (active) => active * 0.5
+                      )
+                    ) : new Array(result.timeOfUsege.length).fill(0),
                     activeStack: setArray(result.activeStack, getSpecificArray(
                       data.active,
                       availableAppliance
@@ -238,12 +244,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                         availableAppliance
                       )
                     ).mean),
-                    timeOfUsege: result.activeStack.length < maxArray ? sumArrays(
-                      result.timeOfUsege,
-                      getSpecificArray(data.active, availableAppliance).map(
-                        (active) => active * 0.5
-                      )
-                    ) : new Array(result.timeOfUsege.length).fill(0),
                   },
                   $inc: {
                     totalEmission: findEmission(
