@@ -430,6 +430,46 @@ app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
       name = applianceData[0].Type;
     }
   });
+  const response = fetch(`https://assiztric.ddns.net/getData/${userId}`, { method: "GET" })
+  if (!response.ok) throw new Error('Network response was not ok.');
+  const result = response.json();
+  if (result == null) {
+    return res
+      .status(200)
+      .json({
+        timeOfUsege,
+        avarage,
+        updatedTime,
+        brand,
+        model,
+        name,
+        meanPowerStack,
+      });
+  } else {
+    const applianceDataIndex = result.applianceId.indexOf(id);
+    timeOfUsege = result.timeOfUsege[applianceDataIndex];
+    updatedTime = result.times[result.times.length - 1];
+    avarage =
+      result.meanPowerStack
+        .filter((power) => power[applianceDataIndex] != 0)
+        .reduce((acc, val) => acc + val[applianceDataIndex], 0) /
+      result.meanPowerStack.filter((power) => power[applianceDataIndex] != 0)
+        .length;
+    meanPowerStack = result.meanPowerStack.map(
+      (power) => power[applianceDataIndex]
+    );
+    return res
+      .status(200)
+      .json({
+        timeOfUsege,
+        avarage,
+        updatedTime,
+        brand,
+        model,
+        name,
+        meanPowerStack,
+      });
+  }
   ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
     if (result == null) {
       return res
@@ -473,7 +513,10 @@ app.get("/getApplianceInfo/:userId/:id", middleware, (req, res) => {
 
 app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
-  const data = await ApplianceDataHistory.findOne({ userId: userId });
+  const response = await fetch(`https://assiztric.ddns.net/getData/${userId}`, { method: "GET" });
+  if (!response.ok) throw new Error('Network response was not ok.');
+  const data = await response.json();
+  // const data = await ApplianceDataHistory.findOne({ userId: userId });
   if (data != null) {
     let timeOfUsege = data.timeOfUsege;
     let Types = data.Types;
