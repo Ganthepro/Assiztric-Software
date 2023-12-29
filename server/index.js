@@ -432,7 +432,7 @@ app.get("/getApplianceInfo/:userId/:id", middleware, async (req, res) => {
   });
   const response = await fetch(`https://assiztric.ddns.net/getData/${userId}`, { method: "GET" })
   if (!response.ok) throw new Error('Network response was not ok.');
-  const result = response.json();
+  const result = await response.json();
   if (result == null) {
     return res
       .status(200)
@@ -446,6 +446,7 @@ app.get("/getApplianceInfo/:userId/:id", middleware, async (req, res) => {
         meanPowerStack,
       });
   } else {
+    console.log(result.applianceId)
     const applianceDataIndex = result.applianceId.indexOf(id);
     timeOfUsege = result.timeOfUsege[applianceDataIndex];
     updatedTime = result.times[result.times.length - 1];
@@ -522,6 +523,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
     let Types = data.Types;
     let active = data.active;
     let applianceId = data.applianceId;
+    console.log(timeOfUsege, Types, active, applianceId);
     const usagePercent = () => {
       const sum = data.timeOfUsege.reduce(
         (accumulator, currentValue) => accumulator + currentValue,
