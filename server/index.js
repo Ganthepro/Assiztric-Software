@@ -221,6 +221,12 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
               ApplianceDataHistory.findOneAndUpdate(
                 { userId: userId },
                 {
+                  timeOfUsege: result.activeStack.length < maxArray ? sumArrays(
+                    result.timeOfUsege,
+                    getSpecificArray(data.active, availableAppliance).map(
+                      (active) => active * 0.5
+                    )
+                  ) : new Array(result.timeOfUsege.length).fill(0),
                   $set: {
                     powerDistributionWeek: setPowerDistributionWeek(result.powerDistributionWeek),
                     activeStack: setArray(result.activeStack, getSpecificArray(
@@ -255,12 +261,6 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                       ) / 1000,
                   },
                   Types: getSpecificArray(applianceNames, availableAppliance),
-                  timeOfUsege: result.activeStack.length < 1439 ? sumArrays(
-                    result.timeOfUsege,
-                    getSpecificArray(data.active, availableAppliance).map(
-                      (active) => active * 0.5
-                    )
-                  ) : new Array(result.timeOfUsege.length).fill(0),
                   active: getSpecificArray(data.active, availableAppliance),
                   powerDistribution: getSpecificArray(
                     data.power_distribution,
