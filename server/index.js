@@ -298,87 +298,87 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                   }
                 )
               })
-              await ApplianceDataHistory.findOneAndUpdate(
-                { userId: userId },
-                {
-                  $set: {
-                    powerDistributionWeek: setPowerDistributionWeek(result.powerDistributionWeek),
-                    timeOfUsege: updateTimeOfUsage(result.timeOfUsege),
-                    activeStack: setArray(result.activeStack, getSpecificArray(
-                      data.active,
-                      availableAppliance
-                    )),
-                    powerDistributionStack: setArray(result.powerDistributionStack, getSpecificArray(
-                      data.power_distribution,
-                      availableAppliance
-                    ),true),
-                    times: setArray(result.times, getTime()),
-                    meanPowerStack: setArray(result.meanPowerStack, getMean(
-                      getSpecificArray(
-                        data.power_distribution,
-                        availableAppliance
-                      )
-                    ).mean),
-                  },
-                  $inc: {
-                    totalEmission: findEmission(
-                      getSpecificArray(
-                        data.power_distribution,
-                        availableAppliance
-                      ),
-                      result.timeOfUsege
-                    ), 
-                    totalWatt:
-                      data.power_distribution.reduce(
-                        (acc, val) =>
-                          acc + val.reduce((acc, val) => acc + val, 0),
-                        0
-                      ) / 1000,
-                  },
-                  Types: getSpecificArray(applianceNames, availableAppliance),
-                  active: getSpecificArray(data.active, availableAppliance),
-                  powerDistribution: getSpecificArray(
-                    data.power_distribution,
-                    availableAppliance
-                  ),
-                  applianceId: availableApplianceData.map(
-                    (appliance) => appliance._id
-                  ),
-                },
-                { new: true, upsert: true, returnOriginal: true }
-              ).then(async (result) => {
-                // async function toObject(arr) {
-                //   let rs = [];
-                //   for (let i = 0; i < arr.length; ++i) {
-                //     let rv = {};
-                //     for (let j = 0; j < result.Types.length; ++j)
-                //       rv[result.Types[j]] = arr[i][j];
-                //     rs.push(rv);
-                //   }
-                //   return rs;
-                // }
-                // async function toObjectTime(arr) {
-                //   let rs = {};
-                //   for (let i = 0; i < arr.length; ++i) 
-                //     rs[result.Types[i]] = arr[i];
-                //   return rs;
-                // }
-                // fetch(
-                //   "https://assiztric-nilm-634c4s4qnq-as.a.run.app/notification",
-                //   {
-                //     method: "POST",
-                //     headers: { "Content-Type": "application/json" },
-                //     body: JSON.stringify({
-                //       user_appliance: await getAvailableAppliance(),
-                //       user_id: userId,
-                //       token: req.headers["token"],
-                //       W_R: await toObject(result.powerDistributionStack),
-                //       user_alert_appliance: user_alert_appliance,
-                //       timeOfUsage: await toObjectTime(result.timeOfUsege),
-                //     }),
-                //   }
-                // )
-              });
+              // await ApplianceDataHistory.findOneAndUpdate(
+              //   { userId: userId },
+              //   {
+              //     $set: {
+              //       powerDistributionWeek: setPowerDistributionWeek(result.powerDistributionWeek),
+              //       timeOfUsege: updateTimeOfUsage(result.timeOfUsege),
+              //       activeStack: setArray(result.activeStack, getSpecificArray(
+              //         data.active,
+              //         availableAppliance
+              //       )),
+              //       powerDistributionStack: setArray(result.powerDistributionStack, getSpecificArray(
+              //         data.power_distribution,
+              //         availableAppliance
+              //       ),true),
+              //       times: setArray(result.times, getTime()),
+              //       meanPowerStack: setArray(result.meanPowerStack, getMean(
+              //         getSpecificArray(
+              //           data.power_distribution,
+              //           availableAppliance
+              //         )
+              //       ).mean),
+              //     },
+              //     $inc: {
+              //       totalEmission: findEmission(
+              //         getSpecificArray(
+              //           data.power_distribution,
+              //           availableAppliance
+              //         ),
+              //         result.timeOfUsege
+              //       ), 
+              //       totalWatt:
+              //         data.power_distribution.reduce(
+              //           (acc, val) =>
+              //             acc + val.reduce((acc, val) => acc + val, 0),
+              //           0
+              //         ) / 1000,
+              //     },
+              //     Types: getSpecificArray(applianceNames, availableAppliance),
+              //     active: getSpecificArray(data.active, availableAppliance),
+              //     powerDistribution: getSpecificArray(
+              //       data.power_distribution,
+              //       availableAppliance
+              //     ),
+              //     applianceId: availableApplianceData.map(
+              //       (appliance) => appliance._id
+              //     ),
+              //   },
+              //   { new: true, upsert: true, returnOriginal: true }
+              // ).then(async (result) => {
+              //   // async function toObject(arr) {
+              //   //   let rs = [];
+              //   //   for (let i = 0; i < arr.length; ++i) {
+              //   //     let rv = {};
+              //   //     for (let j = 0; j < result.Types.length; ++j)
+              //   //       rv[result.Types[j]] = arr[i][j];
+              //   //     rs.push(rv);
+              //   //   }
+              //   //   return rs;
+              //   // }
+              //   // async function toObjectTime(arr) {
+              //   //   let rs = {};
+              //   //   for (let i = 0; i < arr.length; ++i) 
+              //   //     rs[result.Types[i]] = arr[i];
+              //   //   return rs;
+              //   // }
+              //   // fetch(
+              //   //   "https://assiztric-nilm-634c4s4qnq-as.a.run.app/notification",
+              //   //   {
+              //   //     method: "POST",
+              //   //     headers: { "Content-Type": "application/json" },
+              //   //     body: JSON.stringify({
+              //   //       user_appliance: await getAvailableAppliance(),
+              //   //       user_id: userId,
+              //   //       token: req.headers["token"],
+              //   //       W_R: await toObject(result.powerDistributionStack),
+              //   //       user_alert_appliance: user_alert_appliance,
+              //   //       timeOfUsage: await toObjectTime(result.timeOfUsege),
+              //   //     }),
+              //   //   }
+              //   // )
+              // });
             });
           }
         });
