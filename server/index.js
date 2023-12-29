@@ -219,10 +219,14 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 return out;
               }
               function updateTimeOfUsage(arr) {
-                console.log(result.activeStack.length)
                 if (result.activeStack.length < maxArray - 1) 
                   return sumArrays(arr,getSpecificArray(data.active, availableAppliance).map((active) => active * 0.5));
-                return Array(arr.length).fill(0);
+                else {
+                  let arr = []
+                  for (let i = 0;i < result.activeStack.length;i++)
+                    arr.push(0) 
+                  return arr
+                }
               }
               console.log(updateTimeOfUsage(result.timeOfUsege))
               ApplianceDataHistory.findOneAndUpdate(
