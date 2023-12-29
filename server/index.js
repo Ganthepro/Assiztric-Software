@@ -264,8 +264,8 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 }),
               })
               .then((response) => response.json())
-              .then(async (result) => {
-                console.log(result)
+              .then(async (data) => {
+                const result = data[0];
                 async function toObject(arr) {
                   let rs = [];
                   for (let i = 0; i < arr.length; ++i) {
