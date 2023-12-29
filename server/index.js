@@ -228,7 +228,8 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                   return arr
                 }
               }
-              fetch("https://assiztric.ddns.net/saveData", {
+              // https://assiztric.ddns.net
+              fetch("http://10.10.10.38/saveData", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
