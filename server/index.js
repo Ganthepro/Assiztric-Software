@@ -218,16 +218,16 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 out.push(result.totalWatt);
                 return out;
               }
-              function updateTimeOfUsage(arr) {
-                if (result.activeStack.length < maxArray - 1) 
-                  return sumArrays(arr,getSpecificArray(data.active, availableAppliance).map((active) => active * 0.5));
-                else {
-                  let arr = []
-                  for (let i = 0;i < result.activeStack.length;i++)
-                    arr.push(0) 
-                  return arr
-                }
-              }
+              // function updateTimeOfUsage(arr) {
+              //   if (result.activeStack.length < maxArray - 1) 
+              //     return sumArrays(arr,getSpecificArray(data.active, availableAppliance).map((active) => active * 0.5));
+              //   else {
+              //     let arr = []
+              //     for (let i = 0;i < result.activeStack.length;i++)
+              //       arr.push(0) 
+              //     return arr
+              //   }
+              // }
               await fetch("https://assiztric.ddns.net/saveData", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -241,7 +241,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     availableAppliance
                   ),
                   meanPowerStack: getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean,
-                  timeOfUsege: updateTimeOfUsage(result.timeOfUsege),
+                  timeOfUsege: sumArrays(arr,getSpecificArray(data.active, availableAppliance).map((active) => active * 0.5)),
                   totalEmission: findEmission(
                     getSpecificArray(
                       data.power_distribution,
