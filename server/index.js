@@ -255,6 +255,12 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                     0
                   ) / 1000,
                   powerDistributionWeek: setPowerDistributionWeek(result.powerDistributionWeek),
+                  times: getTime(),
+                  activeStack: getSpecificArray(
+                    data.active,
+                    availableAppliance
+                  ),
+                  Types: getSpecificArray(applianceNames, availableAppliance),
                 }),
               })
               .then((response) => response.json())
