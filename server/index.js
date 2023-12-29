@@ -264,8 +264,38 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                 }),
               })
               .then((response) => response.json())
-              .then((data) => {
-                console.log(data)
+              .then(async (result) => {
+                async function toObject(arr) {
+                  let rs = [];
+                  for (let i = 0; i < arr.length; ++i) {
+                    let rv = {};
+                    for (let j = 0; j < result.Types.length; ++j)
+                      rv[result.Types[j]] = arr[i][j];
+                    rs.push(rv);
+                  }
+                  return rs;
+                }
+                async function toObjectTime(arr) {
+                  let rs = {};
+                  for (let i = 0; i < arr.length; ++i) 
+                    rs[result.Types[i]] = arr[i];
+                  return rs;
+                }
+                fetch(
+                  "https://assiztric-nilm-634c4s4qnq-as.a.run.app/notification",
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      user_appliance: await getAvailableAppliance(),
+                      user_id: userId,
+                      token: req.headers["token"],
+                      W_R: await toObject(result.powerDistributionStack),
+                      user_alert_appliance: user_alert_appliance,
+                      timeOfUsage: await toObjectTime(result.timeOfUsege),
+                    }),
+                  }
+                )
               })
               await ApplianceDataHistory.findOneAndUpdate(
                 { userId: userId },
@@ -497,7 +527,10 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
 
 app.get("/getPredictData/:userId", middleware, async (req, res) => {
   const userId = req.params.userId;
-  const data = await ApplianceDataHistory.findOne({ userId: userId });
+  // const data = await ApplianceDataHistory.findOne({ userId: userId });
+  const response = await fetch(`https://assiztric.ddns.net/getData/${userId}`, { method: "GET" });
+  if (!response.ok) throw new Error('Network response was not ok.');
+  const data = await response.json();
   function getPastSevenDays() {
     let dates = [];
     for (let i = 6; i >= 0; i--) {
