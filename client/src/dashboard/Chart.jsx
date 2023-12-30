@@ -111,7 +111,8 @@ function Chart(props) {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (props.emission != null || props.emission != undefined) props.emission(data.totalEmission);
+        console.log(data.totalEmission)
+        if (props.emission != null && props.emission != undefined) props.emission(data.totalEmission);
         if (props.watt != null || props.watt != undefined) props.watt(data.totalWatt);
         let datasets = [];
         const powerDistributionStack = [];
