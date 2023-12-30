@@ -2,18 +2,21 @@ import './Appliance_Info_Info.css'
 import Washing_Logo from '../assets/Washing_Icon.svg';
 import Fan_Logo from '../assets/Fan_Icon.svg';
 import Fridge_Logo from '../assets/Fridge_Icon.svg';
-import TV_Logo_Dark from '../assets/Television_Icon.svg';
+import AirCon_Logo from '../assets/AirCon_Icon.svg';
+import Iron_Logo from '../assets/Iron_Icon.svg';
+import RiceCookie from '../assets/RiceCooker_Icon.svg';
+import AirPurifier from '../assets/AirPurifier_Icon.svg';
 
 function Appliance_Info_Info(props) {
     const icons = [
       ['WashingMC',Washing_Logo],
-      ['RiceCooker',TV_Logo_Dark],
+      ['RiceCooker',RiceCookie],
       ['ElecFan',Fan_Logo],
       ['Fridge',Fridge_Logo],
-      ['AirCon',TV_Logo_Dark],
-      ['Iron',TV_Logo_Dark],
+      ['AirCon',AirCon_Logo],
+      ['Iron',Iron_Logo],
       ['TV',TV_Logo_Dark],
-      ['AirPurifier',TV_Logo_Dark]
+      ['AirPurifier',AirPurifier]
     ]
 
     return (
