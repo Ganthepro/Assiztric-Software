@@ -499,6 +499,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     return dates;
   }
   try {
+    console.log(data.meanPowerStack);
     const active = data.active;
     const powerDistribution = data.powerDistribution;
     const activeStack = data.activeStack;
