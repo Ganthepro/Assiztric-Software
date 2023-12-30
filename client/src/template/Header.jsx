@@ -1,6 +1,10 @@
+import { useEffect } from 'react'
 import './Header.css'
 
 function Header(props) {
+  useEffect(() => {
+    console.log(props.emission)
+  }, [props.emission])
   return (
     <div className="main-header">
       <div className="box-left" style={{width:"80%"}}>
