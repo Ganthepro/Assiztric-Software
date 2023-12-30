@@ -176,15 +176,15 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
           }
           return arr;
         }
-        function findEmission(power_distribution, timeOfUsege) {
-          let totalEmission = 0;
-          power_distribution.forEach((innerArray, outerIndex) => {
-            const sumInnerArray = innerArray.reduce((acc, val) => acc + val, 0);
-            if (timeOfUsege[outerIndex])
-              totalEmission += (sumInnerArray / 1000) * (1 / 120) * 0.4857;
-          });
-          return totalEmission;
-        }
+        // function findEmission(power_distribution, timeOfUsege) {
+        //   let totalEmission = 0;
+        //   power_distribution.forEach((innerArray, outerIndex) => {
+        //     const sumInnerArray = innerArray.reduce((acc, val) => acc + val, 0);
+        //     if (timeOfUsege[outerIndex])
+        //       totalEmission += (sumInnerArray / 1000) * (1 / 120) * 0.4857;
+        //   });
+        //   return totalEmission;
+        // }
         await Appliance.findOne({ userId: userId }).then(async (result) => {
           if (result != null) {
             const maxArray = 1440;
@@ -246,10 +246,7 @@ app.post("/addApplianceDataHistory", middleware, async (req, res) => {
                   data.active,
                   availableAppliance
                 ).map((active) => active * 0.5),
-                totalEmission: findEmission(
-                  getSpecificArray(data.power_distribution, availableAppliance),
-                  result.timeOfUsege
-                ),
+                totalEmission: getSpecificArray(data.power_distribution, availableAppliance),
                 totalWatt: watt,
                 powerDistributionWeek: watt,
                 times: getTime(),
