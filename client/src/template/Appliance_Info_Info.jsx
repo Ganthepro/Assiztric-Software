@@ -6,6 +6,7 @@ import AirCon_Logo from '../assets/AirCon_Icon.svg';
 import Iron_Logo from '../assets/Iron_Icon.svg';
 import RiceCookie from '../assets/RiceCooker_Icon.svg';
 import AirPurifier from '../assets/AirPurifier_Icon.svg';
+import TV_Logo_Dark from '../assets/Television_Icon.svg';
 
 function Appliance_Info_Info(props) {
     const icons = [
