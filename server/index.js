@@ -129,7 +129,6 @@ function getDate() {
 }
 
 app.post("/addApplianceDataHistory", async (req, res) => {
-  // ทำ 1 วันแล้ว reset ใหม่
   const { W_R, Var_R, userId } = req.body;
   async function getAvailableAppliance() {
     let output = [];
@@ -158,14 +157,6 @@ app.post("/addApplianceDataHistory", async (req, res) => {
           });
           return { mean };
         }
-        function sumArrays(...arrays) {
-          const maxLength = Math.max(...arrays.map((arr) => arr.length));
-          const result = new Array(maxLength).fill(0);
-          arrays.forEach((arr) => {
-            for (let i = 0; i < maxLength; i++) result[i] += arr[i] || 0;
-          });
-          return result;
-        }
         function getSpecificArray(array, usageApplicance) {
           let arr = [];
           try {
@@ -176,51 +167,13 @@ app.post("/addApplianceDataHistory", async (req, res) => {
           }
           return arr;
         }
-        // function findEmission(power_distribution, timeOfUsege) {
-        //   let totalEmission = 0;
-        //   power_distribution.forEach((innerArray, outerIndex) => {
-        //     const sumInnerArray = innerArray.reduce((acc, val) => acc + val, 0);
-        //     if (timeOfUsege[outerIndex])
-        //       totalEmission += (sumInnerArray / 1000) * (1 / 120) * 0.4857;
-        //   });
-        //   return totalEmission;
-        // }
         await Appliance.findOne({ userId: userId }).then(async (result) => {
           if (result != null) {
-            const maxArray = 1440;
             const availableAppliance = result.appliance;
             const availableApplianceData = result.applianceData
               .map((appliance) => appliance)
               .sort((a, b) => a.index - b.index);
             const user_alert_appliance = result.user_alert_appliance;
-            // const response = await fetch(`https://assiztric.ddns.net/getData/${userId}`, {method : "GER"});
-            // if (!response.ok) throw new Error("Network response was not ok.");
-            // const responseData = await response.json();
-            // if (responseData == null) {
-            //   console.log("No data found");
-            //   ApplianceDataHistory.create({
-            //     userId: userId,
-            //     timeOfUsege: [],
-            //     applianceId: [],
-            //     powerDistributionStack: [],
-            //     meanPowerStack: [],
-            //     powerDistributionWeek: new Array(7).fill(0),
-            //   });
-            //   return;
-            // }
-            // function setArray(arr,newData) {
-            //   return arr.length < maxArray ? [...arr, newData] : [];
-            // }
-            // function setPowerDistributionWeek(arr) {
-            //   let out = arr;
-            //   if (responseData.activeStack.length < maxArray) {
-            //     out[out.length - 1] = responseData.totalWatt;
-            //     return out;
-            //   }
-            //   out.shift();
-            //   out.push(responseData.totalWatt);
-            //   return out;
-            // }
             const watt = data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000
             await fetch("https://assiztric.ddns.net/saveData", {
               method: "POST",
@@ -289,7 +242,6 @@ app.post("/addApplianceDataHistory", async (req, res) => {
                   }
                 );
               });
-            // await ApplianceDataHistory.findOneAndUpdate(
           }
         });
       });
@@ -356,7 +308,6 @@ app.get("/getApplianceInfo/:userId/:id", middleware, async (req, res) => {
       meanPowerStack,
     });
   } else {
-    console.log(result.applianceId);
     const applianceDataIndex = result.applianceId.indexOf(id);
     timeOfUsege = result.timeOfUsege[applianceDataIndex];
     updatedTime = result.times[result.times.length - 1];
@@ -366,9 +317,7 @@ app.get("/getApplianceInfo/:userId/:id", middleware, async (req, res) => {
         .reduce((acc, val) => acc + val[applianceDataIndex], 0) /
       result.meanPowerStack.filter((power) => power[applianceDataIndex] != 0)
         .length;
-    meanPowerStack = result.meanPowerStack.map(
-      (power) => power[applianceDataIndex]
-    );
+    meanPowerStack = result.meanPowerStack.map((power) => power[applianceDataIndex]);
     return res.status(200).json({
       timeOfUsege,
       avarage,
@@ -388,7 +337,6 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
   });
   if (!response.ok) throw new Error("Network response was not ok.");
   const data = await response.json();
-  // const data = await ApplianceDataHistory.findOne({ userId: userId });
   if (data != null) {
     let timeOfUsege = data.timeOfUsege;
     let Types = data.Types;
@@ -622,7 +570,6 @@ app.post("/auth", middleware, async (req, res) => {
         displayName: data.displayName,
         pictureUrl: data.pictureUrl,
       });
-      // console.log(newUser);
       await newUser
         .save()
         .then((result) => {
