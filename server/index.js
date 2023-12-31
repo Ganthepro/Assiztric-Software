@@ -207,76 +207,41 @@ app.post("/addApplianceDataHistory", async (req, res) => {
                 Types: getSpecificArray(applianceNames, availableAppliance),
               }),
             })
-            const response = await fetch(`https://assiztric.ddns.net/getData/${userId}`, {method: "GET"})
-            if (!response.ok) 
-              throw new Error("Network response was not ok.");
-            const result = await response.json();
-            async function toObject(arr) {
-              let rs = [];
-              for (let i = 0; i < arr.length; ++i) {
-                let rv = {};
-                for (let j = 0; j < result.Types.length; ++j)
-                  rv[result.Types[j]] = arr[i][j];
-                rs.push(rv);
-              }
-              return rs;
-            }
-            async function toObjectTime(arr) {
-              let rs = {};
-              for (let i = 0; i < arr.length; ++i)
-                rs[result.Types[i]] = arr[i];
-              return rs;
-            }
-            await fetch(
-              "https://assiztric-nilm-634c4s4qnq-as.a.run.app/notification",
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  user_appliance: await getAvailableAppliance(),
-                  user_id: userId,
-                  token: req.headers["token"],
-                  W_R: await toObject(result.powerDistributionStack),
-                  user_alert_appliance: user_alert_appliance,
-                  timeOfUsage: await toObjectTime(result.timeOfUsege),
-                }),
-              }
-            );
-              // .then((response) => response.json())
-              // .then(async (data) => {
-              //   const result = data[0];
-              //   async function toObject(arr) {
-              //     let rs = [];
-              //     for (let i = 0; i < arr.length; ++i) {
-              //       let rv = {};
-              //       for (let j = 0; j < result.Types.length; ++j)
-              //         rv[result.Types[j]] = arr[i][j];
-              //       rs.push(rv);
-              //     }
-              //     return rs;
-              //   }
-              //   async function toObjectTime(arr) {
-              //     let rs = {};
-              //     for (let i = 0; i < arr.length; ++i)
-              //       rs[result.Types[i]] = arr[i];
-              //     return rs;
-              //   }
-              //   await fetch(
-              //     "https://assiztric-nilm-634c4s4qnq-as.a.run.app/notification",
-              //     {
-              //       method: "POST",
-              //       headers: { "Content-Type": "application/json" },
-              //       body: JSON.stringify({
-              //         user_appliance: await getAvailableAppliance(),
-              //         user_id: userId,
-              //         token: req.headers["token"],
-              //         W_R: await toObject(result.powerDistributionStack),
-              //         user_alert_appliance: user_alert_appliance,
-              //         timeOfUsage: await toObjectTime(result.timeOfUsege),
-              //       }),
-              //     }
-              //   );
-              // });
+              .then((response) => response.json())
+              .then(async (data) => {
+                const result = data[0];
+                async function toObject(arr) {
+                  let rs = [];
+                  for (let i = 0; i < arr.length; ++i) {
+                    let rv = {};
+                    for (let j = 0; j < result.Types.length; ++j)
+                      rv[result.Types[j]] = arr[i][j];
+                    rs.push(rv);
+                  }
+                  return rs;
+                }
+                async function toObjectTime(arr) {
+                  let rs = {};
+                  for (let i = 0; i < arr.length; ++i)
+                    rs[result.Types[i]] = arr[i];
+                  return rs;
+                }
+                await fetch(
+                  "https://assiztric-nilm-634c4s4qnq-as.a.run.app/notification",
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      user_appliance: await getAvailableAppliance(),
+                      user_id: userId,
+                      token: req.headers["token"],
+                      W_R: await toObject(result.powerDistributionStack),
+                      user_alert_appliance: user_alert_appliance,
+                      timeOfUsage: await toObjectTime(result.timeOfUsege),
+                    }),
+                  }
+                );
+              });
           }
         });
       });
