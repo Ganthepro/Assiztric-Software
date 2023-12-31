@@ -128,7 +128,7 @@ function getDate() {
   return `${month}/${day}/${year}`;
 }
 
-app.post("/addApplianceDataHistory", middleware, async (req, res) => {
+app.post("/addApplianceDataHistory", async (req, res) => {
   // ทำ 1 วันแล้ว reset ใหม่
   const { W_R, Var_R, userId } = req.body;
   async function getAvailableAppliance() {
@@ -379,45 +379,6 @@ app.get("/getApplianceInfo/:userId/:id", middleware, async (req, res) => {
       meanPowerStack,
     });
   }
-  // ApplianceDataHistory.findOne({ userId: userId }).then((result) => {
-  //   if (result == null) {
-  //     return res
-  //       .status(200)
-  //       .json({
-  //         timeOfUsege,
-  //         avarage,
-  //         updatedTime,
-  //         brand,
-  //         model,
-  //         name,
-  //         meanPowerStack,
-  //       });
-  //   } else {
-  //     const applianceDataIndex = result.applianceId.indexOf(id);
-  //     timeOfUsege = result.timeOfUsege[applianceDataIndex];
-  //     updatedTime = result.times[result.times.length - 1];
-  //     avarage =
-  //       result.meanPowerStack
-  //         .filter((power) => power[applianceDataIndex] != 0)
-  //         .reduce((acc, val) => acc + val[applianceDataIndex], 0) /
-  //       result.meanPowerStack.filter((power) => power[applianceDataIndex] != 0)
-  //         .length;
-  //     meanPowerStack = result.meanPowerStack.map(
-  //       (power) => power[applianceDataIndex]
-  //     );
-  //     return res
-  //       .status(200)
-  //       .json({
-  //         timeOfUsege,
-  //         avarage,
-  //         updatedTime,
-  //         brand,
-  //         model,
-  //         name,
-  //         meanPowerStack,
-  //       });
-  //   }
-  // });
 });
 
 app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
