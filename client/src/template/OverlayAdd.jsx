@@ -28,12 +28,17 @@ function OverlayAdd(props) {
         },
         body: JSON.stringify(data),
       });
-
       if (!response.ok) {
-        throw new Error("Failed to add appliance");
+        console.log(err);
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i];
+          const eqPos = cookie.indexOf("=");
+          const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+          Cookies.remove(name);
+        }
+        window.location.reload();
       }
-
-      const responseData = await response.json();
       // Close the overlay after successful submission
       alert("เพิ่มเครื่องใช้ไฟฟ้าสำเร็จ");
       props.setShow(false);

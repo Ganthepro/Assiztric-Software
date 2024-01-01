@@ -37,13 +37,22 @@ export function Notification(props) {
         const response = await fetch(`https://assiztric-software.vercel.app/getNotification/${Cookies.get('userId')}/${code}`,
           {
             method: "GET",
-            
             headers: {
               token: Cookies.get("token"),
             },
           }
         );
-        if (!response.ok) throw new Error("Failed to fetch data");
+        if (!response.ok) {
+          console.log(response.status);
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i];
+            const eqPos = cookie.indexOf("=");
+            const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+            Cookies.remove(name);
+          }
+          window.location.reload();
+        };
         const data = await response.json();
         setNotifications(data);
       } catch (error) {

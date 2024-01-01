@@ -11,7 +11,6 @@ function Appliance_Info(props) {
   useEffect(() => {
     fetch(`https://assiztric-software.vercel.app/getApplianceInfo/${Cookies.get('userId')}/${props.id}`, {
       method: "GET",
-      
       headers: {
         token: Cookies.get("token"),
       },
@@ -20,6 +19,17 @@ function Appliance_Info(props) {
     .then((data) => {
       setData(data);
     })
+    .catch((err) => {
+        console.log(err);
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i];
+          const eqPos = cookie.indexOf("=");
+          const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+          Cookies.remove(name);
+        }
+        window.location.reload();
+      });
   }, [props.id]);
 
   return (

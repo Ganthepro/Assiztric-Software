@@ -262,7 +262,7 @@ async function middleware(req, res, next) {
         method: "GET",
       }
     );
-    if (!response.ok) return res.status(401).send("Invalid token");
+    if (!response.ok) return res.status(500).send("Invalid token");
     next();
   } catch (error) {
     console.error(error);

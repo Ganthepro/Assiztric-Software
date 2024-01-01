@@ -104,18 +104,26 @@ function Chart(props) {
     const userId = Cookies.get("userId");
     fetch(`https://assiztric-software.vercel.app/getPredictData/${userId}`, {
       method: "GET",
-      
       headers: {
         token: Cookies.get("token"),
-      }
+      },
     })
       .then((res) => res.json())
       .then((data) => {
-        if (props.emission != null && props.emission != undefined) props.emission(data.totalEmission);
-        if (props.watt != null || props.watt != undefined) props.watt(data.totalWatt);
+        if (props.emission != null && props.emission != undefined)
+          props.emission(data.totalEmission);
+        if (props.watt != null || props.watt != undefined)
+          props.watt(data.totalWatt);
         let datasets = [];
         const powerDistributionStack = [];
-        const powerData = props.isOnly != null || props.isOnly != undefined || props.watt != undefined ? data.powerDistributionStackDay : mode == 0 ? data.powerDistributionStackDay : data.powerDistributionStackWeek;
+        const powerData =
+          props.isOnly != null ||
+          props.isOnly != undefined ||
+          props.watt != undefined
+            ? data.powerDistributionStackDay
+            : mode == 0
+            ? data.powerDistributionStackDay
+            : data.powerDistributionStackWeek;
         for (let j = 0; j < powerData[0].length; j++) {
           let powerDistributionStackConcat = [];
           for (let i = 0; i < powerData.length; i++)
@@ -136,9 +144,14 @@ function Chart(props) {
             borderWidth: 2,
             lineTension: 0.1,
           });
-          props.setMean(powerDistributionStack[index].filter((element) => element != 0).reduce((a, b) => a + b, 0) / powerDistributionStack[index].filter((element) => element != 0).length);
-        }
-        else {
+          props.setMean(
+            powerDistributionStack[index]
+              .filter((element) => element != 0)
+              .reduce((a, b) => a + b, 0) /
+              powerDistributionStack[index].filter((element) => element != 0)
+                .length
+          );
+        } else {
           if (mode == 0 || props.watt != undefined) {
             powerDistributionStack.forEach((element, index) => {
               datasets.push({
@@ -155,16 +168,34 @@ function Chart(props) {
               label: "Total",
               data: data.powerDistributionStackWeek,
               fill: false,
-              borderColor: 'orange',
+              borderColor: "orange",
               borderWidth: 2,
               lineTension: 0.1,
             });
           }
         }
         setData({
-          labels: props.isOnly != null || props.isOnly != undefined || props.watt != undefined ? data.timeDay : mode == 0 ? data.timeDay : data.timeWeek,
+          labels:
+            props.isOnly != null ||
+            props.isOnly != undefined ||
+            props.watt != undefined
+              ? data.timeDay
+              : mode == 0
+              ? data.timeDay
+              : data.timeWeek,
           datasets: datasets,
         });
+      })
+      .catch((err) => {
+        console.log(err);
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i];
+          const eqPos = cookie.indexOf("=");
+          const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+          Cookies.remove(name);
+        }
+        window.location.reload();
       });
   }
 
@@ -180,8 +211,12 @@ function Chart(props) {
   }, [props.mode]);
 
   return (
-    <div style={{width:"90%",display:"flex",justifyContent:"center"}} >
-      {chartData != null ? <Line data={chartData} style={{width:"100%"}} /> : <p>Loading..</p>}
+    <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
+      {chartData != null ? (
+        <Line data={chartData} style={{ width: "100%" }} />
+      ) : (
+        <p>Loading..</p>
+      )}
     </div>
   );
 }
