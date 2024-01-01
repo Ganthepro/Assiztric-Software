@@ -120,12 +120,9 @@ function Chart(props) {
         const powerData =
           props.isOnly != null ||
           props.isOnly != undefined ||
-          props.watt != undefined
-            ? data.powerDistributionStackDay
-            : mode == 0
-            ? data.powerDistributionStackDay
-            : data.powerDistributionStackWeek;
-        for (let j = 0; j < powerData[0].length; j++) {
+          props.watt != undefined ? data.powerDistributionStackDay : mode == 0 ? data.powerDistributionStackDay : data.powerDistributionStackWeek;
+        console.log(powerData);
+          for (let j = 0; j < powerData[0].length; j++) {
           let powerDistributionStackConcat = [];
           for (let i = 0; i < powerData.length; i++)
             powerDistributionStackConcat = powerDistributionStackConcat.concat(
@@ -188,7 +185,7 @@ function Chart(props) {
         });
       })
       .catch(async (err) => {
-        if (props.mode == 1) return;
+        if (mode == 1) return;
         const cookies = document.cookie.split(";");
         for (let i = 0; i < cookies.length; i++) {
           const cookie = cookies[i];
