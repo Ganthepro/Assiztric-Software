@@ -188,7 +188,7 @@ function Chart(props) {
         });
       })
       .catch(async (err) => {
-        console.log("Test")
+        if (props.mode == 1) return;
         const cookies = document.cookie.split(";");
         for (let i = 0; i < cookies.length; i++) {
           const cookie = cookies[i];
