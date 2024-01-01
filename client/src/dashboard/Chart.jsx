@@ -100,10 +100,10 @@ function Chart(props) {
   ]);
   let interval;
 
-  function getData(mode) {
+  async function getData(mode) {
     const userId = Cookies.get("userId");
     if (userId == "" || userId == undefined || userId == null) return;
-    fetch(`https://assiztric-software.vercel.app/getPredictData/${userId}`, {
+    await fetch(`https://assiztric-software.vercel.app/getPredictData/${userId}`, {
       method: "GET",
       headers: {
         token: Cookies.get("token"),
