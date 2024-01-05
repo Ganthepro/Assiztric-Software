@@ -240,7 +240,11 @@ app.post("/addApplianceDataHistory", async (req, res) => {
                       timeOfUsage: await toObjectTime(result.timeOfUsege),
                     }),
                   }
-                );
+                )
+                .then((response) => response.json())
+                .then(async (data) => {
+                  console.log(data);
+                });  
               });
           }
         });
