@@ -51,7 +51,8 @@ function OverlayAdd(props) {
   return (
     <div className="real-main">
       <div className="main-overlayAdd">
-        <h3>เพิ่มเครื่องใช้ไฟฟ้า *</h3>
+        <div className="empty"></div>
+        <h3>เพิ่มเครื่องใช้ไฟฟ้า</h3>
         <button
           className="close-overlayAdd"
           onClick={() => props.setShow(false)}
@@ -60,7 +61,7 @@ function OverlayAdd(props) {
         </button>
         <div className="content">
         <div className="inputs-overlayAdd">
-          ประเภทเครื่องใช้ไฟฟ้า
+          <h4>ประเภทเครื่องใช้ไฟฟ้า *</h4>
           <select className="Dropdown" name="appliances" id="appliances" ref={optionRef}>
             <option value="WashingMC">เครื่องซักผ้า</option>
             <option value="RiceCooker">หม้อหุงข้าว</option>
@@ -94,6 +95,7 @@ function OverlayAdd(props) {
             ref={descriptionRef}
           />
         </div>
+        <div className="empty"></div>
         <button className="submit-overlayAdd" onClick={submit}>
           เพิ่มข้อมูล
         </button>
