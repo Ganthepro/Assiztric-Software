@@ -15,18 +15,21 @@ export function Home(props) {
   const [showInfo, setShowInfo] = useState(false);
   const [applianceId, setApplianceId] = useState(null);
 
-  useEffect(async () => {
-    if (
-      Cookies.get("userId") == "" ||
-      Cookies.get("userId") == undefined ||
-      Cookies.get("userId") == null
-    ) {
-      await props.loginFunc();
-      setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
-    } else {
-      setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
-      Cookies.set("token", await props.tokenFunc(), { expires: 1 });
+  useEffect(() => {
+    async function login() {
+      if (
+        Cookies.get("userId") == "" ||
+        Cookies.get("userId") == undefined ||
+        Cookies.get("userId") == null
+      ) {
+        await props.loginFunc();
+        setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
+      } else {
+        setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
+        Cookies.set("token", await props.tokenFunc(), { expires: 1 });
+      }
     }
+    login();
   }, []);
 
   return (
