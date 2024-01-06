@@ -4,6 +4,7 @@ function Header(props) {
   return (
     <div className="main-header">
       <div className="in-header">
+      <div className="empty"></div>
         <div className="box-left">
           <h1 style={{fontSize:"24px",textOverflow:"ellipsis",whiteSpace:"nowrap",overflow:"hidden"}}>{props.profiles != null ? `สวัสดีคุณ ${props.profiles[0]}` : "Loading..."}</h1>
           <div className="profile">

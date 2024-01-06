@@ -1,7 +1,7 @@
 .main-dashboardGraph {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    align-items: center;    
     height: 350px;
 }
 
@@ -21,8 +21,9 @@
 
 .slideBar {
     height: 34px;
-    border-radius: 7px;
-    margin-bottom: 10px;
+    width: 300px;
+    border-radius: px;
+    margin-bottom: 32px;
     position: relative;
     background-color: #D9D9D9;
 }

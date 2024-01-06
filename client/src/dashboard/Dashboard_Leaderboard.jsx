@@ -47,7 +47,7 @@ function Dashboard_Leaderboard(props) {
 
     return (
         <div className="main-dashboardLeaderboard">
-            <h4 style={{marginBottom:"7px"}}>เวลาการใช้งาน</h4>
+            <h4 style={{marginTop:"32px",marginBottom:"24px"}}>เวลาการใช้งาน</h4>
             <div className="dashboardLeaderboard">
                 {
                     leaderboard != null ? leaderboard.Types.map((data, index) => {
