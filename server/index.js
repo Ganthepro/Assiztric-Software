@@ -432,6 +432,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     const timeWeek = getPastSevenDays();
     const types = data.Types;
     const totalCost = data.totalCost;
+    console.log(totalCost);
     for (let i = 0; i < powerDistributionStackDay.length; i++)
       if (powerDistributionStackDay[i].length < active.length)
         powerDistributionStackDay[i].push(0);
