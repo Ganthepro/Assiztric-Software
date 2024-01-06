@@ -21,11 +21,11 @@ function Home_Dashboard(props) {
   return (
     <div className="main-homeDashboard">
       <div>
-        <h4>รายการเครื่องใช้ไฟฟ้าภายในครัวเรือน</h4>
+        <p>รายการเครื่องใช้ไฟฟ้าภายในครัวเรือน</p>
         <p style={{ color: "#e9714f" }}>{`วันนี้, ${thdate}`}</p>
       </div>
       <h4 className="detail">รวมการใช้พลังงาน {parseInt(watt)} วัตต์</h4>
-      <div className="homeDashboard"><Chart emission={props.emission} watt={setWatt} /></div>
+      <div className="homeDashboard"><Chart emission={props.emission} watt={setWatt} cost={props.cost} /></div>
     </div>
   );
 }

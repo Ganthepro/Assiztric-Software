@@ -7,6 +7,7 @@ import Iron_Logo from '../assets/Iron_Icon.svg';
 import RiceCookie from '../assets/RiceCooker_Icon.svg';
 import AirPurifier from '../assets/AirPurifier_Icon.svg';
 import TV_Logo_Dark from '../assets/Television_Icon.svg';
+// import Kettle_Logo from '../assets/Kettle_Icon.svg';
 
 function Appliance_Info_Info(props) {
     const icons = [
@@ -17,7 +18,8 @@ function Appliance_Info_Info(props) {
       ['AirCon',AirCon_Logo],
       ['Iron',Iron_Logo],
       ['TV',TV_Logo_Dark],
-      ['AirPurifier',AirPurifier]
+      ['AirPurifier',AirPurifier],
+    //   ["Kettle",Kettle_Logo]
     ]
 
     return (

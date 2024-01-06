@@ -35,8 +35,8 @@ const applianceSchema = new Schema({
       index: Number,
     },
   ],
-  user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0],
-  appliance: [0, 0, 0, 0, 0, 0, 0, 0],
+  user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  appliance: [0, 0, 0, 0, 0, 0, 0, 0, 0],
 });
 // เช็ก appliance_alert_idx แล้วหา index ของ appliance ที่ตรงกัน แล้วเอาไปใส่ใน user_alert_appliance
 const notificationSchema = new Schema({
@@ -76,6 +76,7 @@ let applianceNames = [
   "Iron",
   "TV",
   "AirPurifier",
+  "Kettle"
 ];
 
 const User = mongoose.model("User", userSchema, "users");
@@ -175,6 +176,13 @@ app.post("/addApplianceDataHistory", async (req, res) => {
               .sort((a, b) => a.index - b.index);
             const user_alert_appliance = result.user_alert_appliance;
             const watt = data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000
+            const findCost = async () => {
+              const mean = getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean;
+              const cost = mean.forEach((power) => {
+                power / 1000 * (1 / 120) 
+              })
+              return cost.reduce((acc, val) => acc + val, 0);
+            };
             await fetch("https://assiztric.ddns.net/saveData", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -205,6 +213,7 @@ app.post("/addApplianceDataHistory", async (req, res) => {
                 times: getTime(),
                 activeStack: getSpecificArray(data.active, availableAppliance),
                 Types: getSpecificArray(applianceNames, availableAppliance),
+                totalCost: await findCost(),
               }),
             })
               .then((response) => response.json())
@@ -383,7 +392,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
       applianceId,
     });
   } else {
-    const arr = [0, 0, 0, 0, 0, 0, 0, 0];
+    const arr = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     res.status(200).json({
       usagePercent: arr,
       Types: applianceNames,
@@ -422,6 +431,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     const powerDistributionStackWeek = data.powerDistributionWeek;
     const timeWeek = getPastSevenDays();
     const types = data.Types;
+    const totalCost = data.totalCost;
     for (let i = 0; i < powerDistributionStackDay.length; i++)
       if (powerDistributionStackDay[i].length < active.length)
         powerDistributionStackDay[i].push(0);
@@ -436,6 +446,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
       types,
       totalEmission,
       totalWatt,
+      totalCost,
     });
   } catch (err) {
     res.status(500).send("Error getting predict data");
@@ -534,7 +545,7 @@ app.post("/addApplianceData", middleware, async (req, res) => {
   let data = req.body;
   const userId = data.userId;
   const index = await applianceNames.indexOf(data.Type);
-  let appliances = [0, 0, 0, 0, 0, 0, 0, 0];
+  let appliances = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   data["index"] = await index;
   Appliance.findOne({ userId: userId }).then((result) => {
     if (result == null) {
@@ -542,7 +553,7 @@ app.post("/addApplianceData", middleware, async (req, res) => {
       return Appliance.create({
         userId: userId,
         applianceData: [],
-        user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0],
+        user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0, 0],
         appliance: appliances,
       });
     } else {

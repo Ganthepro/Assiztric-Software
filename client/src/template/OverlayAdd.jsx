@@ -69,6 +69,7 @@ function OverlayAdd(props) {
             <option value="Iron">เตารีด</option>
             <option value="TV">โทรทัศน์</option>
             <option value="AirPurifier">เครื่องกรองอากาศ</option>
+            <option value="Kettle">กาต้มน้ำ</option>
           </select>
           <Input
             title="ชื่อรุ่น"

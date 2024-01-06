@@ -115,6 +115,8 @@ function Chart(props) {
           props.emission(data.totalEmission);
         if (props.watt != null || props.watt != undefined)
           props.watt(data.totalWatt);
+        if (props.cost != null || props.cost != undefined)
+          props.cost(data.totalCost);
         let datasets = [];
         const powerDistributionStack = [];
         const powerData =
