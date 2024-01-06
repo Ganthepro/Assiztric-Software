@@ -31,53 +31,58 @@ export function Notification(props) {
     fetchData();
   }, [props]);
 
-  useEffect(() => {
-    async function fetchNotification() {
-      try {
-        const response = await fetch(`https://assiztric-software.vercel.app/getNotification/${Cookies.get('userId')}/${code}`,
-          {
-            method: "GET",
-            headers: {
-              token: Cookies.get("token"),
-            },
-          }
-        );
-        if (!response.ok) {
-          console.log(response.status);
-          const cookies = document.cookie.split(";");
-          for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i];
-            const eqPos = cookie.indexOf("=");
-            const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
-            Cookies.remove(name);
-          }
-          window.location.reload();
-        };
-        const data = await response.json();
-        setNotifications(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-      setShowFilterList(false);
-    }
-    fetchNotification();
-  }, [code]);
+  // useEffect(() => {
+  //   async function fetchNotification() {
+  //     try {
+  //       const response = await fetch(`https://assiztric-software.vercel.app/getNotification/${Cookies.get('userId')}/${code}`,
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             token: Cookies.get("token"),
+  //           },
+  //         }
+  //       );
+  //       if (!response.ok) {
+  //         console.log(response.status);
+  //         const cookies = document.cookie.split(";");
+  //         for (let i = 0; i < cookies.length; i++) {
+  //           const cookie = cookies[i];
+  //           const eqPos = cookie.indexOf("=");
+  //           const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+  //           Cookies.remove(name);
+  //         }
+  //         window.location.reload();
+  //       };
+  //       const data = await response.json();
+  //       setNotifications(data);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //     setShowFilterList(false);
+  //   }
+  //   fetchNotification();
+  // }, [code]);
 
-  function SetCode(code) {
-    setCode(code);
-  }
+  // function SetCode(code) {
+  //   setCode(code);
+  // }
 
   return (
     <div className="main-notification">
       <div className="body-notification">
-        <h1>Notification</h1>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h4>รายการแจ้งเตือน</h4>
-          <img
-            src={Filter}
-            alt="filter"
-            onClick={() => setShowFilterList(!showFilterList)}
-          />
+        <div className="top">
+          <div className="in-header">
+          <div className="empty"></div>
+          <h1 style={{fontSize:"24px"}}>Notification</h1>
+          <div className="sub-header">
+            <h4 style={{fontSize:"16px"}}>รายการแจ้งเตือน</h4>
+            <img
+              src={Filter}
+              alt="filter"
+              onClick={() => setShowFilterList(!showFilterList)}
+            />
+          </div>
+          </div>
         </div>
         {showFilterList && (
           <div style={{ position: "absolute", left: "0" }}>
