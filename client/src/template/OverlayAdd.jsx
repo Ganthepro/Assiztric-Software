@@ -51,7 +51,7 @@ function OverlayAdd(props) {
   return (
     <div className="real-main">
       <div className="main-overlayAdd">
-        <h3>เพิ่มเครื่องใช้ไฟฟ้า</h3>
+        <h3>เพิ่มเครื่องใช้ไฟฟ้า *</h3>
         <button
           className="close-overlayAdd"
           onClick={() => props.setShow(false)}
@@ -88,7 +88,7 @@ function OverlayAdd(props) {
             ref={powerRef}
           />
           <Input
-            title="ลักษณะการใช้งานโดยสังเขป"
+            title="ลักษณะการใช้งานโดยสังเขป *"
             placeholder="กรุณากรอกข้อความ"
             isBig={true}
             ref={descriptionRef}
