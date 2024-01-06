@@ -59,7 +59,7 @@ function OverlayAdd(props) {
           ปิด
         </button>
         <div className="inputs-overlayAdd">
-          ประเภทเครื่องใช้ไฟฟ้า
+          ประเภทเครื่องใช้ไฟฟ้า * 
           <select className="Dropdown" name="appliances" id="appliances" ref={optionRef}>
             <option value="WashingMC">เครื่องซักผ้า</option>
             <option value="RiceCooker">หม้อหุงข้าว</option>
@@ -87,7 +87,7 @@ function OverlayAdd(props) {
             ref={powerRef}
           />
           <Input
-            title="ลักษณะการใช้งานโดยสังเขป"
+            title="ลักษณะการใช้งานโดยสังเขป *"
             placeholder="กรุณากรอกข้อความ"
             isBig={true}
             ref={descriptionRef}
