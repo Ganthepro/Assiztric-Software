@@ -181,8 +181,7 @@ app.post("/addApplianceDataHistory", async (req, res) => {
               const meanPower = getMean(powerDistribution).mean;
               // รวมค่าทั้งหมดใน meanPower
               const cost = meanPower.reduce((accumulator, currentValue) => accumulator + currentValue, 0) / 1000 * (1 / 120);
-              console.log(cost);
-              return parseFloat(cost.toFixed(2));
+              return cost;
             }; 
             await fetch("https://assiztric.ddns.net/saveData", {
               method: "POST",
