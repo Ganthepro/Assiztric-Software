@@ -180,9 +180,10 @@ app.post("/addApplianceDataHistory", async (req, res) => {
               const powerDistribution = getSpecificArray(data.power_distribution, availableAppliance);
               const meanPower = getMean(powerDistribution).mean;
               console.log(meanPower);
-              const cost = powerDistribution.map((power) => (power / 1000) * (1 / 120));
+              // รวมค่าทั้งหมดใน meanPower
+              const cost = meanPower.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
               console.log(cost);
-              return cost.reduce((acc, val) => acc + val, 0);
+              return cost;
             };
             await fetch("https://assiztric.ddns.net/saveData", {
               method: "POST",
