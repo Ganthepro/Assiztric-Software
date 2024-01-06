@@ -176,6 +176,13 @@ app.post("/addApplianceDataHistory", async (req, res) => {
               .sort((a, b) => a.index - b.index);
             const user_alert_appliance = result.user_alert_appliance;
             const watt = data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000
+            const findCost = async () => {
+              const mean = getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean;
+              const cost = mean.forEach((power) => {
+                power / 1000 * (1 / 120) 
+              })
+              return cost.reduce((acc, val) => acc + val, 0);
+            };
             await fetch("https://assiztric.ddns.net/saveData", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -206,6 +213,7 @@ app.post("/addApplianceDataHistory", async (req, res) => {
                 times: getTime(),
                 activeStack: getSpecificArray(data.active, availableAppliance),
                 Types: getSpecificArray(applianceNames, availableAppliance),
+                totalCost: await findCost(),
               }),
             })
               .then((response) => response.json())
@@ -422,6 +430,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
     const powerDistributionStackWeek = data.powerDistributionWeek;
     const timeWeek = getPastSevenDays();
     const types = data.Types;
+    const totalCost = data.totalCost;
     for (let i = 0; i < powerDistributionStackDay.length; i++)
       if (powerDistributionStackDay[i].length < active.length)
         powerDistributionStackDay[i].push(0);
@@ -436,6 +445,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
       types,
       totalEmission,
       totalWatt,
+      totalCost,
     });
   } catch (err) {
     res.status(500).send("Error getting predict data");

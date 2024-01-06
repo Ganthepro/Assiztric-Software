@@ -14,19 +14,23 @@ export function Home(props) {
   const [emission, setEmission] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
   const [applianceId, setApplianceId] = useState(null);
+  const [cost, setCost] = useState(0);
 
-  useEffect(async () => {
-    if (
-      Cookies.get("userId") == "" ||
-      Cookies.get("userId") == undefined ||
-      Cookies.get("userId") == null
-    ) {
-      await props.loginFunc();
-      setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
-    } else {
-      setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
-      Cookies.set("token", await props.tokenFunc(), { expires: 1 });
+  useEffect(() => {
+    async function effect() {
+      if (
+        Cookies.get("userId") == "" ||
+        Cookies.get("userId") == undefined ||
+        Cookies.get("userId") == null
+      ) {
+        await props.loginFunc();
+        setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
+      } else {
+        setProfiles([Cookies.get("displayName"), Cookies.get("pictureUrl")]);
+        Cookies.set("token", await props.tokenFunc(), { expires: 1 });
+      }
     }
+    effect();
   }, []);
 
   return (
@@ -36,7 +40,11 @@ export function Home(props) {
         <Header profiles={profiles} emission={emission} />
         <div className="body-home">
           <h1 style={{ marginTop: "15px" }}>Home</h1>
-          <Home_Dashboard emission={setEmission} />
+          <div>
+            <h4 style={{ marginTop: "15px" }}>การใช้ไฟฟ้าในครัวเรือนมากที่สุด</h4>
+            <h4 style={{color:"#e9714f", marginBottom:"15px"}}>ค่าไฟฟ้า {cost} บาท</h4>
+          </div>
+          <Home_Dashboard emission={setEmission} cost={setCost} />
           <Home_Leaderboard setShow={setShowInfo} setId={setApplianceId} />
         </div>
         <Blank />

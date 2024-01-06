@@ -8,7 +8,7 @@ import RiceCookie from '../assets/RiceCooker_Icon.svg';
 import AirPurifier from '../assets/AirPurifier_Icon.svg';
 import RightArrow from "../assets/RightArrow.svg";
 import TV_Logo_Dark from '../assets/Television_Icon.svg';
-import Kettle_Logo from '../assets/Kettle_Icon.svg';
+// import Kettle_Logo from '../assets/Kettle_Icon.svg';
 import { useRef, useEffect } from "react";
 
 function Leaderboard_Data(props) {
@@ -22,7 +22,7 @@ function Leaderboard_Data(props) {
     ['Iron',Iron_Logo],
     ['TV',TV_Logo_Dark],
     ['AirPurifier',AirPurifier],
-    ["Kettle",Kettle_Logo]
+    // ["Kettle",Kettle_Logo]
   ]
   useEffect(() => {
     if (props.data[3]) ref.current.style.backgroundColor = "#82DA85";
