@@ -181,9 +181,9 @@ app.post("/addApplianceDataHistory", async (req, res) => {
               const cost = mean.forEach((power) => {
                 power / 1000 * (1 / 120) 
               })
+              console.log(cost)
               return cost.reduce((acc, val) => acc + val, 0);
             };
-            console.log(await findCost());
             await fetch("https://assiztric.ddns.net/saveData", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
