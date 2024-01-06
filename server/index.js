@@ -177,13 +177,11 @@ app.post("/addApplianceDataHistory", async (req, res) => {
             const user_alert_appliance = result.user_alert_appliance;
             const watt = data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000
             const findCost = async () => {
-              // const mean = getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean;
-              console.log(getSpecificArray(data.power_distribution, availableAppliance))
-              console.log(getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean)
-              const cost = getSpecificArray(data.power_distribution, availableAppliance).forEach((power) => {
-                power / 1000 * (1 / 120) 
-              })
-              console.log(cost)
+              const powerDistribution = getSpecificArray(data.power_distribution, availableAppliance);
+              const meanPower = getMean(powerDistribution).mean;
+              console.log(meanPower);
+              const cost = powerDistribution.map((power) => (power / 1000) * (1 / 120));
+              console.log(cost);
               return cost.reduce((acc, val) => acc + val, 0);
             };
             await fetch("https://assiztric.ddns.net/saveData", {
