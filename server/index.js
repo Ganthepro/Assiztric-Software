@@ -181,7 +181,7 @@ app.post("/addApplianceDataHistory", async (req, res) => {
               const meanPower = getMean(powerDistribution).mean;
               console.log(meanPower);
               // รวมค่าทั้งหมดใน meanPower
-              const cost = meanPower.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+              const cost = meanPower.reduce((accumulator, currentValue) => accumulator + currentValue, 0) / 1000 * (1 / 120);
               console.log(cost);
               return cost;
             };
