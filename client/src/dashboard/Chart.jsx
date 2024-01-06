@@ -117,7 +117,7 @@ function Chart(props) {
           props.watt(data.totalWatt);
         if (props.cost != null || props.cost != undefined)
           props.cost(data.totalCost.toFixed(2));
-        console.log(data.totalCost);
+        console.log(data.totalCost.toFixed(2));
         let datasets = [];
         const powerDistributionStack = [];
         const powerData =
