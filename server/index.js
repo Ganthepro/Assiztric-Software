@@ -35,8 +35,8 @@ const applianceSchema = new Schema({
       index: Number,
     },
   ],
-  user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  appliance: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0],
+  appliance: [0, 0, 0, 0, 0, 0, 0, 0],
 });
 // เช็ก appliance_alert_idx แล้วหา index ของ appliance ที่ตรงกัน แล้วเอาไปใส่ใน user_alert_appliance
 const notificationSchema = new Schema({
@@ -392,7 +392,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
       applianceId,
     });
   } else {
-    const arr = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const arr = [0, 0, 0, 0, 0, 0, 0, 0];
     res.status(200).json({
       usagePercent: arr,
       Types: applianceNames,
@@ -545,7 +545,7 @@ app.post("/addApplianceData", middleware, async (req, res) => {
   let data = req.body;
   const userId = data.userId;
   const index = await applianceNames.indexOf(data.Type);
-  let appliances = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  let appliances = [0, 0, 0, 0, 0, 0, 0, 0];
   data["index"] = await index;
   Appliance.findOne({ userId: userId }).then((result) => {
     if (result == null) {
@@ -553,7 +553,7 @@ app.post("/addApplianceData", middleware, async (req, res) => {
       return Appliance.create({
         userId: userId,
         applianceData: [],
-        user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0],
         appliance: appliances,
       });
     } else {
