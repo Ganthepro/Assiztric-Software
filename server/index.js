@@ -50,7 +50,7 @@ const notificationSchema = new Schema({
   appliance_alert_idx: Number,
   createdAt: { type: Date, default: Date.now },
 });
-notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
+notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
 const applianceDataHistorySchema = new Schema({
   userId: String,
   Types: [String],
