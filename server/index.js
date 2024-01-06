@@ -68,7 +68,7 @@ const applianceDataHistorySchema = new Schema({
 });
 
 let applianceNames = [
-  "..",
+  "WashingMC",
   "RiceCooker",
   "ElecFan",
   "Fridge",
