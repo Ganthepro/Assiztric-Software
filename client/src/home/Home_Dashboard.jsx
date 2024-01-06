@@ -20,12 +20,18 @@ function Home_Dashboard(props) {
   
   return (
     <div className="main-homeDashboard">
-      <div>
-        <h4>รายการเครื่องใช้ไฟฟ้าภายในครัวเรือน</h4>
-        <p style={{ color: "#e9714f" }}>{`วันนี้, ${thdate}`}</p>
+      <div className="out-main">
+        <h4>การใช้ไฟฟ้าในครัวเรือนมากที่สุด</h4>
+        <p style={{ color: "#e9714f" }}>{`ค่าไฟฟ้า <...> บาท`}</p>
       </div>
-      <h4 className="detail">รวมการใช้พลังงาน {parseInt(watt)} วัตต์</h4>
-      <div className="homeDashboard"><Chart emission={props.emission} watt={setWatt} /></div>
+      <div className="in-main">
+        <div>
+          <h4>รายการเครื่องใช้ไฟฟ้าภายในครัวเรือน</h4>
+          <p style={{ color: "#e9714f" }}>{`วันนี้, ${thdate}`}</p>
+        </div>
+        <h4 className="detail">รวมการใช้พลังงาน {parseInt(watt)} วัตต์</h4>
+        <div className="homeDashboard"><Chart emission={props.emission} watt={setWatt} /></div>
+      </div>
     </div>
   );
 }

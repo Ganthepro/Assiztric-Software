@@ -47,7 +47,7 @@ function Home_Leaderboard(props) {
 
     return (
         <div className="main-homeLeaderboard">
-            <h4 style={{marginBottom: "10px"}}>การใช้งาน</h4>
+            <h4 style={{marginBottom: "32px"}}>ใช้งานนานที่สุด</h4>
             <div className="homeLeaderboard">
                 {
                     leaderboard != null ? leaderboard.Types.map((data, index) => {

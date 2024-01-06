@@ -1,3 +1,7 @@
 .body-home > * {
-  margin-bottom: 7px;
+  margin: 32px 16px 34px 16px;
+}
+
+.head-text{
+  margin: 32px 16px 32px 16px;;
 }

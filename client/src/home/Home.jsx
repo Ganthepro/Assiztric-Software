@@ -38,7 +38,7 @@ export function Home(props) {
       <div className="main-home">
         <Header profiles={profiles} emission={emission} />
         <div className="body-home">
-          <h1 style={{ marginTop: "15px" }}>Home</h1>
+          <h1 className="head-text">Home</h1>
           <Home_Dashboard emission={setEmission} />
           <Home_Leaderboard setShow={setShowInfo} setId={setApplianceId} />
         </div>
