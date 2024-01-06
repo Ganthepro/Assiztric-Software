@@ -178,6 +178,8 @@ app.post("/addApplianceDataHistory", async (req, res) => {
             const watt = data.power_distribution.reduce((acc, val) => acc + val.reduce((acc, val) => acc + val, 0), 0) / 1000
             const findCost = async () => {
               // const mean = getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean;
+              console.log(getSpecificArray(data.power_distribution, availableAppliance))
+              console.log(getMean(getSpecificArray(data.power_distribution, availableAppliance)).mean)
               const cost = getSpecificArray(data.power_distribution, availableAppliance).forEach((power) => {
                 power / 1000 * (1 / 120) 
               })
