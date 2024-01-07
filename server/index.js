@@ -486,6 +486,7 @@ app.post("/addNotification", middleware, (req, res) => {
     notification_id: data.notification_id,
     appliance_alert_idx: appliance_alert_idx,
   });
+  console.log(data)
   newNotification
     .save()
     .then((result) => {

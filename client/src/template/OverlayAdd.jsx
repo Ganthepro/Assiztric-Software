@@ -39,7 +39,17 @@ function OverlayAdd(props) {
         }
         window.location.reload();
       }
-      // Close the overlay after successful submission
+      await fetch(`https://assiztric-qa-server-634c4s4qnq-as.a.run.app/update_user_persona`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: Cookies.get("userId"),
+          appliance: optionRef.current.value,
+          user_persona: descriptionRef.current.value,
+        }),
+      });
       alert("เพิ่มเครื่องใช้ไฟฟ้าสำเร็จ");
       props.setShow(false);
     } catch (error) {
