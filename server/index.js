@@ -476,7 +476,7 @@ app.post("/deleteNotification", (req, res) => {
 
 app.post("/addNotification", middleware, async (req, res) => {
   console.log("test")
-  const data = req.body;
+  const data = await req.body;
   console.log(data)
   const appliance_alert_idx = data.appliance_alert_idx;
   const userId = data.userId;
