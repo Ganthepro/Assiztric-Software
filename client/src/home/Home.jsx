@@ -14,7 +14,6 @@ export function Home(props) {
   const [emission, setEmission] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
   const [applianceId, setApplianceId] = useState(null);
-  const [cost, setCost] = useState(0);
 
   useEffect(() => {
     async function effect() {
@@ -40,7 +39,7 @@ export function Home(props) {
         <Header profiles={profiles} emission={emission} />
         <div className="body-home">
           <h1 className="head-text">Home</h1>
-          <Home_Dashboard emission={setEmission} cost={cost} />
+          <Home_Dashboard emission={setEmission} />
           <Home_Leaderboard setShow={setShowInfo} setId={setApplianceId} />
         </div>
         <Blank />
