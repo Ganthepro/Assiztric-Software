@@ -474,9 +474,10 @@ app.post("/deleteNotification", (req, res) => {
   });
 });
 
-app.post("/addNotification", middleware, (req, res) => {
+app.post("/addNotification", middleware, async (req, res) => {
   const data = req.body;
   const appliance_alert_idx = data.appliance_alert_idx;
+  console.log(data)
   const userId = data.userId;
   const newNotification = new Notification({
     userId: userId,
@@ -487,7 +488,7 @@ app.post("/addNotification", middleware, (req, res) => {
     appliance_alert_idx: appliance_alert_idx,
   });
   console.log(data)
-  newNotification
+  await newNotification
     .save()
     .then((result) => {
       console.log("New notification saved:", result);
@@ -495,7 +496,7 @@ app.post("/addNotification", middleware, (req, res) => {
     .catch((err) => {
       console.error("Error saving notification:", err);
     });
-  Appliance.findOneAndUpdate(
+  await Appliance.findOneAndUpdate(
     { userId: userId },
     { $set: { [`user_alert_appliance.${appliance_alert_idx}`]: 1 } },
     { new: true, upsert: true }
