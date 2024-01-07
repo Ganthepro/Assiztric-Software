@@ -40,7 +40,7 @@ export function Home(props) {
         <Header profiles={profiles} emission={emission} />
         <div className="body-home">
           <h1 className="head-text">Home</h1>
-          <Home_Dashboard emission={setEmission} />
+          <Home_Dashboard emission={setEmission} cost={cost} />
           <Home_Leaderboard setShow={setShowInfo} setId={setApplianceId} />
         </div>
         <Blank />

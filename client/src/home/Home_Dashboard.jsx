@@ -22,7 +22,7 @@ function Home_Dashboard(props) {
     <div className="main-homeDashboard">
       <div className="out-main">
         <h4>การใช้ไฟฟ้าในครัวเรือนมากที่สุด</h4>
-        <p style={{ color: "#e9714f" }}>{`ค่าไฟฟ้า <...> บาท`}</p>
+        <p style={{ color: "#e9714f" }}>ค่าไฟฟ้า {props.cost.toFixed(2)} บาท</p>
       </div>
       <div className="in-main">
         <div>
