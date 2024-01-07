@@ -39,12 +39,8 @@ export function Home(props) {
       <div className="main-home">
         <Header profiles={profiles} emission={emission} />
         <div className="body-home">
-          <h1 style={{ marginTop: "15px" }}>Home</h1>
-          <div>
-            <h4>การใช้ไฟฟ้าในครัวเรือนมากที่สุด</h4>
-            <h4 style={{color:"#e9714f", marginBottom:"15px"}}>ค่าไฟฟ้า {cost.toFixed(2)} บาท</h4>
-          </div>
-          <Home_Dashboard emission={setEmission} cost={setCost} />
+          <h1 className="head-text">Home</h1>
+          <Home_Dashboard emission={setEmission} />
           <Home_Leaderboard setShow={setShowInfo} setId={setApplianceId} />
         </div>
         <Blank />

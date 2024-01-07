@@ -58,6 +58,7 @@ function OverlayAdd(props) {
         >
           ปิด
         </button>
+        <div className="content">
         <div className="inputs-overlayAdd">
           ประเภทเครื่องใช้ไฟฟ้า * 
           <select className="Dropdown" name="appliances" id="appliances" ref={optionRef}>
@@ -94,8 +95,9 @@ function OverlayAdd(props) {
           />
         </div>
         <button className="submit-overlayAdd" onClick={submit}>
-          เพิ่ม
+          เพิ่มข้อมูล
         </button>
+        </div>
       </div>
     </div>
   );

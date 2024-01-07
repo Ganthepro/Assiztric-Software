@@ -23,7 +23,6 @@ function Dashboard_Graph() {
 
   return (
     <div className="main-dashboardGraph">
-      <h4 style={{ marginBottom: "5px" }}>การใช้ไฟฟ้าในครัวเรือน</h4>
       <div className="slideBar">
         <button
           style={{ left: "25%" }}
@@ -46,7 +45,7 @@ function Dashboard_Graph() {
           style={{
             top: "0",
             left: "0",
-            margin: "5px",
+            margin: "20px",
             position: "absolute",
             color: "#E9714F",
           }}

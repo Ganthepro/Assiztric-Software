@@ -1,13 +1,16 @@
-.main-homeDashboard {
-    width: 100%;
+.in-main {
+    width: calc(100vw - 32px);
     height: 452px;
     background-color: white;
-    box-shadow: 0px 2.5px 5px 5px rgba(0,0,0,0.10); 
     padding: 10px;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
+    box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.10); 
     justify-content: space-between;
+}
+.out-main{
+    margin-bottom: 32px;
 }
 
 .detail {
@@ -25,4 +28,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.main-homeDashboard{
+
+    margin-bottom: 32px;
 }

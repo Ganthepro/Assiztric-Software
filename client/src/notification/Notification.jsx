@@ -70,14 +70,19 @@ export function Notification(props) {
   return (
     <div className="main-notification">
       <div className="body-notification">
-        <h1>Notification</h1>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h4>รายการแจ้งเตือน</h4>
-          <img
-            src={Filter}
-            alt="filter"
-            onClick={() => setShowFilterList(!showFilterList)}
-          />
+        <div className="top">
+          <div className="in-header">
+          <div className="empty"></div>
+          <h1 style={{fontSize:"24px"}}>Notification</h1>
+          <div className="sub-header">
+            <h4 style={{fontSize:"16px"}}>รายการแจ้งเตือน</h4>
+            <img
+              src={Filter}
+              alt="filter"
+              onClick={() => setShowFilterList(!showFilterList)}
+            />
+          </div>
+          </div>
         </div>
         {showFilterList && (
           <div style={{ position: "absolute", left: "0" }}>
