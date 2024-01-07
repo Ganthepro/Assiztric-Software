@@ -19,8 +19,8 @@ function Filter_List(props) {
     }, [props.code]);
 
     return (
-        <div className='main-filterList'>
-            <h5>กรุณาเลือกประเภทการแจ้งเตือน</h5>
+        <div  className='main-filterList'>
+            <h5 style={{marginTop:"20px"}}>กรุณาเลือกประเภทการแจ้งเตือน</h5>
             <div style={{display:"flex",justifyContent:"space-around"}}>
                 <button ref={el => (filterRef.current[0] = el)} onClick={() => props.setCode(0)} >Tips</button>
                 <button ref={el => (filterRef.current[1] = el)} onClick={() => props.setCode(1)} >Alert</button>

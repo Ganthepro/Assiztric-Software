@@ -1,4 +1,4 @@
-import "./notification.css";
+import "./notifications.css";
 import Filter from "../assets/filter.svg";
 import Blank from "../template/Blank";
 import Nav from "../template/Nav";
@@ -43,15 +43,15 @@ export function Notification(props) {
           }
         );
         if (!response.ok) {
-          console.log(response.status);
-          const cookies = document.cookie.split(";");
-          for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i];
-            const eqPos = cookie.indexOf("=");
-            const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
-            Cookies.remove(name);
-          }
-          window.location.reload();
+          // console.log(response.status);
+          // const cookies = document.cookie.split(";");
+          // for (let i = 0; i < cookies.length; i++) {
+          //   const cookie = cookies[i];
+          //   const eqPos = cookie.indexOf("=");
+          //   const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+          //   Cookies.remove(name);
+          // }
+          // window.location.reload();
         };
         const data = await response.json();
         setNotifications(data);
@@ -68,10 +68,10 @@ export function Notification(props) {
   }
 
   return (
-    <div className="main-notification">
+    <div style={{backgroundColor:"white"}}className="main-notification">
       <div className="body-notification">
-        <div className="top">
-          <div className="in-header">
+        <div style={{zIndex:"1000", boxShadow:"0px 2.5px 5px 5px rgba(0,0,0,0.10)"}}className="top">
+          <div  className="in-header">
           <div className="empty"></div>
           <h1 style={{fontSize:"24px"}}>Notification</h1>
           <div className="sub-header">
@@ -85,8 +85,8 @@ export function Notification(props) {
           </div>
         </div>
         {showFilterList && (
-          <div style={{ position: "absolute", left: "0" }}>
-            <Filter_List setCode={SetCode} code={code} />
+          <div style={{zIndex:"-10", position: "absolute", left: "0" , top:"120px"}}>
+            <Filter_List style={{zIndex:"-5"}} setCode={SetCode} code={code} />
           </div>
         )}
         {notifications != null &&
@@ -97,7 +97,6 @@ export function Notification(props) {
             )
           )}
       </div>
-      <Blank />
       <Add />
       <Nav id={props.id} />
     </div>
