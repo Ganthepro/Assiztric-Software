@@ -233,6 +233,7 @@ app.post("/addApplianceDataHistory", async (req, res) => {
                   let rs = {};
                   for (let i = 0; i < arr.length; ++i)
                     rs[result.Types[i]] = arr[i];
+                  console.log(rs)
                   return rs;
                 }
                 await fetch(
