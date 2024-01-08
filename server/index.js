@@ -136,7 +136,6 @@ app.post("/addApplianceDataHistory", async (req, res) => {
     await Appliance.findOne({ userId: userId }).then((result) => {
       if (result != null) output = result.appliance;
     });
-    console.log(output);
     return output;
   }
   try {
@@ -152,9 +151,10 @@ app.post("/addApplianceDataHistory", async (req, res) => {
     })
       .then((response) => response.json())
       .then(async (data) => {
+        console.log(data)
         function getMean(power_distribution) {
           let mean = [];
-          power_distribution.forEach((power, index) => {
+          power_distribution.forEach((power) => {
             mean.push(power.reduce((acc, val) => acc + val, 0) / power.length);
           });
           return { mean };
@@ -234,7 +234,6 @@ app.post("/addApplianceDataHistory", async (req, res) => {
                   let rs = {};
                   for (let i = 0; i < arr.length; ++i)
                     rs[result.Types[i]] = arr[i];
-                  console.log(rs)
                   return rs;
                 }
                 await fetch(
