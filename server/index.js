@@ -237,7 +237,7 @@ app.post("/addApplianceDataHistory", async (req, res) => {
                   return rs;
                 }
                 await fetch(
-                  "https://3bf9-161-246-147-162.ngrok-free.app/notification",
+                  "https://8d40-161-246-147-162.ngrok-free.app/notification",
                   {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
