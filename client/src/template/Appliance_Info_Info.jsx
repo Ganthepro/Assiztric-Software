@@ -16,10 +16,10 @@ function Appliance_Info_Info(props) {
       ['ElecFan',Fan_Logo],
       ['Fridge',Fridge_Logo],
       ['AirCon',AirCon_Logo],
+      ["Kettle",Kettle_Logo],
       ['Iron',Iron_Logo],
       ['TV',TV_Logo_Dark],
-      ['AirPurifier',AirPurifier],
-      ["Kettle",Kettle_Logo]
+      ['AirPurifier',AirPurifier]
     ]
 
     return (

@@ -35,8 +35,8 @@ const applianceSchema = new Schema({
       index: Number,
     },
   ],
-  user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0],
-  appliance: [0, 0, 0, 0, 0, 0, 0, 0],
+  user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  appliance: [0, 0, 0, 0, 0, 0, 0, 0, 0],
 });
 // เช็ก appliance_alert_idx แล้วหา index ของ appliance ที่ตรงกัน แล้วเอาไปใส่ใน user_alert_appliance
 const notificationSchema = new Schema({
@@ -73,10 +73,10 @@ let applianceNames = [
   "ElecFan",
   "Fridge",
   "AirCon",
+  "Kettle",
   "Iron",
   "TV",
-  "AirPurifier",
-  "Kettle"
+  "AirPurifier"
 ];
 
 const User = mongoose.model("User", userSchema, "users");
@@ -132,7 +132,7 @@ function getDate() {
 app.post("/addApplianceDataHistory", async (req, res) => {
   const { W_R, Var_R, userId } = req.body;
   async function getAvailableAppliance() {
-    let output = Array(8).fill(0);
+    let output = Array(9).fill(0);
     await Appliance.findOne({ userId: userId }).then((result) => {
       if (result != null) output = result.appliance;
     });
@@ -391,7 +391,7 @@ app.get("/getLeaderboard/:userId", middleware, async (req, res) => {
       applianceId,
     });
   } else {
-    const arr = [0, 0, 0, 0, 0, 0, 0, 0];
+    const arr = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     res.status(200).json({
       usagePercent: arr,
       Types: applianceNames,
@@ -546,16 +546,16 @@ app.get("/getNotification/:userId/:code", middleware, (req, res) => {
 app.post("/addApplianceData", middleware, async (req, res) => {
   let data = req.body;
   const userId = data.userId;
-  const index = await applianceNames.indexOf(data.Type);
-  let appliances = [0, 0, 0, 0, 0, 0, 0, 0];
-  data["index"] = await index;
+  const index = applianceNames.indexOf(data.Type);
+  let appliances = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  data["index"] = index;
   Appliance.findOne({ userId: userId }).then((result) => {
     if (result == null) {
       index != -1 ? (appliances[index] = 1) : null;
       return Appliance.create({
         userId: userId,
         applianceData: [],
-        user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0],
+        user_alert_appliance: [0, 0, 0, 0, 0, 0, 0, 0, 0],
         appliance: appliances,
       });
     } else {

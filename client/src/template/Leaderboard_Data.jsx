@@ -19,10 +19,10 @@ function Leaderboard_Data(props) {
     ['ElecFan',Fan_Logo],
     ['Fridge',Fridge_Logo],
     ['AirCon',AirCon_Logo],
+    ["Kettle",Kettle_Logo],
     ['Iron',Iron_Logo],
     ['TV',TV_Logo_Dark],
-    ['AirPurifier',AirPurifier],
-    ["Kettle",Kettle_Logo]
+    ['AirPurifier',AirPurifier]
   ]
   useEffect(() => {
     if (props.data[3]) ref.current.style.backgroundColor = "#82DA85";
