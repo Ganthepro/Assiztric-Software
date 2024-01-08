@@ -151,7 +151,6 @@ app.post("/addApplianceDataHistory", async (req, res) => {
     })
       .then((response) => response.json())
       .then(async (data) => {
-        console.log(data)
         function getMean(power_distribution) {
           let mean = [];
           power_distribution.forEach((power) => {
@@ -237,7 +236,7 @@ app.post("/addApplianceDataHistory", async (req, res) => {
                   return rs;
                 }
                 await fetch(
-                  "https://8d40-161-246-147-162.ngrok-free.app/notification",
+                  "https://assiztric-nilm-634c4s4qnq-as.a.run.app/notification",
                   {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -455,7 +454,7 @@ app.get("/getPredictData/:userId", middleware, async (req, res) => {
 
 app.post("/deleteNotification", (req, res) => {
   const { notification_id, appliance_alert_idx, userId } = req.body; // body that required
-  Notification.deleteOne({ notification_id: notification_id })
+  Notification.findOneAndDelete({ notification_id: notification_id })
     .then((result) => {
       console.log("Notification deleted");
       return res.status(200).json(result);
