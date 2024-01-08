@@ -136,6 +136,7 @@ app.post("/addApplianceDataHistory", async (req, res) => {
     await Appliance.findOne({ userId: userId }).then((result) => {
       if (result != null) output = result.appliance;
     });
+    console.log(output);
     return output;
   }
   try {
